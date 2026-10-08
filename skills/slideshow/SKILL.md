@@ -92,8 +92,10 @@ One meaning per term across every file in this skill.
 - Engines + versions → `references/engines.md`
 - Animations, morph, fragments → `references/animations.md`
 - Palettes, fonts, code themes → `references/colors.md`
+- Color deployment, rotation scripts → `references/color-usage.md`
 - Layouts, boxes, image treatments → `references/layouts.md`
-- Gates → `references/verify-checklist.md`
+- Images, icons, media density → `references/media/`
+- Gates 1–19 → `references/verify-checklist.md`
 - Scripts → `scripts/verify-images.py`, `scripts/export-deck.sh`,
   `scripts/new-deck-scaffold.sh`
 - Starters → `examples/reveal-demo/`, `examples/slidev-demo/`,

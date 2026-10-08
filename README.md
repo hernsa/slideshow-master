@@ -26,11 +26,14 @@ skills/slideshow/
 │   ├── modes/                  # 5 narrative arcs: tech-talk, pitch, tutorial, showcase, narrative
 │   ├── visual-styles/          # 10 styles (midnight-saas … glassmorphism) + picker
 │   ├── layout-templates/       # 12 slide types (comparison … two-column) + picker
+│   ├── data-graphics/          # charts, tables, diagrams (pure HTML/CSS/SVG) + picker
+│   ├── media/                  # images + icons guides + picker
+│   ├── color-usage.md          # deploy color per slide: rotation scripts, dividers, bands
 │   ├── engines.md              # reveal.js vs Slidev vs Marp matrix + version pins
 │   ├── animations.md           # Auto-Animate, morph, FLIP, View Transitions, fragments
 │   ├── colors.md               # 6 palettes, dark/light tokens, fonts, code themes
 │   ├── layouts.md              # bento, split, callout, stat, quote, code+preview, images
-│   └── verify-checklist.md     # 16 gates: images, contrast, placeholders, motion, notes, export
+│   └── verify-checklist.md     # 19 gates: images, contrast, placeholders, motion, notes, export
 ├── scripts/
 │   ├── new-deck-scaffold.sh    # scaffold a new deck from a starter
 │   ├── verify-images.py        # check assets are local, sized, credited

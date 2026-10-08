@@ -308,6 +308,66 @@ npx decktape reveal "http://localhost:8000/?print-pdf" deck.pdf
 
 **Fix:** Commit the missing asset under `assets/`, replace frame-blocked demos with screenshots + links, correct the language tag to `tsx`.
 
+## Gate 17 — Color rotation (no 3 consecutive same-bg text slides)
+
+**WHY:** Three identical backgrounds in a row read as an unfinished template, not calm design. Rotation is planned in the outline — polish cannot retrofit it.
+
+**HOW:** List the page fill per slide (`base`, `surface`, `divider`, `photo`, `dark-quote`, `dark-code`, `cta`). Scan for any run of 3+ consecutive `base` text slides. Photo sequences count as one change stretched over two slides; live-demo runs up to 4 dark slides must be noted in speaker notes.
+
+**PASS:** Longest run of identical consecutive backgrounds is ≤ 2. Every 3rd slide changes surface (tinted divider, image bleed, accent band, dark quote/code slide). Outline carries a `bg:` tag per slide matching the built deck.
+
+**FAIL:** Slides 4–6 all on base `bg #FFFFFF`: rollout timeline, config list, p95 chart — no divider, photo, or band between them. Audience checks phones by slide 6.
+
+**Fix:**
+```markdown
+Outline v3 — APPROVED 2026-10-01 (Jonas)
+4. fix — Shield rollout, 3 regions (bg: base)
+5. fix — stale-while-revalidate snippet (bg: dark code)
+6. DIVIDER — "The proof" tinted surface (bg: SURFACE CHANGE)
+```
+
+## Gate 18 — Media density (1 visual per 3 slides, every image captioned)
+
+**WHY:** Text-only stretches lose the room. One visual every 3 slides holds attention; uncaptioned or unsourced images are a legal liability and a broken narrative.
+
+**HOW:** Count slides vs visuals (photo, chart, diagram, icon-graphic, terminal screenshot). Divide: visuals ÷ slides must clear 1:3. Then check every `<img>` has a sibling caption or credit line stating what it proves plus its source.
+
+**PASS:** Ratio ≥ 1 visual per 3 slides (an 18-slide deck holds ≥ 6 visuals). 100% of images carry a caption or credit (`Photo: Maria Santos, Acme lab` / `Source: edge logs Jun 14 → Sep 2`). No hotlinked `src="http"` outside documented demo iframes.
+
+**FAIL:** 12-slide deck with 2 visuals (both on slides 2–3), then 9 straight text slides. Lab photo full-bleed with no credit or caption.
+
+**Fix:**
+```html
+<figure style="margin:0">
+  <img src="assets/lab.jpg" alt="Engineers reviewing the Shield deploy dashboard as p95 falls" class="fit" />
+  <figcaption style="font-size:14px;opacity:.65">Photo: Maria Santos, Acme lab. p95 412 → 243ms week of Jul 19.</figcaption>
+</figure>
+```
+
+## Gate 19 — Icon discipline (zero emoji-as-icons, all SVG inline currentColor)
+
+**WHY:** Emoji render as mismatched color blobs across platforms and projectors, break screen readers, and rasterize badly in PDF/PPTX export. Inline SVG in `currentColor` inherits the palette and stays sharp everywhere.
+
+**HOW:** Search for emoji and icon fonts across slides and CSS. Confirm every icon is an inline `<svg>` using `currentColor` with an accessible name or `aria-hidden`.
+
+```bash
+grep -rPn "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{2B00}-\x{2BFF}]" --include="*.html" --include="*.md" .
+grep -rni "font-awesome\|material-icons\|emoji" --include="*.css" --include="*.html" --include="*.md" . | tee icons.txt | wc -l
+```
+
+**PASS:** Emoji grep returns nothing outside documented demo content. Icon-font grep returns nothing. Every icon is inline SVG with `fill="currentColor"` or `stroke="currentColor"` plus `aria-hidden="true"` (decorative) or `<title>` (meaningful).
+
+**FAIL:** `✅ Ship it` and `⚠️ Risk` as bullet icons — green check renders gray on the projector, warning triangle reads as text on screen readers. Font Awesome CDN linked for three arrows.
+
+**Fix:**
+```html
+<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+  <title>Pass</title>
+  <path d="M2.5 8.5l3.5 3.5 7-8" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+<span>Shield rollout passed in 3 regions</span>
+```
+
 ---
 
 ## Pre-ship run (15 minutes, in order)
