@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reveal Demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6/dist/reveal.css">
+<style>
+  :root { --bg:#0B1020; --ink:#E8EEF9; --accent:#4F7DF3; }
+  body { font-family: Georgia, serif; background: var(--bg); }
+  .reveal { font-family: Georgia, serif; background: var(--bg); color: var(--ink); }
+  .reveal h1, .reveal h2 { font-family: Verdana, sans-serif; color: var(--ink); }
+  .reveal a, .reveal .accent { color: var(--accent); }
+  .reveal pre code { background: #111832; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal *, .reveal *::before, .reveal *::after { transition: none !important; animation: none !important; }
+    .reveal .fragment { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section>
+<h1 data-id="hero">Deploy Day</h1>
+<p>Reveal.js 6 morph demo</p>
+</section>
+<section data-auto-animate>
+<h1 data-id="hero" style="color:#4F7DF3;">Deploy Day</h1>
+<ul><li class="fragment fade-up">Ships in one command</li></ul>
+</section>
+<section>
+<h2>Ship it</h2>
+<pre><code class="language-js">fetch("/api/v1/deploy",{method:"POST"})
+  .then(r =&gt; r.json())
+  .then(d =&gt; console.log(d));</code></pre>
+<aside class="notes">Presenter note: run deploy live, then show dashboard.</aside>
+</section>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6/dist/reveal.js"></script>
+<script>// Reveal.initialize({transition:'slide'}) CDN hookup point
+Reveal.initialize({ transition: 'slide' });
+</script>
+</body>
+</html>
