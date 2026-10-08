@@ -78,10 +78,17 @@ One meaning per term across every file in this skill.
 ## Reference Map
 
 - Workflows → `workflows/routing.md`, `workflows/generate-deck.md`,
-  `workflows/quick-generate.md`
+  `workflows/quick-generate.md`, `workflows/index.md`
+- Stages → `workflows/stages/` (topic-research, image-review,
+  visual-review, refine-spec, export-verify); governance →
+  `workflows/governance/failure-recovery.md`
 - Modes → `references/modes/` (+ `_index.md` picker)
-- Visual styles → `references/visual-styles/` (+ `_index.md` picker)
-- Layout templates → `references/layout-templates/` (+ `_index.md` picker)
+- Visual styles → `references/visual-styles/` (+ `_index.md` picker,
+  `styles_index.json`)
+- Layout templates → `references/layout-templates/` (+ `_index.md` picker,
+  `templates_index.json`)
+- Data graphics → `references/data-graphics/` (charts, tables, diagrams
+  + `graphics_index.json`)
 - Engines + versions → `references/engines.md`
 - Animations, morph, fragments → `references/animations.md`
 - Palettes, fonts, code themes → `references/colors.md`

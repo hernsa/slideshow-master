@@ -18,9 +18,10 @@ case "$ENGINE" in
     npx --yes slidev build "$DECK" --out "$OUT/spa"
     ;;
   marp)
-    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.html"
-    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.pdf" --pdf
-    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.pptx" --pptx
+    # --allow-local-files so local ./assets resolve during export
+    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.html" --allow-local-files
+    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.pdf" --pdf --allow-local-files
+    npx --yes @marp-team/marp-cli@latest "$DECK" -o "$OUT/deck.pptx" --pptx --allow-local-files
     ;;
   *)
     echo "unknown engine: $ENGINE (reveal|slidev|marp)" >&2

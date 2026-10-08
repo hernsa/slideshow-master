@@ -3,3 +3,5 @@ dist/
 .DS_Store/
 *.pdf
 *.pptx
+__pycache__/
+*.pyc

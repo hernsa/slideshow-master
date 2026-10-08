@@ -1,5 +1,9 @@
 # slideshow-master
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Skill](https://img.shields.io/badge/skill-universal-blue.svg)](skills/slideshow/SKILL.md)
+[![Engines](https://img.shields.io/badge/engines-reveal.js_%7C_Slidev_%7C_Marp-green.svg)](skills/slideshow/references/engines.md)
+
 Universal agent skill for building modern HTML slideshows — conference-grade
 decks with real themes, motion, and verification, not AI-slop defaults.
 
@@ -37,8 +41,22 @@ skills/slideshow/
     └── marp-demo/              # full Marp starter deck (10 slides)
 ```
 
-Repo-level: `docs/` (getting-started, faq, why-html-slides),
-`CONTRIBUTING.md` (add a style / palette / template / mode).
+Repo-level: `docs/` (getting-started, gallery, faq, why-html-slides,
+roadmap), `CONTRIBUTING.md` (add a style / palette / template / mode).
+
+## Gallery — the three starter decks
+
+All three tell the same 10-slide story ("Why HTML beats PPTX for tech
+talks") so engines compare directly: dark `#0B1020` + accent `#4F7DF3`,
+morph pair, fragments, notes, reduced-motion fallback.
+
+| Starter | Best for | Preview |
+|---|---|---|
+| `examples/reveal-demo/` | Interactive / morph / live demos | `python3 -m http.server` + open `index.html` (`S` speaker view) |
+| `examples/slidev-demo/` | Markdown-first / live code | `npx @slidev/cli --open` on `slides.md` |
+| `examples/marp-demo/` | Fast text / clean export | `marp-cli deck.md --preview` |
+
+Render commands + per-deck details: [`docs/gallery.md`](docs/gallery.md).
 
 ## Install (one skill, every harness)
 
