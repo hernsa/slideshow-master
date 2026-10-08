@@ -1,31 +1,94 @@
 ---
 name: slideshow
-description: Create modern HTML slideshows via 7-phase workflow (intake, design read, research, images, engine route, build, verify+export). Routes reveal.js / Slidev / Marp. Anti-slop tokens enforced.
+description: Create modern HTML slideshows via routed workflows (tech-talk, pitch, tutorial, showcase, narrative). Routes reveal.js / Slidev / Marp with visual styles, layout templates, animations, and verification gates. Use when the user asks for a slide deck, presentation, keynote-style page, or demo talk.
 ---
 
-# Slideshow Skill (Hybrid Engine Router)
+# Slideshow Skill — Hybrid Engine Router
 
-## Phase 1 — Intake
-Ask: topic, audience, length, code-heavy?, notes?, export target (HTML/PDF/PPTX)?
+You build conference-grade HTML slide decks. Never AI-slop (no purple-blue
+gradients, no three-equal-cards, no centered-hero-over-mesh defaults).
+Every deck gets: a routed mode + engine + visual style, verified images,
+fragments/motion, speaker notes, reduced-motion fallback, and an export path.
 
-## Phase 2 — Design Read (mandatory)
-Output one line: "Reading this as: <kind> for <audience>, <vibe>, leaning toward <engine+palette>."
-Set dials VARIANCE/MOTION/DENSITY per design-taste-frontend.
+## Route (read this table, then load ONE workflow only)
 
-## Phase 3 — Research
-2+ sources per claim. Verify code API versions.
+| Request | Workflow | Mode | Engine bias |
+|---|---|---|---|
+| Tech talk, demo, API walkthrough | `workflows/generate-deck.md` | `modes/tech-talk.md` | reveal.js / Slidev |
+| Fundraising / sales pitch | `workflows/generate-deck.md` | `modes/pitch.md` | Marp / reveal.js |
+| Workshop, how-to, handout | `workflows/generate-deck.md` | `modes/tutorial.md` | Slidev / Marp |
+| Portfolio, gallery, launch | `workflows/generate-deck.md` | `modes/showcase.md` | reveal.js |
+| Story-driven keynote | `workflows/generate-deck.md` | `modes/narrative.md` | reveal.js |
+| "Fast", "quick", "15 minutes", "draft" | `workflows/quick-generate.md` | any (fixed style) | Marp first |
 
-## Phase 4 — Images
-Hybrid source (AI/stock/local) → copy to `assets/` → log license → verify dimensions. See `references/verify-checklist.md`.
+Full decision logic: `workflows/routing.md` (engine table, style picker,
+mode picker). Engine versions + installs: `references/engines.md`.
 
-## Phase 5 — Route engine
-- Interactive/morph/iframes → reveal.js
-- Markdown-first/live code/Vue team → Slidev
-- Fast text/clean export → Marp
-Full matrix: `references/engines.md`.
+**Hard rule — selected authority only.** Load the ONE routed workflow and
+its ONE mode. Do not mix procedures across modes. Supporting documents
+(styles, templates, animations) refine the route; they never compete with it.
 
-## Phase 6 — Build
-Markdown source first. Theme tokens from `references/colors.md`. Layouts from `references/layouts.md`. Animations from `references/animations.md`. Code blocks ≤12 lines, Shiki preferred.
+## Vocabulary
 
-## Phase 7 — Verify + Export
-Run all gates in `references/verify-checklist.md`. Export via `scripts/export-deck`.
+One meaning per term across every file in this skill.
+
+| Term | Meaning |
+|---|---|
+| **Mode** | Narrative arc (tech-talk, pitch, tutorial, showcase, narrative). Picks the slide outline, never the engine |
+| **Engine** | Runtime: reveal.js (full HTML/JS control), Slidev (Markdown+Vue), Marp (Markdown→static) |
+| **Visual style** | One named style from `visual-styles/` — tokens + fonts + code theme + gradient rule. One style per deck |
+| **Layout template** | One slide-type sketch from `layout-templates/` (comparison, stats, quote, code-demo…). A starting sketch, freely adjusted |
+| **Design Read** | The one-line declaration of deck kind + audience + vibe + engine/style/fonts, stated before building |
+| **Dials** | `DESIGN_VARIANCE` / `MOTION_INTENSITY` / `VISUAL_DENSITY` (1–10 each). Drive layout, motion, density choices |
+| **Gate** | One check in `verify-checklist.md`. `⛔ BLOCKING` gates stop and wait for the user; the rest auto-continue |
+| **Device** | Everyday slide carrier — stat card, callout, KPI tile, divider, quote block, browser mock |
+| **Morph** | Same-element continuity across slides: `data-id` (reveal.js), `view-transition-name` (Marp/Slidev), `data-flip-id` (GSAP) |
+
+## Execution Discipline
+
+1. **Serial execution** — follow the routed workflow's steps in order.
+2. **Blocking means stop** — at every `⛔ BLOCKING` gate, wait for explicit
+   user confirmation. Never decide on the user's behalf.
+3. **Outline before slides** — one line per slide (title + point + visual);
+   get a nod before writing slides. Cheap to change, expensive to redo.
+4. **Markdown source first** — even for reveal.js (convert at the end).
+   Markdown is diffable and reviewable. Ship it alongside the built deck.
+5. **Research (2-source rule)** — every factual claim needs 2+ independent
+   sources; APIs/flags/versions verified against current docs, never memory.
+   Log sources per slide as a comment; single-source claims get `[unverified]`.
+6. **Images (hybrid + verify, no exceptions)** — AI / stock (credited) /
+   user-supplied; copied into `assets/`, never hotlinked; logged in
+   `assets/CREDITS.md`; checked by `scripts/verify-images.py`.
+7. **Act at the owning layer** — on failure, repair at the shallowest layer
+   that owns the fault (slide → outline → style → tooling), then resume.
+   Never silently downgrade a required artifact.
+8. **No speculative execution** — do not prepare later-phase artifacts before
+   their owning step.
+
+## Communication Rules
+
+- One-line Design Read before building:
+  > Reading this as: \<deck kind> for \<audience>, with a \<vibe> language,
+  > leaning toward \<engine + style + font pair>.
+- If the user says "defaults": mixed-tech audience, 12 slides, Midnight SaaS
+  dark, hybrid images + verify, HTML + PDF.
+- Match the user's language. Keep file/field/enum names in English.
+- Before switching phases, state the phase and what it needs.
+
+## Reference Map
+
+- Workflows → `workflows/routing.md`, `workflows/generate-deck.md`,
+  `workflows/quick-generate.md`
+- Modes → `references/modes/` (+ `_index.md` picker)
+- Visual styles → `references/visual-styles/` (+ `_index.md` picker)
+- Layout templates → `references/layout-templates/` (+ `_index.md` picker)
+- Engines + versions → `references/engines.md`
+- Animations, morph, fragments → `references/animations.md`
+- Palettes, fonts, code themes → `references/colors.md`
+- Layouts, boxes, image treatments → `references/layouts.md`
+- Gates → `references/verify-checklist.md`
+- Scripts → `scripts/verify-images.py`, `scripts/export-deck.sh`,
+  `scripts/new-deck-scaffold.sh`
+- Starters → `examples/reveal-demo/`, `examples/slidev-demo/`,
+  `examples/marp-demo/`
+- Contributor guide → repo `CONTRIBUTING.md`; first-deck guide → `docs/`

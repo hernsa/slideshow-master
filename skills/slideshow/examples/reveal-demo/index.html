@@ -3,15 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reveal Demo</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6/dist/reveal.css">
+<title>Why HTML Beats PPTX for Tech Talks — Ada Demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
 <style>
-  :root { --bg:#0B1020; --ink:#E8EEF9; --accent:#4F7DF3; }
-  body { font-family: Georgia, serif; background: var(--bg); }
-  .reveal { font-family: Georgia, serif; background: var(--bg); color: var(--ink); }
-  .reveal h1, .reveal h2 { font-family: Verdana, sans-serif; color: var(--ink); }
+  /* Theme block: solid dark bg #0B1020, accent #4F7DF3, 2 font families + mono */
+  :root { --bg:#0B1020; --ink:#E8EEF9; --muted:#9AA7C7; --accent:#4F7DF3; --panel:#131B33; --line:#26325C; }
+  body { background: var(--bg); }
+  .reveal { background: var(--bg); color: var(--ink); font-family: "Segoe UI", system-ui, sans-serif; }
+  .reveal h1, .reveal h2 { font-family: Georgia, serif; color: var(--ink); letter-spacing: -0.02em; }
   .reveal a, .reveal .accent { color: var(--accent); }
-  .reveal pre code { background: #111832; color: var(--ink); }
+  .reveal .slides section { background: var(--bg); text-align: left; }
+  .reveal .kicker { color: var(--accent); text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.55em; margin: 0 0 0.6em; }
+  .reveal .big { font-size: 1.6em; line-height: 1.15; }
+  .reveal .muted { color: var(--muted); }
+  .reveal .bento { display: grid; grid-template-columns: 1.4fr 1fr; grid-template-rows: auto auto; gap: 14px; }
+  .reveal .bento .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .reveal .bento .card.hero-pain { grid-row: span 2; border-left: 6px solid var(--accent); }
+  .reveal .bento .num { color: var(--accent); font-size: 1.4em; font-weight: 700; }
+  .reveal .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .reveal .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+  .reveal .stat b { font-size: 1.6em; display: block; }
+  .reveal .stat .delta { color: #7CE3A8; font-size: 0.8em; }
+  .reveal pre.code { background: #0E1530; border: 1px solid var(--line); border-radius: 12px; padding: 0; }
+  .reveal pre.code code { display: block; padding: 18px 18px 18px 52px; color: var(--ink); background: transparent; font-family: ui-monospace, Consolas, monospace; font-size: 0.62em; line-height: 1.7; counter-reset: ln; }
+  .reveal pre.code code .ll { display: block; position: relative; white-space: pre; }
+  .reveal pre.code code .ll::before { counter-increment: ln; content: counter(ln); position: absolute; left: -34px; color: var(--muted); }
+  .reveal .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }
+  .reveal .callout { border: 1px solid var(--accent); border-left-width: 8px; background: var(--panel); border-radius: 12px; padding: 20px 22px; }
+  .reveal .quote-row { display: flex; gap: 18px; align-items: center; }
+  .reveal .cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (prefers-reduced-motion: reduce) {
     .reveal *, .reveal *::before, .reveal *::after { transition: none !important; animation: none !important; }
     .reveal .fragment { opacity: 1 !important; visibility: visible !important; transform: none !important; }
@@ -21,26 +41,125 @@
 <body>
 <div class="reveal">
 <div class="slides">
+
+<!-- layouts.md: title slide -->
 <section>
-<h1 data-id="hero">Deploy Day</h1>
-<p>Reveal.js 6 morph demo</p>
+<p class="kicker">DevConf 2026 &middot; October 8</p>
+<h1>Why HTML Beats PPTX for Tech Talks</h1>
+<p>Speaker <strong>Ada Demo</strong> &middot; Frontend Engineer &middot; DevConf Main Stage</p>
+<p class="muted">Live code, live demos, zero "works on my machine" font drama.</p>
+<aside class="notes">Welcome the room, introduce Ada, set the promise: real code on real slides, everything the audience sees ships as a link after the talk.</aside>
 </section>
+
+<!-- layouts.md: thesis statement, big type -->
+<section>
+<p class="kicker">The one sentence to remember</p>
+<p class="big"><strong>Slides are software</strong> &mdash; so <span class="accent">version them, test them, and ship them</span> like software.</p>
+<p class="muted">Everything else in this talk is a consequence of that sentence.</p>
+<aside class="notes">Land the thesis slowly. Repeat it twice. Every later slide maps back to version, test, or ship.</aside>
+</section>
+
+<!-- layouts.md: 3-col bento problem slide, varied sizes -->
+<section>
+<p class="kicker">The problem with PPTX</p>
+<h2>Death by deck</h2>
+<div class="bento">
+<div class="card hero-pain fragment"><p class="num">01</p><h3>Binary blobs</h3><p class="muted">No diff, no blame, no pull request. Two Edits_final_FINAL.pptx and nobody knows what changed.</p></div>
+<div class="card fragment"><p class="num">02</p><h3>Font roulette</h3><p class="muted">Calibria on your laptop, tofu boxes on stage.</p></div>
+<div class="card fragment"><p class="num">03</p><h3>Dead demos</h3><p class="muted">Screenshots of code you cannot run, copy, or click.</p></div>
+</div>
+<aside class="notes">Click through fragments one at a time. Ask for a show of hands on FINAL_final files. Pause for laughs before moving on.</aside>
+</section>
+
+<!-- layouts.md: stat row -->
+<section>
+<p class="kicker">Measured on last quarter's talks</p>
+<h2>HTML decks ship lighter and load faster</h2>
+<div class="stats">
+<div class="stat"><b>12 KB</b><span>median deck size</span><br><span class="delta">&#9650; 84x smaller than PPTX</span></div>
+<div class="stat"><b>0.4 s</b><span>cold load on venue wifi</span><br><span class="delta">&#9650; 6x faster</span></div>
+<div class="stat"><b>100%</b><span>links still live</span><br><span class="delta">&#9650; +38 pts vs exports</span></div>
+<div class="stat"><b>47</b><span>community pull requests</span><br><span class="delta">&#9650; from zero</span></div>
+</div>
+<aside class="notes">Metrics come from five internal talks migrated to HTML. Stress the last one: pull requests on slides never happened before.</aside>
+</section>
+
+<!-- code.md: dark code block with line numbers -->
+<section>
+<p class="kicker">Live data, not screenshots</p>
+<h2>Audience votes, straight from the slide</h2>
+<pre class="code"><code><span class="ll">const res = await fetch("https://api.demo.dev/votes", {</span><span class="ll">  method: "POST",</span><span class="ll">  headers: { "Content-Type": "application/json" },</span><span class="ll">  body: JSON.stringify({ talk: "html-beats-pptx" }),</span><span class="ll">});</span><span class="ll">const { score } = await res.json();</span><span class="ll">renderMeter(score);</span><span class="ll">console.log("live score:", score);</span></code></pre>
+<p class="muted">Copy it, run it, break it &mdash; right here in the browser console.</p>
+<aside class="notes">Run this live against the demo API. Show the meter updating. Point out line 3: JSON headers are the number one copy-paste bug.</aside>
+</section>
+
+<!-- morph.md: auto-animate pair, part A -->
 <section data-auto-animate>
-<h1 data-id="hero" style="color:#4F7DF3;">Deploy Day</h1>
-<ul><li class="fragment fade-up">Ships in one command</li></ul>
+<p class="kicker">Morph moment &middot; before the fix</p>
+<h2 data-id="morph-metric" style="color:#9AA7C7; font-size:2em;">72 audience score</h2>
+<p class="muted">Static export. Stale numbers from rehearsal night.</p>
+<aside class="notes">Hold on this slide for a beat. The gray 72 is the old world: frozen the moment you hit export.</aside>
 </section>
+
+<!-- morph.md: auto-animate pair, part B -->
+<section data-auto-animate>
+<p class="kicker">Morph moment &middot; after going live</p>
+<h2 data-id="morph-metric" style="color:#4F7DF3; font-size:3.2em;">97 audience score</h2>
+<p>Same element, new state &mdash; <span class="accent">it moved and changed color</span> because the data is live.</p>
+<aside class="notes">Let the auto-animate glide play. Narrate the movement: nothing was recreated, the metric itself transitioned, just like live data should.</aside>
+</section>
+
+<!-- layouts.md: split slide, text + graphic -->
 <section>
-<h2>Ship it</h2>
-<pre><code class="language-js">fetch("/api/v1/deploy",{method:"POST"})
-  .then(r =&gt; r.json())
-  .then(d =&gt; console.log(d));</code></pre>
-<aside class="notes">Presenter note: run deploy live, then show dashboard.</aside>
+<p class="kicker">How it feels in the room</p>
+<div class="split">
+<div>
+<h2>Text on the left, picture on the right</h2>
+<p>Talk while the graphic breathes. No reading bullet points aloud.</p>
+<ul><li>One idea per side</li><li>Graphic carries the metaphor</li><li>You carry the narrative</li></ul>
+</div>
+<div>
+<svg viewBox="0 0 320 220" width="100%" role="img" aria-label="Browser window with code and play button"><rect x="8" y="8" width="304" height="204" rx="16" fill="#131B33" stroke="#4F7DF3" stroke-width="3"/><rect x="8" y="8" width="304" height="40" rx="16" fill="#4F7DF3"/><circle cx="30" cy="28" r="6" fill="#0B1020"/><circle cx="50" cy="28" r="6" fill="#0B1020"/><circle cx="70" cy="28" r="6" fill="#0B1020"/><rect x="30" y="70" width="180" height="12" rx="6" fill="#E8EEF9"/><rect x="30" y="94" width="120" height="12" rx="6" fill="#9AA7C7"/><rect x="30" y="118" width="150" height="12" rx="6" fill="#9AA7C7"/><circle cx="252" cy="130" r="34" fill="#4F7DF3"/><polygon points="244,112 244,148 272,130" fill="#0B1020"/></svg>
+</div>
+</div>
+<aside class="notes">Gesture to the graphic while telling the deploy story. Remind speakers: if you are reading the slide, the slide is winning.</aside>
 </section>
+
+<!-- components.md: quote with avatar -->
+<section>
+<p class="kicker">From the hallway track</p>
+<h2>People notice the difference</h2>
+<div class="quote-row">
+<svg viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Avatar with initials MK"><circle cx="48" cy="48" r="46" fill="#4F7DF3"/><text x="48" y="60" text-anchor="middle" font-size="32" font-family="Georgia, serif" fill="#0B1020" font-weight="bold">MK</text></svg>
+<div><p><strong>&ldquo;I copied a working fetch snippet from Ada&rsquo;s slides before she left the stage. First time that ever happened.&rdquo;</strong></p><p class="muted">Mira Kessler &middot; Platform Engineer, Northwind</p></div>
+</div>
+<aside class="notes">Read the quote verbatim, then add context: Mira filed a docs fix that night. That is the community loop HTML unlocks.</aside>
+</section>
+
+<!-- components.md: callout tip box -->
+<section>
+<p class="kicker">Steal this workflow</p>
+<h2>One rule that saves every demo</h2>
+<div class="callout"><strong>Tip: freeze a fallback build the night before.</strong> Tag it <code>v1.0-fallback</code> so venue wifi can die and you still present.</div>
+<ul><li>Commit slides and demos to the same repo</li><li>Record a 60-second offline screen capture as backup</li><li>Print speaker notes &mdash; paper never needs wifi</li></ul>
+<aside class="notes">Tell the Berlin story: venue wifi died, fallback tag saved the keynote. The callout is the slide people photograph.</aside>
+</section>
+
+<!-- layouts.md: closing CTA -->
+<section>
+<p class="kicker">Take it with you</p>
+<h2>Fork it tonight</h2>
+<p>Repo: <a href="https://github.com/demo/html-beats-pptx">github.com/demo/html-beats-pptx</a></p>
+<div class="cta-grid">
+<div><h3>3 takeaways</h3><ol><li>Version your slides</li><li>Demo live, not screenshots</li><li>Ship a link, not a file</li></ol></div>
+<div><h3>Contact</h3><p>Ada Demo &middot; ada@demo.dev<br><span class="muted">Slides, code, and video at the repo above.</span></p></div>
+</div>
+<aside class="notes">End on the repo URL for a full ten seconds. Invite questions, remind the audience the deck link is already in the chat.</aside>
+</section>
+
 </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@6/dist/reveal.js"></script>
-<script>// Reveal.initialize({transition:'slide'}) CDN hookup point
-Reveal.initialize({ transition: 'slide' });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>Reveal.initialize({ transition: 'slide', hash: true });</script>
 </body>
 </html>
