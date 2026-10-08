@@ -1,0 +1,12 @@
+{
+  "name": "slideshow",
+  "description": "Universal agent skill for modern HTML slideshows (reveal.js, Slidev, Marp)",
+  "version": "0.2.0",
+  "author": {
+    "name": "hernsa"
+  },
+  "homepage": "https://github.com/hernsa/slideshow-master",
+  "repository": "https://github.com/hernsa/slideshow-master",
+  "license": "MIT",
+  "skills": "./skills/"
+}

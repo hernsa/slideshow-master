@@ -84,7 +84,7 @@ grep -rni "lorem" --include="*.md" --include="*.html" .
 grep -rni "slide title here\|untitled\|test test" --include="*.md" --include="*.html" .
 grep -rho "src=\"http[^\"]*\"" --include="*.html" --include="*.md" . | sort | uniq -c
 ```
-2. Replace each hit with real content (Acme numbers, credited images) or delete the slide — never ship "TBD".
+2. Replace each hit with real content (Acme numbers, credited images) or delete the slide — never ship unfinished beats.
 3. Replace hotlinked `src` with a vendored `assets/` file plus its license record.
 4. Re-run all four greps to zero (the fourth keeps only intentional demo/iframe URLs documented in notes).
 5. Re-verify: Gate 6 (placeholder scan) and Gate 16 (no 404s from the replaced sources).

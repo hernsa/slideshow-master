@@ -1,0 +1,12 @@
+{
+  "name": "slideshow-marketplace",
+  "owner": {
+    "name": "hernsa"
+  },
+  "plugins": [
+    {
+      "name": "slideshow",
+      "source": "./"
+    }
+  ]
+}

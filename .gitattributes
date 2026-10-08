@@ -1,0 +1,8 @@
+# Normalize line endings and mark generated/binary artifacts.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg text
+*.pdf binary
+*.pptx binary

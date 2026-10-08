@@ -1,0 +1,25 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Repo checks (frontmatter, indexes, Gate 6)
+        run: python scripts/check-repo.py
+      - name: Scripts compile / syntax check
+        run: |
+          python -m py_compile skills/slideshow/scripts/verify-images.py
+          bash -n skills/slideshow/scripts/export-deck.sh
+          bash -n skills/slideshow/scripts/new-deck-scaffold.sh

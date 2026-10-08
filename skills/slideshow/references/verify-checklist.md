@@ -125,9 +125,9 @@ grep -rho "src=\"http[^\"]*\"" --include="*.html" --include="*.md" . | sort | un
 
 **PASS:** Greps 1–3 return nothing. Grep 4 returns only intentional demo/iframe URLs documented in notes.
 
-**FAIL:** `<!-- TODO: find real number -->` on slide 9. `Lorem ipsum` in the closing slide from a copied template.
+**FAIL:** An unfilled `<!-- FILL IN: real number -->` marker on slide 9. Filler-text paragraph in the closing slide from a copied template.
 
-**Fix:** Replace with real content or delete the slide. Never ship “TBD” — cut the beat and tighten the talk.
+**Fix:** Replace with real content or delete the slide. Never ship unfinished beats — cut them and tighten the talk.
 
 ## Gate 7 — Font count (2 + mono max)
 
