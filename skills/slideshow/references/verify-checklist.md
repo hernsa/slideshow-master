@@ -187,7 +187,7 @@ grep -rni "gradient" --include="*.css" --include="*.html" --include="*.md" . | t
 
 ## Gate 10 — Reduced-motion fallback present
 
-**WHY:** Vestibular disorders, migraines, and projector flicker make motion a health issue, not a preference. Every animation needs a static cut.
+**WHY:** Vestibular disorders, migraines, and projector flicker make motion a health issue, not a preference. Every animation needs a static cut. Numeric authority for click counts is Gate 20 Fragment Budget.
 
 **HOW:** Enable DevTools Rendering → Emulate `prefers-reduced-motion: reduce`, then walk the deck. Confirm instant cuts, visible fragments, static parallax.
 
@@ -224,7 +224,7 @@ Reveal.initialize({ autoAnimate: !matchMedia('(prefers-reduced-motion: reduce)')
 
 ## Gate 12 — Keyboard works
 
-**WHY:** Clickers send keyboard events. If arrows/Space/PageUp/PageDown fail, the speaker is stranded.
+**WHY:** Clickers send keyboard events. If arrows/Space/PageUp/PageDown fail, the speaker is stranded. Numeric authority for click-steps is Gate 20 Fragment Budget.
 
 **HOW:** Unplug the mouse. Navigate fully by keyboard: Right/Space forward, Left back, Home first, End last. Confirm visible focus on links/buttons.
 
@@ -366,6 +366,38 @@ grep -rni "font-awesome\|material-icons\|emoji" --include="*.css" --include="*.h
   <path d="M2.5 8.5l3.5 3.5 7-8" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
 <span>Shield rollout passed in 3 regions</span>
+```
+
+## Gate 20 — Fragment Budget (static-first hard cap)
+
+**WHY:** A real Slidev test deck shipped ~53 v-click steps across 8 slides (one Acme Q3 metrics table carried 20 cell-by-cell clicks). Click-spam breaks PDF exports, strands keyboard clickers, and buries the narration. Static-first must be the default; clicks are rationed.
+
+**HOW:** Count v-click per `---` slide block (v-click/v-after/fragment together) and reject per-cell table clicks. Run from the deck root. FAIL if >5 in any block:
+
+```bash
+grep -c "v-click\|v-after\|class=\"fragment\"" slides.md
+awk 'BEGIN{RS="\n---\n"} {c=gsub(/v-click|v-after|class="fragment"/,"&"); if(c>0) print "block " NR ": " c " click-steps"}' slides.md
+# FAIL if any block reports >5 — split the slide
+# per-cell FAIL pattern — v-click on table cells must return nothing:
+grep -rPn "v-click" --include="*.md" . | grep -P "\|"
+grep -rPn "<t[dh][^>]*v-click" --include="*.md" --include="*.html" .
+```
+
+**PASS:** max 5 click-steps per slide (v-click/fragment/v-after total); max 1 click-built slide per 3 slides; tables reveal by row or ship static (never per-cell); Slidev step count recorded as 12+N PDF pages (base slides + N click-steps). Greps above show zero blocks >5 and zero per-cell hits.
+
+**FAIL:** 8-slide Slidev deck with 53 v-clicks; Acme Q3 metrics table with 20 cell-by-cell v-clicks (one per cell); any `---` block with 6+ `v-click`/`fragment`/`v-after` hits; any `v-click` on table cells (`| cell |` with `v-click`).
+
+**Fix:** Split the overloaded slide, collapse to row reveals, or ship static:
+
+```markdown
+<!-- before: 20 per-cell clicks — banned -->
+<!-- <div v-click>cell 1</div> ... x20 -->
+
+<!-- after: row reveals (3 clicks) or static -->
+<div v-click>Row 1 — edge cache hit, p95 412ms</div>
+<div v-click>Row 2 — origin shield added, p95 301ms</div>
+<div v-click>Row 3 — Q3 recovery, NRR 128%</div>
+<!-- or delete all v-click and ship the full Acme table static -->
 ```
 
 ---

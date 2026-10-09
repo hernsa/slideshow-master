@@ -46,7 +46,7 @@ npx serve dist/
 
 `v-click` steps export as extra PDF pages — three clicks means three pages, which
 is expected. Remove `v-drag` before export. PPTX is experimental and rasterizes
-code blocks: verify monospace fallback at 14px+.
+code blocks: verify monospace fallback at 14px+. REQUIRED for every Slidev deck: ship an HTTP launcher (e.g. `START-DECK.cmd` with `python -m http.server 8000 --directory dist` + open `http://localhost:8000/`) with a no-double-click-`dist/index.html` warning (`file://` renders blank), plus a PDF fallback artifact (`deck.pdf`) verified page-by-page. Build notes (required): Google Fonts offline risk — self-host via `public/fonts/` + `@font-face` or ship a system-font fallback stack for projector machines with no network; Slidev 52.x `cssMinify:false` workaround — if `slidev build` crashes in CSS minify (seen on 52.20), set `cssMinify: false` in config, rebuild, and re-verify over HTTP before shipping.
 
 Marp — HTML, PDF, and native PPTX from one source:
 
@@ -76,8 +76,8 @@ to static cuts — expected, not a defect.
 
 | Target | Artifacts | Notes |
 |---|---|---|
-| Live URL | `dist/` SPA (Slidev/reveal) or `deck.html` (Marp) | serve to confirm, never `file://` for SPAs |
-| Handout | `deck.pdf` | page count checked, notes version when the venue prints them |
+| Live URL | `dist/` SPA (Slidev/reveal) or `deck.html` (Marp) + HTTP launcher (`START-DECK.cmd`) for every Slidev deck | serve to confirm, never `file://` for SPAs — launcher runs `python -m http.server` + warns no-double-click-`dist` |
+| Handout | `deck.pdf` (REQUIRED fallback for every Slidev deck) | page count checked, notes version when the venue prints them |
 | Send-ahead | `deck.pptx` (Marp native) or PDF chain (reveal/Slidev) | system fonts, cuts only |
 | Always | Markdown source + engine decision log + ship record | source is diffable; the log explains the engine |
 

@@ -33,10 +33,11 @@ skills/slideshow/
 │   ├── animations.md           # Auto-Animate, morph, FLIP, View Transitions, fragments
 │   ├── colors.md               # 6 palettes, dark/light tokens, fonts, code themes
 │   ├── layouts.md              # bento, split, callout, stat, quote, code+preview, images
-│   └── verify-checklist.md     # 19 gates: images, contrast, placeholders, motion, notes, export
+│   └── verify-checklist.md     # 20 gates: images, contrast, placeholders, motion, fragment budget, notes, export
 ├── scripts/
 │   ├── new-deck-scaffold.sh    # scaffold a new deck from a starter
 │   ├── verify-images.py        # check assets are local, sized, credited
+│   ├── verify-deck.py          # check slide structure: V/T density, no TTT, fragment budget
 │   └── export-deck.sh          # build HTML / PDF / PPTX per engine
 └── examples/
     ├── reveal-demo/            # full reveal.js starter deck (10 slides)

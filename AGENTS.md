@@ -44,6 +44,7 @@ skills here — that would dilute the repo's single purpose.
 ```bash
 python scripts/check-repo.py  # frontmatter + index JSONs + Gate 6 (exit 1 on failure)
 python -m py_compile skills/slideshow/scripts/verify-images.py  # scripts compile
+python -m py_compile skills/slideshow/scripts/verify-deck.py
 bash -n skills/slideshow/scripts/export-deck.sh                  # shell syntax
 bash -n skills/slideshow/scripts/new-deck-scaffold.sh
 ```

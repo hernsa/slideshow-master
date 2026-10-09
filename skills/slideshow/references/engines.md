@@ -233,7 +233,7 @@ npx slidev build slides.md --out dist/
 npx serve dist/
 ```
 
-Notes: PPTX renders code blocks as images — verify monospace fallback and 14px+ size. `v-click` steps export as separate pages in PDF/PNG (expect 3 clicks = 3 pages). Remove `v-drag` before export.
+Notes: PPTX renders code blocks as images — verify monospace fallback and 14px+ size. `v-click` steps export as separate pages in PDF/PNG (expect 3 clicks = 3 pages). Remove `v-drag` before export. REQUIRED for every Slidev deck: (1) ship an HTTP launcher beside `dist/` (e.g. `START-DECK.cmd` running `python -m http.server 8000 --directory dist` + browser open to `http://localhost:8000/`) — never double-click `dist/index.html` directly, SPA asset paths break on `file://` and render blank; (2) ship a PDF fallback artifact (`deck.pdf` via `slidev export`) so the talk survives without a live server. Build notes (required): Google Fonts are an offline/projector risk — self-host fonts in `public/fonts/` with `@font-face` or declare a system-font fallback stack (`Segoe UI`, Calibri, Arial/Helvetica + monospace) for projector machines with no network; Slidev 52.x build note — if `slidev build` crashes in CSS minify (seen on 52.20), set `cssMinify: false` in the Slidev/Vite config and rebuild, then re-verify `dist/` over HTTP.
 
 ### Marp exports
 
@@ -307,7 +307,7 @@ npx slidev --version
 3. **Code block renders gray / unhighlighted.** Cause: unknown `lang` tag or Shiki theme mismatch. Fix: use ` ```ts ` / ` ```js ` / ` ```bash ` explicitly; set `shiki` theme pair in frontmatter.
 4. **`v-click` steps missing in PDF.** Cause: export captured only final state (older CLI default). Fix: upgrade to v52 and confirm per-step pages; each `v-click` should add a page.
 5. **UnoCSS class silently ignored.** Cause: typo or non-default preset without config. Fix: check `uno.config.ts`, use standard utilities (`grid`, `gap-4`, `p-6`) first.
-6. **SPA build blank on file://.** Cause: opening `dist/index.html` directly breaks asset paths. Fix: always `npx serve dist/` — SPA requires HTTP.
+6. **SPA build blank on file://.** Cause: opening `dist/index.html` directly breaks asset paths (file:// SPA open renders blank). Fix: always `npx serve dist/` — SPA requires HTTP. REQUIRED: ship an HTTP launcher (e.g. `START-DECK.cmd`: `python -m http.server 8000 --directory dist`) with a no-double-click-`dist` warning in the delivery note.
 
 ### Marp
 

@@ -28,7 +28,7 @@ Pick ONE palette from `references/colors.md`, declare dark/light tokens
 explicitly (never auto-invert), max 2 font families + mono for code.
 Pick per-slide layouts from `references/layouts.md` (title, bento, 50/50 or
 40/60 split, stat row ≤4 cards, quote, code+preview ≤12 lines, divider).
-Pick motion from `references/animations.md`: one morph moment per section max,
+Pick motion from `references/animations.md`: REQUIRED 1–3 morph pairs per deck on element continuations (`data-auto-animate`+`data-id` / `view-transition-name` / `v-motion` pair / Flip), never on body copy, never across sections; deck-wide single transition alone FAILs review (one morph moment per section max still applies).
 fragments for stepwise reveals, `prefers-reduced-motion` fallback planned now.
 
 ## 4. Research (SKILL.md Phase 3, 2-source rule)
@@ -42,7 +42,7 @@ never stated as fact on the slide.
 ## 5. Outline (mode file, approval gate)
 
 Open the routed mode file under `references/modes/` and write one line per
-slide: title + point + visual. Counts: tech-talk 10, pitch 8, tutorial 8,
+slide: title + point + visual + MANDATORY `bg:` tag on every line (per `references/color-usage.md` §1; longest identical-`bg` run ≤2 or ship-blocker; stock `theme: default` with no applied style does not satisfy rotation). Counts: tech-talk 10, pitch 8, tutorial 8,
 showcase 6, narrative 8. Demo-universe titles where fitting ("Last Month, My
 PPTX Died on Stage Wi-Fi", "Tonight: One URL, Zero Installs"). Paste the
 outline for a nod before writing slides — cheap to change now, expensive later.
@@ -71,14 +71,17 @@ speaker notes on every substantive slide (`<aside class="notes">` or
 `<!-- presenter note -->`); smell-check against the anti-slop list
 (no purple-blue gradient, max 1 gradient as accent, captions ≥14px,
 contrast ≥4.5:1, ≥7:1 for projectors).
+Static-by-default: ship every slide static unless clicks need a narration justification
+(one idea per click, max 5 click-steps per slide, max 1 click-built slide per 3 slides);
+tables by-row-or-static — reveal by row or ship static, never per-cell (see Gate 20).
 
-## 9. Motion pass
+## 9. Motion pass (REQUIRED — 1–3 morph pairs or FAIL)
 
-Wire the single morph moment (Auto-Animate / `view-transition-name` / GSAP
-Flip), fragments (`fragment` / `v-click` / `_transition`), and the
+Wire REQUIRED 1–3 morph pairs per deck on element continuations (`data-auto-animate`+`data-id` / `view-transition-name` / `v-motion` pair / Flip), never on body copy, never across sections; deck-wide single transition alone FAILs review. Then wire fragments (`fragment` / `v-click` / `_transition`), and the
 reduced-motion fallback. Marp HTML transitions need `--bespoke.transition`;
-Slidev `v-click` steps become extra PDF pages (expected); reveal.js fragments
-print as final state unless flagged. Details: `references/animations.md`.
+Slidev `v-click` steps become extra PDF pages (expected, record as 12+N); reveal.js fragments
+print as final state unless flagged. Fragment Budget is Gate 20: static-by-default,
+≤5 click-steps per slide, tables by-row-or-static. Details: `references/animations.md`.
 
 ## 10. Verify checklist (all must pass)
 

@@ -17,11 +17,13 @@ slide-type sketches in `layout-templates/`.
 
 ---
 
-## 1. The anti-white-wall rule
+## 1. The anti-white-wall rule (REQUIRED — ship-blocker)
 
 **Max 2 consecutive slides on the base `bg`. Every 3rd slide must change
-surface.** A "surface change" is one of: tinted section divider, image bleed,
+surface. Longest identical-`bg` run ≤2 — a run of 3+ identical fills FAILs
+review and blocks shipping.** A "surface change" is one of: tinted section divider, image bleed,
 accent band, dark quote slide, dark code slide, stat-bento band, CTA wash.
+Stock-theme default (Slidev `theme: default` with no applied style) does NOT satisfy rotation — a visual style MUST be applied (pick ONE palette from `colors.md` + its `@theme`/token snippet) even if the outline `bg:` tags look varied on paper.
 
 Why 2 and not 3: audiences forgive two calm slides in a row (problem, then
 evidence). The third identical slide stops reading as "calm" and starts
@@ -36,7 +38,7 @@ Slide n+2  SURFACE CHANGE (pick 1)  e.g. tinted divider "The fix" / photo bleed
 Slide n+3  base bg resumes          e.g. Shield rollout timeline
 ```
 
-Track the rotation in the outline itself with a `bg:` tag per slide:
+MANDATORY: track the rotation in the outline itself with a `bg:` tag on every outline line (no exceptions — missing `bg:` FAILs review). Verify longest identical-`bg` run ≤2 before building visuals:
 
 ```markdown
 Outline v3 — APPROVED 2026-10-01 (Jonas)
@@ -571,7 +573,7 @@ venue projector; if muted vanishes, it ships as `fg`.
 
 Before building: pick the palette in `colors.md`, copy its `@theme` snippet,
 assign one background per slide type (section 2 table), and tag every outline
-line with `bg:`. Before shipping: run Gates 5, 9, and 17–19 — contrast trio
+line with `bg:` (mandatory — every line, longest identical-`bg` run ≤2 or ship-blocker). Stock `theme: default` with no applied style never counts as rotation. Before shipping: run Gates 5, 9, and 17–19 — contrast trio
 recorded, gradient count ≤ 1, no 3 consecutive same-bg text slides, media
 density met, zero emoji icons. Print one bento and one code slide in
 grayscale. Then present.

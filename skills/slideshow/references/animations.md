@@ -51,6 +51,10 @@ Three concrete mechanisms implement the same idea:
 
 Names must be unique per deck. `hero` may appear on exactly two adjacent slides as a morph pair. Never reuse `hero` for three different concepts.
 
+### REQUIRED — 1–3 morph pairs per deck (ship-blocker)
+
+Every deck MUST ship 1–3 morph pairs on element continuations. A morph pair is one element continued across two adjacent slides via one of: `data-auto-animate` + `data-id` (reveal.js), `view-transition-name` (View Transitions API / Slidev `transition: view-transition`), paired `v-motion` enter states on the same element across adjacent Slidev slides, or GSAP Flip `data-flip-id`. Deck-wide single transition alone (`slide-left`, `fade 0.4s`, or any one default with zero pairs above) FAILs review — it is chrome motion, not element continuity. Rules: never morph body copy (headlines, KPIs, bars, cards, images only), never morph across a section boundary (new section = hard cut + new title slide), max 3 simultaneously morphing elements per pair. Review check: list each pair as `slides N→N+1 : mechanism + element (e.g. slides 2→3 : data-id hero-bar)`; zero pairs = REQUEST_CHANGES.
+
 ### WHEN to use
 - Title continuity: `Acme Metrics` becomes `Acme Metrics: Q3` so the audience knows this is the same story, next chapter.
 - Bar / number growth: a bar from 120px to 320px, a KPI from `$1.8M` to `$2.4M`.
@@ -605,6 +609,8 @@ Slidev layers four systems: deck/frontmatter `transition` (slide-to-slide flight
 - `v-drag` in the shipped deck. It invites fiddling during Q&A and breaks PDF export layout.
 - Mixing `transition: slide-left` with heavy `v-motion` on the same slide. Two simultaneous flights collide.
 
+HARD CAP — Fragment Budget (Gate 20 is the numeric authority): ≤5-per-slide for `v-click` + `v-after` combined; max 1 click-built slide per 3 slides; tables reveal by row or ship static. Anti-example: the 20-click-table (Acme Q3 metrics table that shipped 20 cell-by-cell `v-click` steps, 53 clicks across 8 slides) — split it into two slides or collapse to 3 row reveals, never per-cell.
+
 ### Full copy-paste code block
 
 ```markdown
@@ -751,6 +757,8 @@ Fragments reveal parts of one slide in steps without changing slides. Every `.fr
 - More than 5 fragment steps per slide. Split the slide.
 - Fragments inside Auto-Animate slides without testing. The two systems compose but ordering gets subtle — verify click-by-click.
 - Using fragments for entire paragraphs. One fragment equals one line or one visual, never a wall of text.
+
+HARD CAP — Fragment Budget (Gate 20 is the numeric authority): ≤5-per-slide for fragments total; max 1 click-built slide per 3 slides; tables reveal by row or ship static. Anti-example: the 20-click-table (Acme Q3 metrics table that shipped 20 cell-by-cell fragment clicks, 53 clicks across 8 slides) — split the slide or collapse to row reveals, never per-cell.
 
 ### Full copy-paste code block (all variants)
 
@@ -1005,7 +1013,7 @@ if (!reduce && el.animate) {
 Start at the top for every animated beat and walk down:
 
 1. **Is this beat essential without motion?** If the slide is incomprehensible as a static image, redesign the slide first. Motion must be enhancement, never the message carrier. Export paths (PDF/PPTX) freeze frame one.
-2. **Is it a continuation of the previous slide?** Yes means morph: reveal.js Auto-Animate if you are in reveal.js, View Transitions if custom HTML, `view-transition` frontmatter if Slidev, duplicate-static slides if Marp.
+2. **Is it a continuation of the previous slide?** Yes means morph: reveal.js Auto-Animate if you are in reveal.js, View Transitions if custom HTML, `view-transition` frontmatter if Slidev, duplicate-static slides if Marp. Enforcement: the deck MUST contain 1–3 such morph pairs total (see §1 REQUIRED); a deck-wide single transition with zero morph pairs FAILs this step.
 3. **Is it a stepwise build on one slide?** Yes means fragments (reveal.js) or `v-click` (Slidev) or split slides (Marp). Cap at 5 steps.
 4. **Is it a layout reflow (filter/grid)?** Yes means FLIP: hand-rolled primitive for one element, GSAP Flip for many.
 5. **Is it a chapter change?** Yes means a slide transition, default `fade 300–400ms`, one `zoom` per deck maximum, `none` for appendix.
