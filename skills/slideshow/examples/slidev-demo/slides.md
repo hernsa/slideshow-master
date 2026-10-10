@@ -152,7 +152,11 @@ Talk while the graphic breathes. Never read bullets aloud.
 
 ---
 
-<!-- components.md: quote with avatar -->
+---
+background: '#131B33'
+---
+
+<!-- components.md: quote with avatar, tinted surface for rotation -->
 
 <div class="kicker">From the hallway track</div>
 

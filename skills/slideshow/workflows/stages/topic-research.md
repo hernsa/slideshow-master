@@ -10,6 +10,14 @@
 - Fast path: skipped — every stat ships marked `[unverified]` in notes (`quick-generate.md`).
 - Re-entry: `stages/refine-spec.md` sends stat corrections back here for re-sourcing.
 
+This stage produces the ship-blocking artifact `research-notes.md` in the
+deck dir: one section per slide, 4–8 content bullets (facts, dates, numbers,
+quoted names) + the per-slide source log. Content depth rule: each slide's
+notes must hold ~2× the on-slide copy in distinct facts — if a slide's notes
+run under ~60 words of facts, the outline is too shallow; re-draft it with
+the step-5 depth rule (2–3 slides per major topic) before research closes.
+The outline approval gate reads this file; a deck without it is not approved.
+
 ## 2. Extract planning-critical factual gaps
 
 Read the draft outline (one line per slide: title + point + visual) and circle

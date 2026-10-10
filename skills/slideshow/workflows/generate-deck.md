@@ -31,21 +31,33 @@ Pick per-slide layouts from `references/layouts.md` (title, bento, 50/50 or
 Pick motion from `references/animations.md`: REQUIRED 1–3 morph pairs per deck on element continuations (`data-auto-animate`+`data-id` / `view-transition-name` / `v-motion` pair / Flip), never on body copy, never across sections; deck-wide single transition alone FAILs review (one morph moment per section max still applies).
 fragments for stepwise reveals, `prefers-reduced-motion` fallback planned now.
 
-## 4. Research (SKILL.md Phase 3, 2-source rule)
+## 4. Research (SKILL.md Phase 3, 2-source rule) — REQUIRED artifact
 
-Every factual claim needs 2+ independent sources; every API, CLI flag, and
-version number verified against current docs (pin reveal.js 6, Slidev 52,
-Marp CLI 4 per `references/engines.md`). Log sources per slide as HTML
-comments or presenter notes. Single-source claims marked `[unverified]` and
-never stated as fact on the slide.
+Run `stages/topic-research.md` top to bottom. Produce `research-notes.md`
+in the deck dir — **ship-blocking, never skipped**: one section per slide
+with 4–8 content bullets (facts, dates, numbers, quoted names) plus the
+per-slide source log (2+ independent sources, or `[unverified]`). Content
+depth rule: every slide needs enough raw material for 2x its on-slide copy
+— if a slide's notes run under ~60 words of distinct facts, research is not
+done, re-draft the outline deeper (see step 5 depth rule). Every API, CLI
+flag, and version verified against current docs (pin reveal.js 6, Slidev 52,
+Marp CLI 4 per `references/engines.md`). Single-source claims marked
+`[unverified]` and never stated as fact on the slide. Hand the file to the
+user with the outline nod — it is the evidence the deck argues from.
 
 ## 5. Outline (mode file, approval gate)
 
 Open the routed mode file under `references/modes/` and write one line per
 slide: title + point + visual + MANDATORY `bg:` tag on every line (per `references/color-usage.md` §1; longest identical-`bg` run ≤2 or ship-blocker; stock `theme: default` with no applied style does not satisfy rotation). Counts: tech-talk 10, pitch 8, tutorial 8,
-showcase 6, narrative 8. Demo-universe titles where fitting ("Last Month, My
+showcase 6, narrative 8. **Depth rule — never one slide per topic**: each
+major topic gets 2–3 slides (setup → detail/evidence → consequence), so a
+deck with 4 topics runs ≥8 slides; the outline must be ≥1.5× the topic list.
+Demo-universe titles where fitting ("Last Month, My
 PPTX Died on Stage Wi-Fi", "Tonight: One URL, Zero Installs"). Paste the
-outline for a nod before writing slides — cheap to change now, expensive later.
+outline + `research-notes.md` for a nod before writing slides — cheap to
+change now, expensive later. Also sketch `visual-plan.md` in the same pass
+(every line: which SVG diagram to draw + which image to source + where it
+lands) so step 7 has a checklist, not a vibe.
 
 ## 6. Scaffold
 
@@ -55,13 +67,20 @@ Run `scripts/new-deck-scaffold.sh <engine> <deck-dir>` (engines and flags in
 Confirm `node --version` (want v20+), `npx slidev --version` (52.x),
 `npx marp --version` (4.x) before authoring.
 
-## 7. Images (SKILL.md Phase 4)
+## 7. Images + decorations (SKILL.md Phase 4) — REQUIRED artifact
 
-Source per image (AI / stock with photographer credit / user-supplied),
-copy every file into `assets/`, log filename + source + license in
-`assets/CREDITS.md`, never hotlink. Treatment per `references/layouts.md` §7:
-radius 16–24px, 1px border, soft shadow, `object-fit: cover`, max one
-full-bleed per section, ≥40% scrim under text-over-photo.
+Execute `visual-plan.md` from step 5 line by line — every planned SVG
+diagram is drawn (rung-1, zero license cost, per `references/media/images.md`),
+every planned image sourced. Source per image (AI / stock with photographer
+credit / user-supplied), copy every file into `assets/`, log filename +
+source + license in `assets/CREDITS.md`, never hotlink. Treatment per
+`references/layouts.md` §7: radius 16–24px, 1px border, soft shadow,
+`object-fit: cover`, max one full-bleed per section, ≥40% scrim under
+text-over-photo. Decorate per `references/decorations.md` — 1–2 primitives
+per slide (kicker, rule-bar, left-rail, oversized number, background shape,
+chip row) and break symmetry: never three-equal-card rows, alternate
+left/right-weighted layouts, use the giant-number proof slides. No slide
+ships bare text on a flat fill.
 
 ## 8. Build (SKILL.md Phase 6 order)
 

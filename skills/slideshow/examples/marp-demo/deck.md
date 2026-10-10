@@ -158,7 +158,8 @@ Same metric, new state — bigger and blue because the data is live.
 
 ---
 
-<!-- components.md: quote with avatar -->
+<!-- components.md: quote with avatar, tinted surface for rotation -->
+<!-- _backgroundColor: #131B33 -->
 <!-- _transition: fade 0.5s -->
 
 <span class="kicker">From the hallway track</span>

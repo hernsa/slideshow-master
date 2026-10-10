@@ -402,6 +402,54 @@ grep -rPn "<t[dh][^>]*v-click" --include="*.md" --include="*.html" .
 
 ---
 
+## Gate 21 — Theme Lock (deck reads as ONE complete bold/dark theme)
+
+**WHY:** The builder's deck shipped 8 slides on flat cream `#FEFCF8` that read white on projector — no visual identity. A deck must declare a palette (not `theme: default`), use dark-first tokens, and apply rotation (Gate 17). Default cream/white = FAIL.
+
+**HOW:** Check deck source: (1) theme tokens present (`--bg:` / `@theme` / `theme:` non-default) — verify-deck.py Gate; (2) rotation present (bg markers ≥1) — verify-deck.py Gate; (3) no stock `theme: default` without applied style in Markdown frontmatter; (4) palette from references/visual-styles/ STRONG tier unless user explicitly requests SOFT.
+
+**PASS:** Deck declares a STRONG-tile palette (Crimson Bold, Navy Signal, Forest Ink, Midnight SaaS, Dark Tech, Brutalist, Teal Serenity, Bento Minimal, Glassmorphism), tokens applied, rotation active.
+
+**FAIL:** `theme: default` alone; tokens missing; all slides one flat fill; SOFT palette (Botanical Warm, Paper Editorial, GitHub Tech, Swiss Minimal) without explicit user request.
+
+**Fix:** Apply a STRONG palette from references/visual-styles/_index.md; add at least one tinted divider/dark quote/accent-band slide (Gate 17).
+
+---
+
+## Gate 22 — Content Density (research-notes artifact + min words/slide)
+
+**WHY:** The builder's deck had `slides-content.md` only 3405 B (thin) and no `research-notes.md`. Every slide needs ~2x content depth (Gate 20 context + research-notes.md 4-8 bullets per slide + sources).
+
+**HOW:** (1) `research-notes.md` exists in deck dir with one section per slide, 4-8 bullets + 2-source log — ship-blocking artifact from generate-deck.md step 4; (2) verify-deck.py word count per slide ≥ 10 for text-only slides (thin-slide gate); (3) outline ≥ 1.5x topic list (generate-deck.md step 5 depth rule).
+
+**PASS:** `research-notes.md` present with full bullets + sources; no thin slides; outline depth ≥ 1.5x topics.
+
+**FAIL:** Missing `research-notes.md`; any slide < 10 words text-only; outline 1-slide-per-topic.
+
+**Fix:** Run topic-research.md fully, produce `research-notes.md`, expand each slide's bullets, enforce depth rule in outline (2-3 slides per major topic).
+
+---
+
+## Gate 23 — Decorations & Asymmetry (no symmetric-everything, visual-plan artifact)
+
+**WHY:** The builder's deck was fully centered, symmetrical, no decorations — "everything centered/creamy/symmetrical". Modern decks need deliberate asymmetry + decoration primitives (kicker, rule-bar, left-rail, oversized number, background shape, chip row).
+
+**HOW:** (1) `visual-plan.md` exists with one line per visual: SVG diagram to draw + image to source + landing slide — ship-blocking artifact from generate-deck.md step 5; (2) decorations.md primitives used 1-2 per slide (references/decorations.md table); (3) no three-equal-card rows; (4) layouts alternate left/right weighted; (5) oversized-number proof slides present for key metrics.
+
+**PASS:** `visual-plan.md` present; decorations applied per references/decorations.md; asymmetry enforced; visual plan executed.
+
+**FAIL:** No `visual-plan.md`; all slides centered/flat; three-equal-card rows; zero decorations; all visuals same treatment.
+
+**Fix:** Create `visual-plan.md` at outline, draw SVG diagrams (rung-1, zero license), source images per media/images.md, apply decorations.md primitives, break symmetry.
+
+---
+
+## Render-screenshot verification (headless Chrome)
+
+**Method (from builder session):** Use Chrome at `C:\Program Files\Google\Chrome\Application\chrome.exe` with OLD `--headless` flag (not `--headless=new`) + `--screenshot=<path> --virtual-time-budget=5000`. For reveal.js: `hash:true` + navigate to slide via `#/N` in URL. Example: `--screenshot=shots/s1.png "file:///C:/.../index.html#/0"`. Chrome writes asynchronously — `Test-Path` immediately after returns False; wait 2-3 seconds before checking. `--dump-dom` gives rendered DOM for section counting and fragment verification. PowerShell mojibake: UTF-8 dumps read with OEM codepage — read clean source files directly instead of piping. Use `verify-deck.py` on source for structural checks; render-screenshot for visual regression (layout overflow, fragment visibility, reduced-motion).
+
+---
+
 ## Pre-ship run (15 minutes, in order)
 
 1. Outline + sources (Gates 1–2) — 2 min
@@ -410,4 +458,5 @@ grep -rPn "<t[dh][^>]*v-click" --include="*.md" --include="*.html" .
 4. Contrast trio (Gate 5) — 2 min
 5. Reduced motion + keyboard + mobile (Gates 10, 12–13) — 3 min
 6. Notes + code + exports + console (Gates 11, 14–16) — 3 min
-7. Fill the ship record at the top. Sign it. Then present.
+7. Theme + density + decorations (Gates 17–23) — 2 min
+8. Fill the ship record at the top. Sign it. Then present.
