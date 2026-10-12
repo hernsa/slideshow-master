@@ -70,9 +70,9 @@ Outline v3 — APPROVED 2026-10-01 (Jonas)
 <!-- notes: query id q-8821, rerun 2026-10-06, ±2pp sampling error -->
 ```
 
-## Gate 3 — Images & media (local + sized + credited + alt + density)
+## Gate 3 — Images & media (local + sized + credited + alt + density + rasters)
 
-**WHY:** Hotlinked images 404 on venue Wi-Fi. 4MB photos hitch transitions. Uncredited photos are a legal and ethical liability. Screen readers, broken-image fallback, and search all depend on `alt`. Text-only stretches lose the room — one visual every 3 slides holds attention, and uncaptioned images break the narrative.
+**WHY:** Hotlinked images 404 on venue Wi-Fi. 4MB photos hitch transitions. Uncredited photos are a legal and ethical liability. Screen readers, broken-image fallback, and search all depend on `alt`. Text-only stretches lose the room — one visual every 3 slides holds attention, and uncaptioned images break the narrative. Above all: **a deck with no photographs is a slide sorter, not a deck.** Every reference deck this skill was calibrated against carries rasters on every single slide (`pptx-motion-language.md` §5).
 
 **HOW:**
 1. All `src` under `assets/` (no `http` images except live-demo iframes).
@@ -80,15 +80,20 @@ Outline v3 — APPROVED 2026-10-01 (Jonas)
 3. Credit line per image (photographer / product / “Acme internal”).
 4. Scan every `<img>` / Markdown `![]()`. Informative gets a one-line description with the takeaway, not “image of chart”. Decorative gets `alt=""`.
 5. Count slides vs visuals (photo, chart, diagram, icon-graphic, terminal screenshot). Divide: visuals ÷ slides must clear 1:3. Every `<img>` needs a sibling caption or credit line stating what it proves plus its source.
+6. **Raster density** — every slide carries at least one photographic or hand-drawn image, and the deck's raster count clears `ceil(slides / 2)`. Narrative and photo-collage sections run 3–6 rasters per slide (`pptx-motion-language.md` §5). CSS-only cards, `<svg>` diagrams, and emoji do **not** count as rasters.
 
 ```bash
 ls -lh assets/
 # expect: every file present, photos ≤400K, backgrounds ≤200K
+
+python skills/slideshow/scripts/verify-deck.py <deck-source-file>
+# expect: "Rasters: N across M/total slides (target >= N)"
+# a "zero rasters in the deck" line is a hard failure — go back to visual-plan.md
 ```
 
-**PASS:** `grep -r "http.*img\|src=\"http" slides/` returns only intentional iframe/demo URLs; every `<img>` has a sibling credit or caption; `ls` sizes in budget. 100% of `<img>` tags carry `alt`; informative alts state the conclusion (`p95 falling from 412 to 243ms`); decorative alts are empty. Ratio ≥ 1 visual per 3 slides (an 18-slide deck holds ≥ 6 visuals). 100% of images carry a caption or credit (`Photo: Maria Santos, Acme lab` / `Source: edge logs Jun 14 → Sep 2`). No hotlinked `src="http"` outside documented demo iframes.
+**PASS:** `grep -r "http.*img\|src=\"http" slides/` returns only intentional iframe/demo URLs; every `<img>` has a sibling credit or caption; `ls` sizes in budget. 100% of `<img>` tags carry `alt`; informative alts state the conclusion (`p95 falling from 412 to 243ms`); decorative alts are empty. Ratio ≥ 1 visual per 3 slides (an 18-slide deck holds ≥ 6 visuals). 100% of images carry a caption or credit (`Photo: Maria Santos, Acme lab` / `Source: edge logs Jun 14 → Sep 2`). No hotlinked `src="http"` outside documented demo iframes. `verify-deck.py` reports rasters on at least 60% of slides and clears `ceil(slides / 2)` total.
 
-**FAIL:** `<img src="https://placekitten.com/1600/900">`, or `lab-4MB.png`, or a full-bleed photo with no credit. `<img src="assets/chart.png">` (no alt), or `alt="image"` (useless). 12-slide deck with 2 visuals (both on slides 2–3), then 9 straight text slides. Lab photo full-bleed with no credit or caption.
+**FAIL:** `<img src="https://placekitten.com/1600/900">`, or `lab-4MB.png`, or a full-bleed photo with no credit. `<img src="assets/chart.png">` (no alt), or `alt="image"` (useless). 12-slide deck with 2 visuals (both on slides 2–3), then 9 straight text slides. Lab photo full-bleed with no credit or caption. **An `assets/CREDITS.md` that reads "No external raster images used in this deck" — that sentence is a FAIL line, not a credit line.** A deck of CSS cards and inline `<svg>` with no raster anywhere.
 
 **Fix:**
 ```html
@@ -97,6 +102,23 @@ ls -lh assets/
   <figcaption style="font-size:14px;opacity:.65">Photo: Maria Santos, Acme lab. p95 412 → 243ms week of Jul 19.</figcaption>
 </figure>
 ```
+
+Type-only decks (a type specimen, a typography talk, a CSS-reference catalog) are the sole exception — pass `--allow-text-only` to `verify-deck.py` and record why in the ship record. Anything else gets a photo.
+
+<dcp-system-reminder>
+You've been iterating for a while without getting user input.
+
+Use the QUESTION tool sparingly - only when you are blocked on a decision that is genuinely the user's to make (e.g. a product decision, a scope choice, a direction preference) and you cannot make progress without it.
+
+Do NOT use this tool for:
+- Clarifying questions where you could just make a reasonable assumption and proceed
+- Questions where the answer is obvious or you already have enough context
+- Asking for confirmation on decisions where you have a clear preference and the user's stated goals would guide you
+
+Prefer: Just make a reasonable decision and note it briefly in your response.
+If you truly need user input before proceeding, use the question tool.
+</dcp-system-reminder><tool_call>
+<invoke name="todowrite"><todos><item><priority>high</priority><content>Diagnose why slideshow/ deck had zero images + no PPTX feel</content><status>completed</status></item><item><priority>high</priority><content>Deep-read each of 5 pptx preference files + 3 prompt PDFs individually</content><status>completed</status></item><item><priority>high</priority><content>Write the real reference: deck anatomy + craft grammar from prompts</content><status>completed</status></item><item><priority>high</priority><content>Rebuild templates with real PPTX-derived layouts (photo-collage, pastel-collage, annotation-stage)</content><status>completed</status></item><item><priority>high</priority><content>Make visual-plan.md ship-blocking with mandatory image/decor counts</content><status>completed</status></item><item><priority>high</priority><content>Add raster gate to verify-deck.py + Gate 3 rasters check</content><status>completed</status></item><item><priority>medium</priority><content>Restore image guidance in media/images.md that was cut too far</content><status>in_progress</status></item><item><priority>high</priority><content>Verify + commit + push + reinstall</content><status>pending</status></item></todos>
 
 ## Gate 4 — Contrast ratios measured
 
@@ -343,20 +365,22 @@ grep -rni "font-awesome\|material-icons\|emoji" --include="*.css" --include="*.h
 
 **WHY:** The builder's deck was fully centered, symmetrical, no decorations — "everything centered/creamy/symmetrical". Five liked reference decks feel modern with zero explicit transitions: 2+ big repeated anchors per section, one deck-wide transition, staggered entrances, full-bleed or masked photos, oversized display type. Without this gate decks default to transition roulette + small-card morphs + raw rectangle photos.
 
-**HOW:** Per `references/pptx-motion-language.md`: (1) `visual-plan.md` exists with one line per visual (SVG diagram to draw + image to source + landing slide — ship-blocking artifact from `workflows/generate-deck.md` step 5); (2) `references/decorations.md` primitives used 1-2 per slide (kicker, rule-bar, left-rail, oversized number, background shape, chip row); (3) no three-equal-card rows; (4) layouts alternate left/right weighted; (5) oversized-number proof slides present for key metrics; (6) each section lists its 2 continuity anchors (same element, same position, adjacent slides); (7) ONE slide transition locked for the whole deck (one zoom/none exception max); (8) entrances staggered ≤3 per slide, ≤600ms total, sharing the Gate 8 fragment budget; (9) photos are full-bleed-with-scrim or deck-mask-shaped (arch/blob/circle, one mask per deck); (10) one display headline per slide `clamp(2.5rem,6vw,4.5rem)` + one accent word max.
+**HOW:** Per `references/pptx-motion-language.md`: (1) `visual-plan.md` exists with one block per slide in z-order — `Template:` / `Text runs:` / `Z-order:` / `Images:` / `Entrances:` / `Anchors:` / `Done when:` — a ship-blocking artifact from `workflows/generate-deck.md` step 5; (2) the deck has a named **3–8 shape vocabulary** and **one moving object**, both declared at style lock (§1, §0); (3) `references/decorations.md` primitives used 1-2 per slide (kicker, rule-bar, left-rail, oversized number, background shape, chip row); (4) no three-equal-card rows; (5) layouts alternate left/right weighted; (6) oversized-number proof slides present for key metrics; (7) each section lists its 2 continuity anchors under exactly-matching `data-id` names (same element, same position, adjacent slides), with exactly one anchor moving per step; (8) ONE slide transition locked for the whole deck (one zoom/none exception max); (9) entrances staggered ≤3 per slide, ≤600ms total, sharing the Gate 8 fragment budget; (10) photos are full-bleed-with-scrim or deck-mask-shaped (arch/blob/circle, ONE organic device per deck); (11) one display headline per slide `clamp(2.5rem,6vw,4.5rem)` + one accent word max, drawn from the named type tiers `--t-hero`/`--t-title`/`--t-head`/`--t-label`/`--t-body`; (12) the value ramp holds — 3-4 stops derived from the accent, longest identical-bg run ≤2.
 
-**PASS:** `visual-plan.md` present; decorations applied per `references/decorations.md`; asymmetry enforced; visual plan executed. Anchors listed per section and morph-paired; single transition; stagger capped; photo grammar holds; display type oversized.
+**PASS:** `visual-plan.md` present with `Done when:` on every block; shape vocabulary and moving object named; decorations applied per `references/decorations.md`; asymmetry enforced; visual plan executed. Anchors listed per section and morph-paired under exact `data-id` names; single transition; stagger capped; photo grammar holds; one organic device; display type oversized and tiered; ramp holds.
 
-**FAIL:** No `visual-plan.md`; all slides centered/flat; three-equal-card rows; zero decorations; all visuals same treatment. Per-slide transition overrides; stagger + v-click chains stacked; raw rectangle photos on designed slides; body-size headlines everywhere; zero repeated anchors across adjacent slides.
+**FAIL:** No `visual-plan.md`; all slides centered/flat; three-equal-card rows; zero decorations; all visuals same treatment. Per-slide transition overrides; stagger + v-click chains stacked; raw rectangle photos on designed slides; body-size headlines everywhere; zero repeated anchors across adjacent slides. **No named shape vocabulary and no moving object — the deck invents a fresh layout per slide.** Anchor `data-id` names drift between slides so nothing morphs. Off-canvas parked shapes "fixed" back on-canvas.
 
-**Fix:** Create `visual-plan.md` at outline (draw SVG diagrams rung-1 zero license, source images per `references/media/images.md`, apply `references/decorations.md` primitives, break symmetry). Lock anchors at outline (`Anchors:` line per slide), set one transition at style lock, convert extra clicks to static, mask or full-bleed the photos, scale the headline.
+**Fix:** Create `visual-plan.md` at outline (draw SVG diagrams rung-1 zero license, source images per `references/media/images.md`, apply `references/decorations.md` primitives, break symmetry). Name the shape vocabulary and the moving object at style lock. Lock anchors at outline (`Anchors:` line per slide, `data-id` identical), set one transition at style lock, convert extra clicks to static, mask or full-bleed the photos, scale the headline.
 ```markdown
-## Slide 3 — Pipeline: deployed
-Text runs: [kicker 14px mono / headline clamp(2.5rem,6vw,4.5rem) / body 1.1rem ≤25 words]
-Z-order: bg photo → scrim → accent shape → headline → body → chip row
-Entrances: [rise 300ms d100] headline, [rise 300ms d220] body (≤3, ≤600ms total)
-Anchors: sec-title continues from slide 2 (data-id sec-title, position held, size +0)
-Transition: none (deck default fade 0.4s)
+## Slide 3 — Hà Nội · 1890        bg: dark-photo
+Template:  photo-collage
+Text runs: hero "Hà Nội · 1890" {--t-title} ; sub 1 line {--t-body}
+Z-order:   plate → tiles → disc → copy
+Images:    assets/hanoi-1890.jpg (bg) · tile-1..4.jpg · disc-jpeg.jpg → 6 rasters
+Entrances: hero .10s, sub .22s (2 only)
+Anchors:   data-id disc rotates 0° → -89° ; hero copy pinned identical to slide 2
+Done when: 6 images present, hero glyph-identical to slide 2, disc rotated -89°.
 ```
 
 ---
@@ -372,7 +396,8 @@ Transition: none (deck default fade 0.4s)
 
 ## Pre-ship run (15 minutes, in order)
 
-1. Research + outline → `workflows/stages/topic-research.md` §1 (gap list closed, outline approved)
+1. Research + outline → `workflows/stages/topic-research.md` §1 (gap list closed, outline approved, `visual-plan.md` approved)
 2. Images + credits + sizing → `workflows/stages/image-review.md` §1 (local, credited, in budget)
-3. Built-deck walk → `workflows/stages/visual-review.md` §1 (contrast → code → motion → notes sign-off)
-4. Export + ship record → `workflows/stages/export-verify.md` §1 (artifacts open clean, record signed, then present)
+3. Structure + raster floor → `python skills/slideshow/scripts/verify-deck.py <deck-source-file>` (expect `OK`, and a `Rasters:` line clearing the target). A `zero rasters` failure sends you back to step 2, not forward to export.
+4. Built-deck walk → `workflows/stages/visual-review.md` §1 (contrast → code → motion → notes sign-off)
+5. Export + ship record → `workflows/stages/export-verify.md` §1 (artifacts open clean, record signed, then present)

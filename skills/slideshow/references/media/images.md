@@ -356,6 +356,28 @@ chart, SVG, browser mock, avatar quote, split panel) or `T` (text-only). Any `TT
 run breaks the deck — insert a rung-1 SVG or a framed figure. Target density is
 one visual per 2–3 slides; a 12-slide Acme Q3 talk carries 4–5 visuals minimum.
 
+**Graphics and photographs are different currencies.** An inline `<svg>` diagram
+satisfies the 1-per-3 visual ratio above. It does **not** satisfy the raster
+floor, which is separate and stricter:
+
+| Requirement | Counted by | Threshold |
+|---|---|---|
+| Visual ratio (this section) | photo, chart, SVG, browser mock, avatar, split panel | ≥1 per 3 slides |
+| **Raster floor** (binding) | photographic or hand-drawn `.jpg/.png/.webp` only | **≥1 per slide**, total ≥ `ceil(slides / 2)`, on ≥60% of slides |
+
+A deck of inline SVGs with no raster anywhere is a slide sorter. An
+`assets/CREDITS.md` line reading "No external raster images used in this deck" is
+a failure line, never a credit line. Photo-collage and narrative sections run 3–6
+rasters per slide — see `../pptx-motion-language.md` §5 and
+`../layout-templates/photo-collage.md`.
+
+The sourcing ladder in §1 still applies, but **rung 1 (inline SVG) is not a
+substitute for a photo.** Draw the SVG *and* carry the photograph; in every
+reference deck the photograph is the load-bearing layer and the SVG rides on top
+of it. `scripts/verify-deck.py` enforces both rows and reports
+`Rasters: N across M/total slides`; `--allow-text-only` exists only for type
+specimen decks and CSS-reference catalogs.
+
 Compliant anchor — visual breaks a text run (Ada presents, Jonas fixes, Maria shoots):
 
 ```html

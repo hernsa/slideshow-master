@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-"""Verify deck structure: visual density, no text walls, reveal pacing.
+"""Verify deck structure: visual density, raster density, no text walls, reveal pacing.
 
-Usage: python verify-deck.py <deck-source-file>
+Usage:
+    python verify-deck.py <deck-source-file> [--min-rasters N] [--allow-text-only]
+
+Raster density is a hard gate (references/pptx-motion-language.md §5): a deck that
+references photographic or hand-drawn rasters (jpg/png/webp/gif/avif) is one
+thing, a CSS/SVG-only card grid is another. `--allow-text-only` opts out for
+genuinely type-only decks (type specimen, conference talk on typography).
+
 Exits 0 when all gates pass, 1 with a failure list otherwise.
 """
+import math
 import re
 import sys
 from pathlib import Path
 
-MD_IMG_RE = re.compile(r'!\[[^\]]*\]\([^)]+\)')
+MD_IMG_RE = re.compile(r'!\[[^\]]*\]\(([^)]+)\)')
 IMG_TAG_RE = re.compile(r'<img\b[^>]*>', re.IGNORECASE)
 SVG_RE = re.compile(r'<svg\b', re.IGNORECASE)
 BG_IMG_RE = re.compile(r'data-background-image\s*=', re.IGNORECASE)
@@ -19,6 +27,9 @@ FRAGMENT_RE = re.compile(r'fragment', re.IGNORECASE)
 SECTION_RE = re.compile(r'<section\b', re.IGNORECASE)
 FENCE_RE = re.compile(r'^\s*```')
 SEPMD_RE = re.compile(r'^[ \t]*---[ \t]*$')
+RASTER_EXT_RE = re.compile(r'\.(?:jpe?g|png|webp|gif|avif)\b', re.IGNORECASE)
+CSS_URL_RE = re.compile(r'url\(\s*["\']?([^"\')]+)', re.IGNORECASE)
+
 BG_MARK_PATTERNS = [
     re.compile(r'data-background(?:-color|-image|-gradient|-video)?\s*=', re.IGNORECASE),
     re.compile(r'^\s*background\s*:', re.MULTILINE | re.IGNORECASE),
@@ -91,16 +102,38 @@ def split_reveal(text: str) -> list[str]:
     return [s for s in slides if s.strip()]
 
 
+def raster_refs(block: str) -> list[str]:
+    """Every photographic/hand-drawn raster referenced by a slide block.
+
+    Covers markdown images, <img src>, Slidev frontmatter `image:`, CSS
+    url() in inline styles, and `background:` declarations.
+    """
+    refs: list[str] = []
+    for m in MD_IMG_RE.finditer(block):
+        raw = m.group(1).strip()
+        if raw:
+            refs.append(raw.split()[0].strip("\"'"))
+    for m in IMG_TAG_RE.finditer(block):
+        for src in re.findall(r'src\s*=\s*["\']([^"\']+)["\']', m.group(0), re.IGNORECASE):
+            refs.append(src.strip())
+    for rx in (CSS_URL_RE,):
+        for src in rx.findall(block):
+            refs.append(src.strip())
+    for m in FRONT_IMG_RE.finditer(block):
+        refs.append(m.group(0).split(":", 1)[1].strip().strip("\"'"))
+    for m in re.finditer(r'(?:data-background-image|_backgroundImage)\s*[:=]\s*["\']?([^"\'\s;]+)', block, re.IGNORECASE):
+        refs.append(m.group(1).strip())
+    return [r for r in refs if RASTER_EXT_RE.search(r)]
+
+
 def is_visual(block: str) -> bool:
-    if MD_IMG_RE.search(block):
+    if raster_refs(block):
         return True
     if IMG_TAG_RE.search(block):
         return True
     if SVG_RE.search(block):
         return True
     if BG_IMG_RE.search(block):
-        return True
-    if FRONT_IMG_RE.search(block):
         return True
     if LAYOUT_IMG_RE.search(block):
         return True
@@ -144,10 +177,19 @@ def short_preview(block: str, width: int = 52) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("usage: verify-deck.py <deck-source-file>")
+    args = sys.argv[1:]
+    flags = [a for a in args if a.startswith("--")]
+    positional = [a for a in args if not a.startswith("--")]
+    if not positional:
+        print("usage: verify-deck.py <deck-source-file> [--min-rasters N] [--allow-text-only]")
         return 1
-    deck = Path(sys.argv[1])
+    allow_text_only = "--allow-text-only" in flags
+    min_rasters = None
+    if "--min-rasters" in args:
+        idx = args.index("--min-rasters")
+        if idx + 1 < len(args) and args[idx + 1].isdigit():
+            min_rasters = int(args[idx + 1])
+    deck = Path(positional[0])
     text = deck.read_text(encoding="utf-8")
     suffix = deck.suffix.lower()
     low = text.lower()
@@ -178,7 +220,10 @@ def main() -> int:
     counts = [count_reveals(s) for s in slides]
     words = [word_count(s) for s in slides]
     bg_markers = [background_markers(s) for s in slides]
+    rasters = [raster_refs(s) for s in slides]
     visuals = sum(1 for t in tags if t == "V")
+    raster_slides = sum(1 for r in rasters if r)
+    raster_total = sum(len(r) for r in rasters)
     for i in range(total - 2):
         if tags[i] == "T" and tags[i + 1] == "T" and tags[i + 2] == "T":
             failures.append(f"TTT run: slides {i + 1}-{i + 3} are text-only (add a visual on slide {i + 2} or {i + 3})")
@@ -187,6 +232,26 @@ def main() -> int:
         failures.append(f"visual density {visuals}/{total} below 1 per 3 slides (need >= {need} visuals, have {visuals})")
     if visuals == 0:
         failures.append("zero visuals in the deck — source or draw at least one image/SVG diagram (media/images.md rung 1)")
+    raster_target = min_rasters if min_rasters is not None else math.ceil(total / 2)
+    if not allow_text_only:
+        target = raster_target
+        if raster_total == 0:
+            failures.append(
+                f"zero rasters in the deck — {total} slides reference no photographic or hand-drawn image. "
+                "Every slide needs at least one raster (pptx-motion-language.md §5); pass --allow-text-only "
+                "only for a genuinely type-only deck."
+            )
+        elif raster_total < target:
+            failures.append(
+                f"raster density {raster_total} below target {target} for {total} slides — "
+                "source or draw more images (visual-plan.md hard counts, media/images.md)"
+            )
+        if raster_slides < min(total, math.ceil(total * 0.6)) and raster_total > 0:
+            imageless = [i + 1 for i, r in enumerate(rasters) if not r]
+            failures.append(
+                f"only {raster_slides}/{total} slides carry a raster — imageless slides {imageless}. "
+                "A slide with no image reads as a slide sorter (pptx-motion-language.md §5)."
+            )
     for i, c in enumerate(counts):
         if c > 5:
             failures.append(f"slide {i + 1}: {c} staged reveals (v-click/fragment), max 5")
@@ -199,8 +264,10 @@ def main() -> int:
         failures.append("no theme tokens declared (--bg / @theme / theme:) — apply a visual style from references/visual-styles/")
     print(f"Deck: {deck} ({mode}, {total} slides)")
     for i in range(total):
-        print(f"{i + 1:>3}  {tags[i]}  words={words[i]:>4}  reveals={counts[i]:>2}  bg={len(bg_markers[i])}  {short_preview(slides[i])}")
+        print(f"{i + 1:>3}  {tags[i]}  rasters={len(rasters[i]):>2}  words={words[i]:>4}  reveals={counts[i]:>2}  bg={len(bg_markers[i])}  {short_preview(slides[i])}")
     print(f"Visuals: {visuals}/{total} (need >= 1 per 3 slides)  bg markers={sum(len(b) for b in bg_markers)}")
+    raster_note = " (text-only deck, raster gate off)" if allow_text_only else f" (target >= {raster_target})"
+    print(f"Rasters: {raster_total} across {raster_slides}/{total} slides{raster_note}")
     if failures:
         print(f"{len(failures)} deck structure failure(s) in {deck}:")
         for f in failures:

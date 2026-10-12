@@ -6,6 +6,11 @@ backgroundColor: "#0B1020"
 color: "#E8EEF9"
 ---
 
+<!-- verify-deck.py --allow-text-only — this is a layout-pattern catalog, not a shippable deck.
+     It carries no rasters on purpose so it stays diffable and binary-free. A real deck built with
+     this skill ships with images on every slide (pptx-motion-language.md §5). -->
+
+
 <!-- /* @theme demo-dark */ presenter notes: theme tokens shared by all slides — bg #0B1020, accent #4F7DF3, Georgia serif + Segoe UI sans + mono. -->
 
 <style>

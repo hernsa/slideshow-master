@@ -37,7 +37,7 @@ One meaning per term across every file in this skill.
 | **Mode** | Narrative arc (tech-talk, pitch, tutorial, showcase, narrative). Picks the slide outline, never the engine |
 | **Engine** | Runtime: reveal.js (full HTML/JS control), Slidev (Markdown+Vue), Marp (Markdown→static) |
 | **Visual style** | One named style from `visual-styles/` — tokens + fonts + code theme + gradient rule. One style per deck |
-| **Layout template** | One slide-type sketch from `layout-templates/` (comparison, stats, quote, code-demo…). A starting sketch, freely adjusted |
+| **Layout template** | One slide-type sketch from `layout-templates/` (framing, photo-hero, photo-collage, pastel-collage, display-type, annotation-stage, showcase, motion). Copy it; its geometries are load-bearing |
 | **Design Read** | The one-line declaration of deck kind + audience + vibe + engine/style/fonts, stated before building |
 | **Dials** | `DESIGN_VARIANCE` / `MOTION_INTENSITY` / `VISUAL_DENSITY` (1–10 each). Drive layout, motion, density choices |
 | **Gate** | One check in `verify-checklist.md`. `⛔ BLOCKING` gates stop and wait for the user; the rest auto-continue |
@@ -96,9 +96,12 @@ One meaning per term across every file in this skill.
 - Layouts, boxes, image treatments → `references/layouts.md`
 - Images, icons, media density → `references/media/` (+ `media_index.json`)
 - Decorations & asymmetry → `references/decorations.md`
-- PPTX motion language (anchors, stagger, photo grammar) → `references/pptx-motion-language.md`
+- PPTX craft system (moving object, 3–8 shape vocabulary, morph contract,
+  stagger grammar, photo-as-load-bearing-layer, value ramp, type scale,
+  per-slide spec grammar, dark showcase) → `references/pptx-motion-language.md`
 - Gates 1–15 → `references/verify-checklist.md`
-- Scripts → `scripts/verify-images.py`, `scripts/verify-deck.py`,
+- Scripts → `scripts/verify-images.py`, `scripts/verify-deck.py`
+  (raster floor: `--min-rasters N`, `--allow-text-only`),
   `scripts/export-deck.sh`, `scripts/new-deck-scaffold.sh`
 - Starters → `examples/reveal-demo/`, `examples/slidev-demo/`,
   `examples/marp-demo/`

@@ -10,6 +10,11 @@ fonts:
   mono: 'ui-monospace, Consolas, monospace'
 ---
 
+<!-- verify-deck.py --allow-text-only — this is a layout-pattern catalog, not a shippable deck.
+     It carries no rasters on purpose so it stays diffable and binary-free. A real deck built with
+     this skill ships with images on every slide (pptx-motion-language.md §5). -->
+
+
 <!-- layouts.md: title slide -->
 # Why HTML Beats PPTX for Tech Talks
 
