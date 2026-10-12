@@ -66,10 +66,10 @@ project slide so the forwarded PDF still persuades.
 
 ## Visual system
 
-- Palette: Midnight SaaS dark base, one accent per project (amber, persimmon, leaf, sky) — never two accents on one slide.
-- Fonts: Space Grotesk display / Inter body; project slides inherit the project's own fonts in screenshots only.
-- Images: all local in `assets/showcase-*.png|jpg`, ≥1600px for full-bleed, 16/9, credited per `SKILL.md` Phase 4.
-- Motion: single morph between slides 2→3 (Auto-Animate or `view-transition-name`); static cuts elsewhere. See `references/animations.md` §2.
+- Palette: Midnight SaaS dark base, one accent per project (amber, persimmon, leaf, sky).
+- Fonts: Space Grotesk / Inter (project fonts live in screenshots only).
+- Images: `assets/showcase-*.png|jpg`, ≥1600px, 16/9, credited (fonts/images/motion per refs).
+- Motion: single morph slides 2→3; static cuts elsewhere.
 
 ## Mode-specific don'ts
 

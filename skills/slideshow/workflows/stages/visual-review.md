@@ -14,7 +14,7 @@
 
 1. Serve or build per engine: reveal.js via `npx serve .` (open `http://localhost:3000/`); Slidev via `npx slidev slides.md` (open `localhost:3030`); Marp HTML via `npx marp slides.md -o deck.html --allow-local-files` and open the file.
 2. Open Chromium and Firefox side by side with DevTools ready (contrast picker, Rendering → emulate `prefers-reduced-motion`, device toolbar at 390×844).
-3. Keep `references/verify-checklist.md` open — this walkthrough feeds Gates 5–16.
+3. Keep `references/verify-checklist.md` open — this walkthrough feeds Gates 4–12.
 
 ## 3. Walkthrough procedure — per slide, in order
 
@@ -34,112 +34,46 @@ slide 4 — overflow — 14-line snippet at 13px → layer: slide
 slide 7 — motion — two morph pairs in one section → layer: style
 ```
 
-## 4. Contrast spot-check
+## 4. Contrast — Gate 4, plus the projector delta
 
-Measure three pairs with the DevTools picker or WebAIM and record all three
-numbers: `fg/bg`, `muted/bg`, `muted/surface`. Pass bars: normal text ≥4.5:1,
-large text ≥3:1, code `fg/bg` ≥7:1, projector decks ≥7:1 for body. The classic
-silent failure is muted-on-surface — `#64748B` on `#F1F5F9` reads fine and
-measures 4.2:1. Promote without redesigning:
+Measure the trio per Gate 4. Delta: venue projectors wash out mid-tones — hold body copy to ≥7:1 on projection-flagged decks; re-measure under the actual projector when possible.
 
-```css
-.fix-muted { color: var(--fg); opacity: .82; }
-```
+## 5. Alignment — deltas only (no dedicated gate)
 
-Projector check: venue projectors wash out mid-tones, so hold body copy to
-≥7:1 on any deck flagged for projection. Re-measure under the actual projector
-when possible; otherwise the ≥7:1 bar plus the `.fix-muted` promotion above
-is the ship standard.
+8pt scale (`8 / 16 / 24 / 32 / 48 / 64`), bento gap 16px with hero padding 32px, split gap 32px. Two heavy-text halves on one slide is an outline defect, not a CSS defect — split the slide. Responsive collapse feeds Gate 10: bento to 1–2 columns, stat cards to one column at 390px, tap targets ≥44px.
 
-## 5. Alignment
+## 6. Overflow — Gates 7 + 10 deltas
 
-Check the 8pt scale (`8 / 16 / 24 / 32 / 48 / 64`), bento gap 16px with hero
-padding 32px, split gap 32px. Two heavy-text halves on one slide is an outline
-defect, not a CSS defect — split the slide. Confirm the responsive collapse:
-bento to 1–2 columns and stat cards to one column at 390px, tap targets ≥44px.
+Code ≤12 lines at ≥14px per Gate 7; bento cells hold one line plus one metric — a cell needing two sentences becomes its own slide. Delta: Slidev `v-click` steps become extra PDF pages, which is expected, not a bug.
 
-## 6. Overflow
+## 7. Motion — Gate 8 only
 
-Code slides hold ≤12 lines at ≥14px (15px preferred) with horizontal scroll
-intact where needed — a 28-line file dump at 11px gets split across two slides
-or cut to the discussed lines with a repo link in notes. Bento cells hold one
-line plus one metric; a cell needing two sentences becomes its own slide.
-Preview the PDF pagination mentally: `v-click` steps in Slidev become extra
-pages, which is expected, not a bug.
+One morph moment per section max; fragments advance in narration order and all resolve visible. Emulate `prefers-reduced-motion: reduce`: cuts, visible fragments, static parallax, nothing over 3Hz. A `v-motion` hero stuck at `opacity: 0` under emulation is a blocking defect — Gate 8 fix.
 
-## 7. Motion
+## 8. Notes — Gate 9 only
 
-One morph moment per section max (`data-id`, `view-transition-name`, or GSAP
-Flip — never two mechanisms on one pair). Fragments (`fragment` / `v-click` /
-`_transition`) advance in narration order and all resolve visible. Emulate
-`prefers-reduced-motion: reduce` in DevTools: every transition collapses to a
-cut, every fragment is visible without clicks, parallax is static, nothing
-flashes over 3Hz. A `v-motion` hero stuck at `opacity: 0` under emulation is a
-blocking defect — add the static fallback from Gate 10.
+Ratio 1:1 with say/then/provenance. A title note saying "intro myself" with no name, title, or timecheck fails.
 
-## 8. Notes present
+## 9. Common visual defects — single source is the failure-recovery catalog
 
-Notes-to-slides ratio 1:1 (appendix exempt only if marked `NO-NOTES`). Each note
-holds three things: the one sentence to say, the transition line to the next
-slide, and any stat provenance. `Say: p95 fell 41% in six weeks. Then: but July
-was ugly — next slide. Timecheck: 2:00.` A title note saying "intro myself" with
-no name, title, or timecheck fails.
+Defect table + worked log moved to `workflows/governance/failure-recovery.md` (visual entries). Log defects here as `slide N — check — symptom → layer`, then look the fix up there.
 
-## 9. Common visual defects — fix at the owning layer
-
-Act at the shallowest layer that owns the fault (SKILL.md discipline 7):
-slide → outline → style → tooling. Never silently downgrade a required artifact.
-
-| Defect | Owning layer | Fix |
-|---|---|---|
-| Stretched logo or pillarboxed portrait | slide | set `aspect-ratio` + `object-fit: cover`, re-export at 16/9 |
-| Two heavy-text halves side by side | outline | split into two slides; grids imply equality, not order |
-| Muted-on-surface measures 4.2:1 | style | apply `.fix-muted`, re-measure the trio |
-| Gradient headline or 4 competing gradients | style | keep the single hero wash, delete the rest (Gate 9) |
-| 28-line code dump at 11px | slide → outline | cut to ≤12 discussed lines, link the repo in notes |
-| Missing `alt` or `alt="image"` | slide | conclusion-bearing alt per Gate 4, `alt=""` if decorative |
-| `v-motion` invisible under reduced motion | style/tooling | add the Gate 10 static fallback CSS + JS guard |
-| 4-column bento unreadable at 390px | style | add the 520px single-column collapse from `layouts.md` |
-| Third body font sneaking in via a component | style | cut back to 2 families + mono (Gate 7) |
-| Iframe demo blocked by X-Frame-Options | slide | screenshot into `assets/demo-shot.png` + link, keep live URL in notes |
-| QR code under 120px, unscannable past row 3 | slide | re-export at ≥180px in a 16px bordered box (`layouts.md` §9) |
-| Stat cards mixing $, %, ms with no unit labels | slide | label every unit explicitly (Gate 2 honesty rule) |
-| Divider between every slide, count doubled | outline | keep max 3 dividers; merge the rest into section headers |
-| Teal body copy at 3.9:1 shipped as paragraphs | style | swap body to fg, reserve teal for accents ≥18pt |
-| Appendix with no notes and no `NO-NOTES` mark | slide | write the 3-part note or mark `NO-NOTES` explicitly |
-| Auto-Animate dead from mismatched `data-id` casing | slide | match `data-id` strings exactly across adjacent sections |
-
-## 10. Worked defect log (Acme Q3, 12 slides)
-
-```text
-slide 2 — contrast — muted caption on surface 4.1:1 → style, .fix-muted
-slide 4 — overflow — 14-line snippet at 13px → slide, cut to 9 lines + repo link
-slide 5 — notes — NRR provenance missing → slide, add billing-export line
-slide 7 — motion — two morph pairs in one section → style, keep bar growth only
-slide 9 — alignment — bento 4-col crushed at 390px → style, 520px collapse
-```
-
-Five defects, three at slide layer, two at style. Fix in layer order (slide
-first, style second), then re-walk per §11 — never fix mid-walk.
-
-## 11. Re-walk rule
+## 10. Re-walk rule
 
 Re-walk only the fixed slides plus their immediate neighbors — morph pairs and
 transitions cross slide boundaries. A style-layer token fix means re-walking the
 whole deck; tokens have no neighbors. Log the re-walk as one line:
 `Re-walk: slides 2, 4–5, 7, 9 green, neighbors clean.`
 
-## 12. Sign-off checklist before export
+## 11. Sign-off checklist before export
 
-- [ ] Contrast trio recorded, all pairs pass (Gate 5).
-- [ ] Placeholder greps 1–3 return nothing; grep 4 only intentional demo URLs (Gate 6).
-- [ ] Fonts ≤2 + mono, code max 12 lines, gradients ≤1 (Gates 7–9).
-- [ ] Reduced motion emulated: cuts verified, fragments visible (Gate 10).
-- [ ] Notes 1:1 with say/then/provenance (Gate 11).
-- [ ] Keyboard-only walk passes, focus ring visible (Gate 12).
-- [ ] 390px swipe passes, zero horizontal scroll (Gate 13).
-- [ ] Code themes track dark/light toggle, no gray blocks (Gate 14).
+- [ ] Contrast trio recorded, all pairs pass (Gate 4).
+- [ ] Placeholder greps 1–3 return nothing; grep 4 only intentional demo URLs (Gate 5).
+- [ ] Fonts ≤2 + mono, gradients ≤1 (Gate 6); code max 12 lines, Shiki dual-theme (Gate 7).
+- [ ] Fragment budget + reduced-motion cuts + keyboard walk pass (Gate 8).
+- [ ] Notes 1:1 with say/then/provenance (Gate 9).
+- [ ] 390px swipe passes, zero horizontal scroll (Gate 10).
 
-## 13. Handoff
+## 12. Handoff
 
-Paste one line: `Visual review done: 12/12 slides walked, 3 defects fixed at slide/style layers, sign-off 8/8 — export may proceed.` Keep the defect log in the delivery note for the exporter.
+Paste one line: `Visual review done: 12/12 slides walked, 3 defects fixed at slide/style layers, sign-off 6/6 — export may proceed.` Keep the defect log in the delivery note for the exporter.

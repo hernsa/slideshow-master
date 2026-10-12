@@ -61,23 +61,7 @@ Worked pass on GAP-1:
 
 ## 4. Verify APIs, flags, and versions against current docs
 
-Never trust memory for anything executable. Pins live in `references/engines.md`:
-
-| Package | Pin | Verify command |
-|---|---|---|
-| `reveal.js` | `^6.0.0` | `node -e "console.log(require('reveal.js/package.json').version)"` |
-| `@slidev/cli` | `^52.0.0` | `npx slidev --version` |
-| `@marp-team/marp-cli` | `^4.1.0` | `npx marp --version` |
-| node | `>=20` | `node --version` |
-
-Flag inventory — confirm each in the current docs before the slide claims it:
-
-| Engine | Flags and switches on the slide |
-|---|---|
-| reveal.js 6 | `?print-pdf`, decktape `--load-pause`, `data-auto-animate` + matching `data-id` |
-| Slidev 52 | `export --format pdf/pptx/png`, `build --out`, `v-click` paging in export |
-| Marp 4 | `--allow-local-files`, `--bespoke.transition`, `--images png`, `--theme-set` |
-| Chromium | `npx playwright install chromium` present before any PDF or PPTX run |
+Never trust memory for anything executable. Pins live in `references/engines.md` — run the verify commands there, then confirm each flag in the current docs before the slide claims it.
 
 Procedure per API/flag gap:
 
@@ -92,40 +76,15 @@ in staging by Maria — flag names confirmed, staging hit rate logged at 83%.
 
 ## 5. Per-slide source log format
 
-Log sources on the slide itself as an HTML comment (per engine below), and put
+Log sources on the slide itself as an HTML comment, and put
 the speakable provenance in presenter notes. Caption the visible source on
 data slides at 14px muted, per Gate 2.
 
-reveal.js — comment inside the `<section>`, provenance in notes:
+Generic template (adapt comment syntax per engine — see `references/engines.md`):
 
 ```html
-<section>
-  <h2>p95 down 41%</h2>
-  <!-- sources: p95 412→243ms — edge logs Jun 14→Sep 2 (q-8821); billing export Sep 3 -->
-  <aside class="notes">Say: p95 fell 41% in six weeks. Provenance: query q-8821, rerun 2026-10-06, ±2pp sampling error.</aside>
-</section>
-```
-
-Slidev — `<!-- -->` comment plus speaker comment on the same page:
-
-```markdown
-# p95 down 41%
-
 <!-- sources: p95 412→243ms — edge logs Jun 14→Sep 2 (q-8821); billing export Sep 3 -->
-
-<!--
-Say: p95 fell 41% in six weeks. Then: July was ugly — next slide. Provenance: q-8821 ±2pp.
--->
-```
-
-Marp — HTML comment on the slide; presenter-note comment per project convention:
-
-```markdown
-## p95 down 41%
-
-<!-- sources: p95 412→243ms — edge logs Jun 14→Sep 2 (q-8821); billing export Sep 3 -->
-
-<!-- presenter note: Say the number, pause, then the shield story. Provenance q-8821. -->
+<!-- presenter note: Say the number, pause, then the shield story. Provenance q-8821 ±2pp. -->
 ```
 
 ## 6. The `[unverified]` marking rule

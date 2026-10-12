@@ -43,8 +43,8 @@ For 7–8 slide variants, insert "Hallway Re-Export, Knee on the Floor"
 
 ### 0:08–0:12 — Images + verify lite
 Copy hero + screenshots to `assets/`, one line each in `assets/CREDITS.md`.
-Run: `scripts/verify-images.py` (must pass), contrast eyeball (≥4.5:1),
-placeholder scan (no TODO text, no filler Latin, no empty-src, no hotlinks).
+Run: `scripts/verify-images.py` (must pass, Gate 3), contrast eyeball ≥4.5:1 (Gate 4 lite),
+placeholder scan per Gate 5 (greps 1–3 zero, grep 4 demo URLs only).
 Add `--bespoke.transition` only if transitions are required for the live view.
 Keep `object-fit: cover`, radius 16–24px, one full-bleed max per section per
 `references/layouts.md` §7 — even in a hurry, stretched logos still fail review.

@@ -4,7 +4,7 @@
 
 ## Two tiers — STRONG default, SOFT only on request
 
-Every deck ships in a **STRONG** style unless the user explicitly asks for light, warm, paper, or minimal. A deck that reads milky, cream, or white-on-white is a FAIL (Gate 21 Theme Lock). The SOFT tier exists for people who ask for it by name — never as the default.
+Every deck ships in a **STRONG** style unless the user explicitly asks for light, warm, paper, or minimal. A deck that reads milky, cream, or white-on-white is a FAIL (Gate 13 Theme Lock). The SOFT tier exists for people who ask for it by name — never as the default.
 
 | Tier | Rule |
 |---|---|

@@ -45,19 +45,19 @@ When two rounds fail at one layer, re-layer the note before running a third.
 
 | Change | Re-run | Re-verify gates |
 |---|---|---|
-| Copy tweak on 1–2 slides | build the slides | placeholders (6), notes (11) |
-| New slide inserted | outline delta + build | outline (1), notes (11), export (15) |
-| Slides reordered | build + motion pass | keyboard (12), notes transitions (11) |
-| Palette or font swap | style lock + build | contrast (5), fonts (7), gradients (9) |
-| Layout pattern swap | build that slide | alignment via visual-review §5, mobile (13) |
-| Image swap | `stages/image-review.md` §§4–6 | images (3), alt (4), console (16) |
-| Stat correction | `stages/topic-research.md` §§3–5 | two-source (2), notes provenance (11) |
+| Copy tweak on 1–2 slides | build the slides | placeholders (5), notes (9) |
+| New slide inserted | outline delta + build | outline (1), notes (9), export (11) |
+| Slides reordered | build + motion pass | motion & input (8), notes transitions (9) |
+| Palette or font swap | style lock + build | contrast (4), style tokens (6) |
+| Layout pattern swap | build that slide | alignment via visual-review §5, mobile (10) |
+| Image swap | `stages/image-review.md` §§4–6 | images & media (3), console (12) |
+| Stat correction | `stages/topic-research.md` §§3–5 | two-source (2), notes provenance (9) |
 | Engine swap | full rebuild in the new engine | full `verify-checklist.md` — no subset |
-| Motion-only change | motion pass on affected slides | reduced motion (10), keyboard (12) |
-| Notes-only change | notes layer of affected slides | notes (11) |
-| Appendix change | build the appendix slides | notes (11) if spoken, export (15) for page count |
-| Contact strip / QR change | build the closing slide | placeholders (6), mobile (13) |
-| Code snippet fix | re-run snippet + build the slide | two-source (2) if numbers, code (8/14) |
+| Motion-only change | motion pass on affected slides | motion & input (8) |
+| Notes-only change | notes layer of affected slides | notes (9) |
+| Appendix change | build the appendix slides | notes (9) if spoken, export (11) for page count |
+| Contact strip / QR change | build the closing slide | placeholders (5), mobile (10) |
+| Code snippet fix | re-run snippet + build the slide | two-source (2) if numbers, code slides (7) |
 
 Structural changes (new, removed, or reordered slides) need a fresh outline nod:
 version it (`Outline v4 — APPROVED 2026-10-07, Jonas`) and keep every version in
@@ -68,22 +68,22 @@ the delivery note. Engine swaps are rebuilds wearing a revision costume — say 
 Jonas sends three notes: (a) slide 5 NRR caption should cite the billing export,
 (b) the muted stat labels look washed on the projector, (c) swap the lab photo
 for the staging screenshot. Classification: (a) per-slide copy → rebuild slide 5,
-re-verify Gates 2 + 11; (b) deck-wide style → `.fix-muted` + re-measure the trio,
-re-verify Gate 5; (c) image swap → full image-review §§4–6 on `shield-demo.png`,
-re-verify Gates 3 + 4 + 16. Three notes, three lanes, no full rebuild.
+re-verify Gates 2 + 9; (b) deck-wide style → `.fix-muted` + re-measure the trio,
+re-verify Gate 4; (c) image swap → full image-review §§4–6 on `shield-demo.png`,
+re-verify Gates 3 + 12. Three notes, three lanes, no full rebuild.
 
 ## 7. Worked example — fast path (lightning talk, Marp)
 
 Ada's 6-slide showcase draws one note: "add the shield hit-rate number to slide 5."
 Classification: per-slide stat addition → re-source via topic-research §§3–5
 (Maria's staging log plus the edge export), rebuild slide 5, re-verify Gates 2
-+ 11. No upgrade trigger fires, so the note stays inside the fast path.
++ 9. No upgrade trigger fires, so the note stays inside the fast path.
 
 ## 8. Subset procedure and rules
 
 Run the re-verify subset in gate order and record each gate green with its
 evidence (`contrast trio 15.8/6.1/4.9`, `placeholder greps 0 hits`). A subset
-gate that turns red pulls its full stage back in — a red Gate 5 re-opens the
+gate that turns red pulls its full stage back in — a red Gate 4 re-opens the
 style lock, not just the one slide.
 
 - Never silently downgrade a required artifact to close a revision (notes, credits, fallbacks).
@@ -91,4 +91,4 @@ style lock, not just the one slide.
 - Version every outline (`v1, v2, v3…` with date + approver) and keep all versions in the delivery note — the v3→v4 diff is the revision's scope proof.
 - A note that adds a mode (investors appear, the lab becomes a pitch) is not a revision: re-route through `workflows/routing.md` and rebuild.
 - Timebox a round to one working session; later notes open a new round, never reopen a closed one.
-- Close the round with a handoff line: `Refine v4 done: 3 notes in 3 lanes, gates 2/5/3/4/11/16 green — export may proceed.`
+- Close the round with a handoff line: `Refine v4 done: 3 notes in 3 lanes, gates 2/4/3/9/12 green — export may proceed.`

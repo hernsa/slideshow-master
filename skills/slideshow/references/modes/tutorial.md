@@ -77,10 +77,10 @@ at 14px+ and paginates without orphans before printing.
 
 ## Visual system
 
-- Palette: Botanical Warm (cream `#F7F3EA`, leaf `#2F6B4F`, clay `#C4622D`), from `references/colors.md`.
-- Fonts: Outfit headings / DM Sans body / JetBrains Mono code at 16–20px.
-- Images: before/after theme thumbs (local `assets/theme-before.png`), no stock needed; diagrams over photos.
-- Motion: `v-click` stepwise reveals only (`MOTION_INTENSITY 4`); every animated deck carries a `prefers-reduced-motion` fallback per `references/animations.md`.
+- Palette: Botanical Warm — cream `#F7F3EA`, leaf `#2F6B4F`, clay `#C4622D`.
+- Fonts: Outfit / DM Sans / JetBrains Mono (code 16–20px).
+- Images: `assets/theme-before.png` before/after thumbs; diagrams over photos (fonts/images/motion per refs).
+- Motion: `v-click` stepwise reveals only (`MOTION_INTENSITY 4`).
 
 ## Mode-specific don'ts
 

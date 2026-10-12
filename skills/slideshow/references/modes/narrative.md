@@ -77,10 +77,10 @@ slides — see `references/layouts.md` for text budgets.
 
 ## Visual system
 
-- Palette: Ink Keynote dark (ink `#101014`, bone `#F2EDE4`, amber `#F59E0B` single accent), from `references/colors.md`.
-- Fonts: Fraunces display for story slides / Inter for proof slides; no mono except slide 6 thumbnails.
-- Images: three full-bleeds max (slides 1, 4, 8 share one grade); all ≥1600px, 16/9, ≥40% scrim under text.
-- Morph moment: exactly one — slide 5 thesis text morphs into slide 8 closing line via `data-auto-animate` with matching `data-id`.
+- Palette: Ink Keynote dark — ink `#101014`, bone `#F2EDE4`, amber `#F59E0B`.
+- Fonts: Fraunces (story) / Inter (proof); no mono except slide 6 thumbnails.
+- Images: three full-bleeds max (slides 1, 4, 8, one grade); ≥1600px, 16/9, ≥40% scrim (fonts/images/motion per refs).
+- Morph moment: exactly one — slide 5 thesis text into slide 8 closing line.
 
 ## Mode-specific don'ts
 

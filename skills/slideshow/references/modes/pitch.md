@@ -76,10 +76,10 @@ cleanly via `npx marp slides.md -o deck.pdf --allow-local-files`.
 
 ## Visual system
 
-- Palette: Paper Editorial light (paper `#FAF7F2`, ink `#1A1A1A`, accent persimmon `#C2410C`), from `references/colors.md`.
-- Fonts: Fraunces display / Inter body; mono only on slide 4 (JetBrains Mono 16px).
-- Images: one hero projector photo, three small pain screenshots, logo strip on slide 6 — all local in `assets/`, credited.
-- Motion: fades only (`MOTION_INTENSITY 3`); investors forward PDFs where motion dies anyway. See `references/animations.md` §5 fallback.
+- Palette: Paper Editorial light — paper `#FAF7F2`, ink `#1A1A1A`, accent `#C2410C`.
+- Fonts: Fraunces / Inter; mono (JetBrains Mono 16px) on slide 4 only.
+- Images: one hero projector photo + three pain screenshots + slide 6 logo strip (fonts/images/motion per refs).
+- Motion: fades only (`MOTION_INTENSITY 3`).
 
 ## Mode-specific don'ts
 

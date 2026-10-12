@@ -61,7 +61,7 @@ runtime, not a file, so ship the runtime."
 ### 9. Pitfalls — "Three Ways This Breaks on Projectors"
 - Layout: bento 3-cell (contrast, offline fonts, clicker double-advance).
 - Beats: body contrast ≥7:1 for projectors, self-host fonts, disable touch advance.
-- Notes hint: cite `references/verify-checklist.md` gates 2 and 4 explicitly.
+- Notes hint: cite `references/verify-checklist.md` gates 2 and 3 explicitly.
 
 ### 10. Takeaways — "Ship the Runtime: URL, PDF, Source"
 - Layout: section divider + three takeaway lines + contact strip.
@@ -70,10 +70,10 @@ runtime, not a file, so ship the runtime."
 
 ## Visual system
 
-- Palette: Midnight SaaS dark (bg `#0B1220`, surface `#111C33`, accent amber `#F59E0B`), from `references/colors.md` palette 1.
-- Fonts: Space Grotesk headings / Inter body / JetBrains Mono code.
-- Images: one frozen-projector photo (`assets/projector-fail.jpg`, credited in `assets/CREDITS.md`), one architecture diagram; rest is live DOM.
-- Morph moment: exactly one — slide 7 bars grow via `data-auto-animate` (reveal.js) or `view-transition` (Slidev). See `references/animations.md` §2.
+- Palette: Midnight SaaS dark — bg `#0B1220`, surface `#111C33`, accent `#F59E0B`.
+- Fonts: Space Grotesk / Inter / JetBrains Mono.
+- Images: `assets/projector-fail.jpg` + one architecture diagram (fonts/images/motion per refs).
+- Morph moment: exactly one — slide 7 bar growth.
 
 ## Mode-specific don'ts
 

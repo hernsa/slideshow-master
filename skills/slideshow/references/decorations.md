@@ -71,7 +71,7 @@ Center the hero once, then break it. A left-aligned headline with the visual rig
 - 1–2 decoration primitives per slide. If a slide already has a background shape, skip the rule bar.
 - Max 1 oversized number per slide; never two numbers fighting for the eye.
 - Shape layers at ≤ 8% opacity; flat color bands at ≥ 0.9. No mid-opacity ghost text.
-- Decoration must never be the reason a slide fails contrast (Gate 5) or reads cluttered.
+- Decoration must never be the reason a slide fails contrast (Gate 4) or reads cluttered.
 
 ## 7. Per-engine notes
 

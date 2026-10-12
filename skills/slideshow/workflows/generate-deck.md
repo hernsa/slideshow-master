@@ -92,14 +92,14 @@ speaker notes on every substantive slide (`<aside class="notes">` or
 contrast ≥4.5:1, ≥7:1 for projectors).
 Static-by-default: ship every slide static unless clicks need a narration justification
 (one idea per click, max 5 click-steps per slide, max 1 click-built slide per 3 slides);
-tables by-row-or-static — reveal by row or ship static, never per-cell (see Gate 20).
+tables by-row-or-static — reveal by row or ship static, never per-cell (see Gate 8).
 
 ## 9. Motion pass (REQUIRED — 1–3 morph pairs or FAIL)
 
 Wire REQUIRED 1–3 morph pairs per deck on element continuations (`data-auto-animate`+`data-id` / `view-transition-name` / `v-motion` pair / Flip), never on body copy, never across sections; deck-wide single transition alone FAILs review. Then wire fragments (`fragment` / `v-click` / `_transition`), and the
 reduced-motion fallback. Marp HTML transitions need `--bespoke.transition`;
 Slidev `v-click` steps become extra PDF pages (expected, record as 12+N); reveal.js fragments
-print as final state unless flagged. Fragment Budget is Gate 20: static-by-default,
+print as final state unless flagged. Fragment Budget is Gate 8: static-by-default,
 ≤5 click-steps per slide, tables by-row-or-static. Details: `references/animations.md`.
 
 ## 10. Verify checklist (all must pass)

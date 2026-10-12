@@ -19,15 +19,13 @@ auth-gated demos already in `assets/`, no `localhost` demo URLs left live.
 ## 3. Per-engine export commands
 
 Run from the skill root. `scripts/export-deck.sh <reveal|slidev|marp> <deck-path> [out-dir]`
-writes into `dist/` by default.
+writes into `dist/` by default. Raw-command fallbacks live in `references/engines.md` — use them only when the script fails.
 
 reveal.js — serve first, decktape needs a URL:
 
 ```bash
 npx serve . -l 8000 &
 scripts/export-deck.sh reveal "http://localhost:8000/?print-pdf" dist
-# raw fallback with a longer load pause for heavy decks:
-npx decktape reveal --load-pause 2000 "http://localhost:8000/?print-pdf" deck.pdf
 ```
 
 Fragments print as final state by default. PPTX has no native path — export PDF,
@@ -37,11 +35,6 @@ Slidev — PDF plus the static SPA in one script:
 
 ```bash
 scripts/export-deck.sh slidev slides.md dist
-# raw equivalents:
-npx slidev export --format pdf slides.md --output deck.pdf
-npx slidev export --format pptx slides.md --output deck.pptx
-npx slidev build slides.md --out dist/
-npx serve dist/
 ```
 
 `v-click` steps export as extra PDF pages — three clicks means three pages, which
@@ -52,15 +45,10 @@ Marp — HTML, PDF, and native PPTX from one source:
 
 ```bash
 scripts/export-deck.sh marp slides.md dist
-# raw equivalents (note --allow-local-files for assets/):
-npx marp slides.md -o deck.html --allow-local-files
-npx marp slides.md -o deck.html --bespoke.transition --allow-local-files
-npx marp slides.md -o deck.pdf --allow-local-files
-npx marp slides.md -o deck.pptx --allow-local-files
 ```
 
 The script's Marp path omits `--allow-local-files`: if exported output drops
-local images, re-run the raw commands with the flag. PPTX degrades transitions
+local images, re-run via the raw flags in `references/engines.md`. PPTX degrades transitions
 to static cuts — expected, not a defect.
 
 ## 4. Post-export checks
@@ -69,7 +57,7 @@ to static cuts — expected, not a defect.
 2. Page count equals slide count — plus Slidev `v-click` step pages where applicable.
 3. Zero clipped lines in the PDF; fonts embedded and readable in the PPTX (system fonts if PPTX is the deliverable).
 4. Notes present: reveal.js speaker view via `?notes`, Slidev `<!-- -->` comments intact, Marp presenter notes in the HTML.
-5. Console shows zero errors and zero 404s across a full walk in both browsers (Gate 16).
+5. Console shows zero errors and zero 404s across a full walk in both browsers (Gate 12).
 6. Ship the Markdown source alongside the built deck, plus the engine decision log from `references/engines.md`.
 
 ## 5. What ships per target
@@ -91,22 +79,6 @@ Export path: export-deck.sh slidev → PDF 15pp + dist/ SPA verified
 Fallback: static PDF reads standalone; reduced-motion cuts verified
 ```
 
-## 6. Worked ship record (Acme Q3 — 12 slides — Slidev 52)
-
-```markdown
-Deck: Acme Q3 — 12 slides — Slidev 52
-Date: 2026-10-08 · Checker: Ada
-- Outline approved: yes (v3, 2026-10-01, Jonas)
-- 2-source rule: 6/6 stats sourced
-- Images: 5 local, all ≤400KB, credited + licensed
-- Contrast: fg/bg 15.8:1, muted/bg 6.1:1, muted/surface 4.9:1
-- Placeholders: 0 hits on greps
-- Fonts: 2 + mono · Code lines: max 9 · Gradients: 1
-- Reduced motion: cuts verified in emulation
-- Notes: 12/12 · Keyboard: pass · Mobile 390px: pass
-- Export: PDF 15pp (12 + 3 v-click steps) clean, PPTX spot-check pass, console 0 errors
-```
-
-## 7. Handoff
+## 6. Handoff
 
 Paste one line: `Export done: HTML + PDF + source shipped, ship record signed — deck is out.` If any check fails, stop shipping and open `governance/failure-recovery.md`.

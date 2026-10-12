@@ -32,18 +32,9 @@ pitch. Steps + demo → audience types = tutorial, audience watches = tech-talk.
 Full matrix, pins, and migration notes: `references/engines.md`.
 Starters: `examples/reveal-demo/`, `examples/slidev-demo/`, `examples/marp-demo/`.
 
-## Step 3 — Detect visual style (
+## Step 3 — Detect visual style (authority: `references/modes/_index.md`)
 
-pick exactly one row)
-
-| Mode + hint | Palette (`references/colors.md`) | Fonts | Layout bias (`references/layouts.md`) |
-|---|---|---|---|
-| tech-talk, dark stage | Midnight SaaS dark | Space Grotesk / Inter / JetBrains Mono | code+preview, stat row, 50/50 split |
-| pitch, board-forwarded | Paper Editorial light | Fraunces / Inter | bento 3-cell, centered ask, contact strip |
-| tutorial, classroom | Botanical Warm | Outfit / DM Sans / JetBrains Mono | numbered steps, code slide, exercise card |
-| showcase, gallery | Midnight SaaS + one accent per project | Space Grotesk / Inter | before/after split, full-bleed + inset |
-| narrative, keynote | Ink Keynote dark, amber accent | Fraunces / Inter | full-bleed quote, divider, restrained stat row |
-| No brand given | Mode default above; declare it in the Design Read | Max 2 families + mono for code | Never two heavy-text halves |
+Pick exactly one row from the dials-per-mode table there (palette default + font pair per routed mode); declare it in the Design Read. Mode default wins when no brand is given; max 2 families + mono for code.
 
 Anti-slop lock (all rows): no `linear-gradient(135deg, #8B5CF6, #3B82F6)`;
 max 1 gradient per deck as 4px bar or ≤8% glow; captions ≥14px;
@@ -67,25 +58,3 @@ Workflow: `workflows/generate-deck.md`
 Outline gate: 10 one-liners before build (SKILL.md Phase 6.1)
 Verify: `references/verify-checklist.md` + `scripts/verify-images.py` + `scripts/export-deck.sh slidev`
 ```
-
-## Worked examples (do not ask when these match)
-
-1. "Why HTML beats PPTX, with live rebuild and timed export drill" →
-   tech-talk + Slidev + Midnight SaaS + `generate-deck.md`.
-2. "Seed pitch for the talk kit, $18k ask, forwarded as PDF" →
-   pitch + Marp + Paper Editorial + `generate-deck.md`.
-3. "40-min lab where students theme and export their own deck" →
-   tutorial + Slidev (Marp PDF handout) + Botanical Warm + `generate-deck.md`.
-4. "Show six shipped themes to win the redesign contract" →
-   showcase + reveal.js + Midnight SaaS/accent-per-project + `generate-deck.md`.
-5. "Open the conference with the frozen-projector story" →
-   narrative + reveal.js + Ink Keynote + `generate-deck.md`.
-6. "5-minute lightning version of the HTML-beats-PPTX talk for tomorrow" →
-   showcase (6 slides) + Marp + Midnight SaaS + `quick-generate.md`.
-
-## Questions you may never ask (tables already answer)
-
-- Code-heavy → Slidev (custom runner → reveal.js). Fast text → Marp. Unsure → reveal.js.
-- Pitch with ask → pitch mode. Gallery with no ask → showcase mode.
-- Audience types along → tutorial. Audience watches → tech-talk.
-- Emailed PDF → Marp. Stage morph → reveal.js. Both → build Slidev/Marp, screenshot into Marp for send-ahead.

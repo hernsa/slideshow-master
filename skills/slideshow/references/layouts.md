@@ -1,22 +1,6 @@
 # Layouts — Box Patterns + Composition Guide
 
-> Spacing scale: `8 / 16 / 24 / 32 / 48 / 64` (8pt). Type via `clamp()`: `h1: clamp(2rem, 5vw, 3.5rem)`, `h2: clamp(1.5rem, 3vw, 2.25rem)`, body `17–19px`, captions `14px`. Radius `12–24px` (cards `16px`). Images: `radius 16px`, `1px solid var(--border)`, soft shadow `0 8px 30px rgba(2,6,23,.08)`, `aspect-ratio: 16/9`, `object-fit: cover`.
-
-Base deck CSS (paste once):
-
-```css
-:root {
-  --space-1: 8px; --space-2: 16px; --space-3: 24px;
-  --space-4: 32px; --space-5: 48px; --space-6: 64px;
-  --radius-card: 16px; --radius-pill: 999px;
-}
-.slide-inner { max-width: 1120px; margin: 0 auto; padding: 48px; }
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.02em; line-height: 1.05; }
-h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); letter-spacing: -0.015em; line-height: 1.15; }
-.lead { font-size: 1.2rem; opacity: .8; max-width: 60ch; }
-img.fit { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 16px; border: 1px solid var(--border); }
-.eyebrow { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; opacity: .65; }
-```
+> Tokens are canonical in [tokens.md](./tokens.md) — 8pt spacing, 16px radius, dark-first. Paste base CSS from there once. One page per slide.
 
 ---
 
@@ -538,18 +522,21 @@ Radius `16px` (cards), `50%` (avatars), scrim `60–78% dark`, caption `14px mut
 
 ## 11. Photo-background + giant-type slide
 
-Full-bleed photo, dark scrim band, display title + one short body line (≤25 words). Text never fights the photo — scrim ≥60% black gradient from the bottom. Details: `pptx-motion-language.md` §4.
+TRUE full-bleed: edge-to-edge photo with `inset:0`, no card radius, no border. Scrim `≥60%` black gradient from the bottom, ≤25 words total. Text sits in the scrim zone only. One page per slide. Details: `pptx-motion-language.md` §4.
 
 ```html
-<div style="position:relative;min-height:100%;background:url(assets/hanoi-1890.jpg) center/cover">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.72))"></div>
-  <div style="position:absolute;left:48px;bottom:48px;max-width:640px">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <img src="assets/hanoi-1890.jpg" alt="Hanoi street outside Dong Kinh Nghia Thuc school in 1890" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block" />
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.68) 65%,rgba(0,0,0,.82) 100%)"></div>
+  <div style="position:absolute;left:48px;right:48px;bottom:48px;max-width:640px">
     <div class="eyebrow" style="color:#F4C95D">HÀ NỘI · 1890</div>
     <h2 style="color:#fff;font-size:3.2rem;margin:0 0 8px">Đông Kinh Nghĩa Thục</h2>
     <p style="color:#E8EEF9;font-size:1.1rem;margin:0">Trường học miễn phí đầu tiên — 20 chữ, không hơn.</p>
   </div>
 </div>
 ```
+
+Scrim check: text edge holds `≥60%` black (`rgba(0,0,0,.68)` to `.82`); ≤25 words across eyebrow + title + body; credit line lives in the scrim at `14px`.
 
 ### Masked-photo variant (blob / arch, one mask per deck)
 

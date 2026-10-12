@@ -50,7 +50,7 @@ Write once, ship the URL plus the PDF plus the PPTX when organizers ask.
 ## 6. Review beats comment threads
 
 Claim: talks improve when review is structured.
-Backing: `references/verify-checklist.md` gives 16 gates with pass
+Backing: `references/verify-checklist.md` gives 15 gates with pass
 numbers: contrast `4.5:1`, photos `400KB`, code `12` lines, gradients `1`,
 notes `1:1`. `scripts/verify-images.py` plus grep checks run in CI.
 PPTX review is "slide 12 looks off". HTML review is a checklist with

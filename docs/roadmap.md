@@ -10,7 +10,7 @@ Where slideshow-master goes next. Items are ordered; checked items shipped.
 - [x] Workflow stages (research, image-review, visual-review, refine, export-verify)
 - [x] Governance: failure-recovery catalog
 - [x] Scripts: scaffold, image verify, per-engine export
-- [x] 3 full starter decks + gallery + verify checklist (16 gates)
+- [x] 3 full starter decks + gallery + verify checklist (15 gates)
 
 ## Next
 

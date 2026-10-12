@@ -97,7 +97,7 @@ One meaning per term across every file in this skill.
 - Images, icons, media density → `references/media/` (+ `media_index.json`)
 - Decorations & asymmetry → `references/decorations.md`
 - PPTX motion language (anchors, stagger, photo grammar) → `references/pptx-motion-language.md`
-- Gates 1–24 → `references/verify-checklist.md`
+- Gates 1–15 → `references/verify-checklist.md`
 - Scripts → `scripts/verify-images.py`, `scripts/verify-deck.py`,
   `scripts/export-deck.sh`, `scripts/new-deck-scaffold.sh`
 - Starters → `examples/reveal-demo/`, `examples/slidev-demo/`,

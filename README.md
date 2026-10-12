@@ -35,7 +35,7 @@ skills/slideshow/
 │   ├── animations.md           # Auto-Animate, morph, FLIP, View Transitions, fragments
 │   ├── colors.md               # 6 palettes, dark/light tokens, fonts, code themes
 │   ├── layouts.md              # bento, split, callout, stat, quote, code+preview, images
-│   └── verify-checklist.md     # 23 gates: images, contrast, placeholders, motion, fragment budget, notes, export, theme, density, decorations
+ │   └── verify-checklist.md     # 15 gates: images/media, contrast, placeholders, style tokens, code, motion/input, notes, export, theme/rotation, composition
 ├── scripts/
 │   ├── new-deck-scaffold.sh    # scaffold a new deck from a starter
 │   ├── verify-images.py        # check assets are local, sized, credited
@@ -55,7 +55,7 @@ roadmap), `CONTRIBUTING.md` (add a style / palette / template / mode).
 All three tell the same 11-slide story ("Why HTML beats PPTX for tech
 talks") so engines compare directly: **dark `#0B1020` + accent `#4F7DF3`**,
 **morph pair + rotation** (tinted quote slide), fragments, notes, reduced-motion fallback.
-Starters ship passing all 23 verify gates.
+Starters ship passing all 15 verify gates.
 
 | Starter | Best for | Preview |
 |---|---|---|
@@ -100,14 +100,14 @@ Full trade-off matrix in `skills/slideshow/references/engines.md`.
 5. **Images + Decorations** — execute `visual-plan.md`, `assets/CREDITS.md`,
    decorations.md primitives, asymmetry enforced
 6. **Build** — Markdown source → theme → layouts → morph → code → notes
-7. **Verify + Export** — 23 gates (`verify-checklist.md`), repair at owning
+7. **Verify + Export** — 15 gates (`verify-checklist.md`), repair at owning
    layer, export HTML / PDF / PPTX, ship source + decision log
 
 Details: `skills/slideshow/SKILL.md` + `skills/slideshow/workflows/`.
 
 ## Anti-slop contract
 
-Every deck the skill produces must pass: **explicit STRONG palette (no cream defaults)**, body contrast ≥4.5:1 / 7:1 projector, **color rotation** (max 2 consecutive same-bg), **content density** (≥2x via research-notes.md), **decorations & asymmetry** (1-2 primitives/slide, no three-equal-cards), max 1 gradient (accent bar or ≤8% glow — never purple-blue), 2 font families max + mono, code ≤12 lines with Shiki dual theme, `prefers-reduced-motion` fallback, speaker notes on every substantive slide, zero placeholders. Enforced by `references/verify-checklist.md` (23 gates).
+Every deck the skill produces must pass: **explicit STRONG palette (no cream defaults)**, body contrast ≥4.5:1 / 7:1 projector, **color rotation** (max 2 consecutive same-bg), **content density** (≥2x via research-notes.md), **decorations & asymmetry** (1-2 primitives/slide, no three-equal-cards), max 1 gradient (accent bar or ≤8% glow — never purple-blue), 2 font families max + mono, code ≤12 lines with Shiki dual theme, `prefers-reduced-motion` fallback, speaker notes on every substantive slide, zero placeholders. Enforced by `references/verify-checklist.md` (15 gates).
 
 ## New deck in 30 seconds
 

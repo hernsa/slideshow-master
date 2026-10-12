@@ -52,19 +52,7 @@ Dials are set in the Phase 2 Design Read (see `SKILL.md` Phase 2) and drive
 layout choices from `references/layouts.md` and motion from
 `references/animations.md`.
 
-## Engine bias, restated for the router
-
-- Tech talk code walkthrough is the talk → Slidev first (`vitesse-light +
-  vitesse-dark`, Monaco runner). Custom JS runner or multi-iframe →
-  reveal.js. See `references/engines.md` § Slidev exports.
-- Pitch emailed ahead → Marp single-file HTML + PDF. Pitched live on stage
-  with morph transitions → reveal.js with `?print-pdf` fallback.
-- Tutorial hands-on → Slidev dev (`npx slidev slides.md`) with `v-click`
-  steps. Print handout → Marp PDF via `npx marp slides.md -o deck.pdf`.
-- Showcase gallery → reveal.js Auto-Animate morphs between project states.
-  Static portfolio leave-behind → Marp PNG per slide.
-- Narrative keynote → reveal.js parallax + `data-auto-animate`. Offline
-  projector with no network → Marp, screenshots instead of iframes.
+## Engine bias — authority is `workflows/routing.md` Step 2. No restatement lives here.
 
 ## File contract (every mode file)
 

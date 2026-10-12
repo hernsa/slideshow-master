@@ -29,7 +29,7 @@ The rebuild prompts specify a SINGLE transition applied to every slide (Morph by
 
 The 25.7s promo packs 349 effects on ONE slide — that is a video, not a deck, do not copy the count. What to copy is the *stagger grammar*: elements enter in reading order (kicker → headline → body → visual), each 100–150ms apart, fast fade + slight rise (`opacity 0→1`, `translateY(12px)→0`), total entrance budget ≤600ms per slide.
 
-**Rule:** max 3 staggered entrances per slide (the 4th element is already visible). Stagger delay 100–150ms, duration 200–400ms, `transform` + `opacity` only. Anything already covered by Gate 20 fragment budget counts against it — a `v-click` chain IS the stagger, do not run both.
+**Rule:** max 3 staggered entrances per slide (the 4th element is already visible). Stagger delay 100–150ms, duration 200–400ms, `transform` + `opacity` only. Anything already covered by Gate 8 fragment budget counts against it — a `v-click` chain IS the stagger, do not run both.
 
 ```css
 .enter-1 { animation: rise .3s var(--ease-out) .1s both; }
@@ -76,7 +76,7 @@ The liked decks never drop a raw rectangle photo on a designed slide — photos 
 
 ## 7. Tinted background rotation (pastel mode)
 
-Chikiwaa rotates `BBE6F7 → FFFDE4 → E2EFFB` — pale blue, pale yellow, pale steel. Pastel rotation works when: saturation stays under ~35%, text stays near-black (`#1F2328`-class), accent stays single. This is the light-mode answer to Gate 17 rotation — three tints, same family, zero chrome.
+Chikiwaa rotates `BBE6F7 → FFFDE4 → E2EFFB` — pale blue, pale yellow, pale steel. Pastel rotation works when: saturation stays under ~35%, text stays near-black (`#1F2328`-class), accent stays single. This is the light-mode answer to Gate 13 rotation — three tints, same family, zero chrome.
 
 ## 8. Dark showcase mode
 

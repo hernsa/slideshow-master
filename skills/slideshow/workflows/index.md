@@ -4,27 +4,9 @@
 > the stage packs below add procedural depth inside that path.
 > Never mix procedures across modes (SKILL.md hard rule).
 
-## Route table (summary of `workflows/routing.md`)
+## Route table — authority is `workflows/routing.md` Steps 1–4 (mode + engine + style + workflow). No summary copy lives here.
 
-| Request | Mode | Engine bias | Workflow |
-|---|---|---|---|
-| Tech talk, demo, API walkthrough | tech-talk | reveal.js 6 / Slidev 52 | generate-deck |
-| Fundraising, sales pitch, ask + amount | pitch | Marp 4 / reveal.js 6 | generate-deck |
-| Workshop, how-to, handout | tutorial | Slidev 52 / Marp 4 | generate-deck |
-| Portfolio, gallery, launch | showcase | reveal.js 6 | generate-deck |
-| Story-driven keynote | narrative | reveal.js 6 | generate-deck |
-| "Fast", "quick", "15 minutes", "draft" | any (fixed style) | Marp 4 first | quick-generate |
-
-## When each stage runs
-
-| Stage file | Full path (`generate-deck.md`) | Fast path (`quick-generate.md`) |
-|---|---|---|
-| `stages/topic-research.md` | Step 4, before outline — full 2-source rule | Skipped — stats marked `[unverified]` in notes |
-| `stages/image-review.md` | Step 7, after scaffold — full hybrid pipeline | Sprint 0:08–0:12 — screenshots + one hero only |
-| `stages/visual-review.md` | Step 10, on the built deck — full walkthrough | Sprint 0:08–0:12 — lite subset (images, contrast, placeholders) |
-| `stages/refine-spec.md` | After user feedback on outline or built deck | Only if an upgrade trigger fires — else fix-forward |
-| `stages/export-verify.md` | Step 11 — full per-engine export + checks | Sprint 0:12–0:15 — HTML + PDF opened once, then ship |
-| `governance/failure-recovery.md` | Any red gate — fix at the owning layer | Any red lite gate — fix or upgrade to the full path |
+## When each stage runs — authority is `workflows/routing.md` Step 5 (routing slip) plus the routed workflow's own steps (`generate-deck.md` steps 4/7/10/11 or the `quick-generate.md` sprint). No matrix copy lives here.
 
 ## One line per file
 
@@ -37,7 +19,7 @@
 - `workflows/stages/refine-spec.md` — revision rounds: classifying feedback and re-running only affected phases.
 - `workflows/stages/export-verify.md` — per-engine export commands and post-export checks before shipping.
 - `workflows/governance/failure-recovery.md` — failure catalog: symptom, owning layer, recovery, re-verify gate.
-- `references/verify-checklist.md` — the 16 ship gates every stage resolves to; fail one, do not ship.
+- `references/verify-checklist.md` — the 15 ship gates every stage resolves to; fail one, do not ship.
 
 ## Upgrade and downgrade rules
 
@@ -49,7 +31,7 @@
 ## First step for every deck
 
 Fill the routing slip from `workflows/routing.md` step 5, then open the routed workflow —
-`generate-deck.md` steps 1–11 or the `quick-generate.md` sprint — and pull in stages as the table above dictates.
+`generate-deck.md` steps 1–11 or the `quick-generate.md` sprint — and pull in stages as the routed workflow dictates.
 
 ## Stage handoff convention
 
