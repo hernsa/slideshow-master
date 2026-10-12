@@ -536,6 +536,36 @@ Radius `16px` (cards), `50%` (avatars), scrim `60–78% dark`, caption `14px mut
 
 ---
 
+## 11. Photo-background + giant-type slide
+
+Full-bleed photo, dark scrim band, display title + one short body line (≤25 words). Text never fights the photo — scrim ≥60% black gradient from the bottom. Details: `pptx-motion-language.md` §4.
+
+```html
+<div style="position:relative;min-height:100%;background:url(assets/hanoi-1890.jpg) center/cover">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.72))"></div>
+  <div style="position:absolute;left:48px;bottom:48px;max-width:640px">
+    <div class="eyebrow" style="color:#F4C95D">HÀ NỘI · 1890</div>
+    <h2 style="color:#fff;font-size:3.2rem;margin:0 0 8px">Đông Kinh Nghĩa Thục</h2>
+    <p style="color:#E8EEF9;font-size:1.1rem;margin:0">Trường học miễn phí đầu tiên — 20 chữ, không hơn.</p>
+  </div>
+</div>
+```
+
+### Masked-photo variant (blob / arch, one mask per deck)
+
+Plain rectangles allowed only for full-bleed backgrounds and screenshots. Every other photo gets a shape — arch, blob, or circle (`pptx-motion-language.md` §6).
+
+```html
+<!-- arch mask -->
+<img src="assets/temple-arch.jpg" alt="Cổng đền Angkor — vòm đá ong"
+     style="width:100%;height:420px;object-fit:cover;border-radius:210px 210px 16px 16px">
+<!-- blob mask -->
+<img src="assets/speaker.jpg" alt="Diễn giả Thu Hà"
+     style="width:320px;height:320px;object-fit:cover;border-radius:58% 42% 55% 45%/48% 55% 45% 52%">
+```
+
+---
+
 ## When-vs-avoid matrix (expanded)
 
 | Pattern | Use when | Avoid when | Max per deck |
@@ -552,6 +582,8 @@ Radius `16px` (cards), `50%` (avatars), scrim `60–78% dark`, caption `14px mut
 | Agenda | 15min+ talks | Lightning talks | 1 |
 | Closing CTA | Q&A backdrop | New info, link walls | 1 |
 | Hero image | Emotional beat | Data slides | 2 |
+| Photo-bg + giant type | Statement beats, section openers | Data slides, body copy | 2 |
+| Masked photo (arch/blob) | Designed slides needing a face/place | Screenshots, full-bleeds | 3 |
 
 Rule of thumb: if two consecutive slides use the same pattern, the second must change the visual (new image, new numbers) or merge into the first.
 

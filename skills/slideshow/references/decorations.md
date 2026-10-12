@@ -84,3 +84,7 @@ Center the hero once, then break it. A left-aligned headline with the visual rig
 1. No decorative SVG blobs behind every slide — one background shape per slide, most slides have none.
 2. No emoji as decoration. Icons are inline SVG (`media/icons.md`), numbers are type, shapes are CSS/SVG geometry.
 3. Symmetry is not a requirement, but chaos is not either. Every decorative element earns its place: it reinforces the takeaway or it leaves.
+
+## 8. Photo masks + showcase sections (PPTX grammar)
+
+Raw rectangle photos on designed slides read as pasted, not designed (`pptx-motion-language.md` §6–§8). Full-bleed backgrounds and screenshots may stay rectangular; every other photo takes the deck's one mask (arch, blob, or circle — picked at style lock, never mixed). One section per deck may go full dark-showcase: near-black bg, white type, photo as the only color, no cards, no borders — the photo IS the decoration.

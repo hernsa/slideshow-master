@@ -444,6 +444,20 @@ grep -rPn "<t[dh][^>]*v-click" --include="*.md" --include="*.html" .
 
 ---
 
+## Gate 24 — PPTX motion language (anchors, one transition, stagger, photo grammar)
+
+**WHY:** Five liked reference decks feel modern with zero explicit transitions: 2+ big repeated anchors per section, one deck-wide transition, staggered entrances, full-bleed or masked photos, oversized display type. Without this gate decks default to transition roulette + small-card morphs + raw rectangle photos.
+
+**HOW:** Per `pptx-motion-language.md`: (1) each section lists its 2 continuity anchors (same element, same position, adjacent slides); (2) ONE slide transition locked for the whole deck (one zoom/none exception max); (3) entrances staggered ≤3 per slide, ≤600ms total, sharing the Gate 20 fragment budget; (4) photos are full-bleed-with-scrim or deck-mask-shaped (arch/blob/circle, one mask per deck); (5) one display headline per slide `clamp(2.5rem,6vw,4.5rem)` + one accent word max.
+
+**PASS:** Anchors listed per section and morph-paired; single transition; stagger capped; photo grammar holds; display type oversized.
+
+**FAIL:** Per-slide transition overrides; stagger + v-click chains stacked; raw rectangle photos on designed slides; body-size headlines everywhere; zero repeated anchors across adjacent slides.
+
+**Fix:** Lock anchors at outline (visual-plan.md `Anchors:` line per slide), set one transition at style lock, convert extra clicks to static, mask or full-bleed the photos, scale the headline.
+
+---
+
 ## Render-screenshot verification (headless Chrome)
 
 **Method (from builder session):** Use Chrome at `C:\Program Files\Google\Chrome\Application\chrome.exe` with OLD `--headless` flag (not `--headless=new`) + `--screenshot=<path> --virtual-time-budget=5000`. For reveal.js: `hash:true` + navigate to slide via `#/N` in URL. Example: `--screenshot=shots/s1.png "file:///C:/.../index.html#/0"`. Chrome writes asynchronously — `Test-Path` immediately after returns False; wait 2-3 seconds before checking. `--dump-dom` gives rendered DOM for section counting and fragment verification. PowerShell mojibake: UTF-8 dumps read with OEM codepage — read clean source files directly instead of piping. Use `verify-deck.py` on source for structural checks; render-screenshot for visual regression (layout overflow, fragment visibility, reduced-motion).
@@ -458,5 +472,5 @@ grep -rPn "<t[dh][^>]*v-click" --include="*.md" --include="*.html" .
 4. Contrast trio (Gate 5) — 2 min
 5. Reduced motion + keyboard + mobile (Gates 10, 12–13) — 3 min
 6. Notes + code + exports + console (Gates 11, 14–16) — 3 min
-7. Theme + density + decorations (Gates 17–23) — 2 min
+7. Theme + density + decorations + motion language (Gates 17–24) — 2 min
 8. Fill the ship record at the top. Sign it. Then present.

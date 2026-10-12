@@ -55,6 +55,17 @@ Names must be unique per deck. `hero` may appear on exactly two adjacent slides 
 
 Every deck MUST ship 1–3 morph pairs on element continuations. A morph pair is one element continued across two adjacent slides via one of: `data-auto-animate` + `data-id` (reveal.js), `view-transition-name` (View Transitions API / Slidev `transition: view-transition`), paired `v-motion` enter states on the same element across adjacent Slidev slides, or GSAP Flip `data-flip-id`. Deck-wide single transition alone (`slide-left`, `fade 0.4s`, or any one default with zero pairs above) FAILs review — it is chrome motion, not element continuity. Rules: never morph body copy (headlines, KPIs, bars, cards, images only), never morph across a section boundary (new section = hard cut + new title slide), max 3 simultaneously morphing elements per pair. Review check: list each pair as `slides N→N+1 : mechanism + element (e.g. slides 2→3 : data-id hero-bar)`; zero pairs = REQUEST_CHANGES.
 
+### Continuity anchors + staggered entrances (PPTX grammar)
+
+Parsed from five liked reference decks: they ship ZERO explicit transitions and still feel modern, because 2+ BIG elements repeat across adjacent slides in the same position (headline block, accent shape, photo frame — see `pptx-motion-language.md` §1). A morph pair on a 138pt headline or full-bleed photo beats three pairs on small cards. Prefer 1–2 large anchors over 3 small ones. Entrances stagger in reading order (kicker → headline → body → visual), max 3 per slide, 100–150ms apart, `rise` 200–400ms, total ≤600ms — and a `v-click` chain IS the stagger, never run both (Gate 20 budget binds).
+
+```css
+.enter-1 { animation: rise .3s var(--ease-out) .1s both; }
+.enter-2 { animation: rise .3s var(--ease-out) .22s both; }
+.enter-3 { animation: rise .3s var(--ease-out) .34s both; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+```
+
 ### WHEN to use
 - Title continuity: `Acme Metrics` becomes `Acme Metrics: Q3` so the audience knows this is the same story, next chapter.
 - Bar / number growth: a bar from 120px to 320px, a KPI from `$1.8M` to `$2.4M`.
