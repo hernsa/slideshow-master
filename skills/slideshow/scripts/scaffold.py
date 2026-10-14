@@ -393,15 +393,91 @@ HERE = Path(__file__).parent
 PPTX = HERE / "deck.pptx"  # <-- rename per deck
 OUT = HERE / "renders"
 
-MORPH_OBJECT = 3954
-MORPH_WORD = 3955
-MORPH_CHAR = 3956
-FADE = 1793
-FX_FADE = 10
-ON_CLICK = 1
-AFTER_PREV = 3
+# ----- enum constants (from references/engines.md) -----
+MORPH_OBJECT = 3954          # ppEffectMorphByObject
+MORPH_WORD = 3955            # ppEffectMorphByWord
+MORPH_CHAR = 3956            # ppEffectMorphByChar
+FADE = 1793                  # ppEffectFade
+FX_FADE = 10                 # msoAnimEffectFade
+ON_CLICK = 1                 # triggerOnPageClick
+AFTER_PREV = 3               # triggerAfterPrevious
+ANIMATE_LEVEL_NONE = 0       # animateLevelNone
 
-FADE_SLIDES = {1}  # 1-based slides that take fade instead of Morph
+# ----- style-locked exceptions (max ~2 per deck) -----
+FADE_SLIDES = {1}            # 1-based: slides that take Fade instead of Morph
+# Example: FADE_SLIDES = {1, 6}
+
+# ----- entrance cadence (shared Gate 8 budget: <=3/slide, 100-150ms apart) -----
+STAGGER = [
+    (100, 300),   # 1st: kicker / headline
+    (220, 300),   # 2nd: body / visual
+    (340, 300),   # 3rd: visual / accent
+]
+
+# ----- COM helpers -----
+def add_fade_entrance(slide, shape, delay_ms, duration_ms=300):
+    """Add a fade entrance effect (after-previous chain)."""
+    seq = slide.TimeLine.MainSequence
+    fx = seq.AddEffect(shape, FX_FADE)
+    fx.Timing.TriggerType = AFTER_PREV
+    fx.Timing.TriggerDelayTime = delay_ms / 1000.0
+    fx.Timing.Duration = duration_ms / 1000.0
+    fx.Timing.Accelerate = 0
+    fx.Timing.Decelerate = 0
+    return fx
+
+def stagger_entrances(slide, shapes, base_delays=None):
+    """Apply the cadence table to a list of shapes in reading order.
+    shapes = [("hero", shape_obj), ("body", shape_obj), ("disc", shape_obj)]
+    Returns list of created effects.
+    """
+    delays = base_delays if base_delays is not None else [d for d, _ in STAGGER]
+    dur = STAGGER[0][1]
+    for idx, (name, shp) in enumerate(shapes):
+        if idx >= len(delays):
+            break
+        add_fade_entrance(slide, shp, delays[idx], dur)
+    # keep paragraphs whole (no animate-by-word/char)
+    for _, shp in shapes:
+        try:
+            shp.TextFrame2.Paragraphs[1].AnimationLevel = ANIMATE_LEVEL_NONE
+        except Exception:
+            pass
+
+def parked_flight(slide, shape, from_left_in, to_left_in, duration_ms=1500):
+    """Animate a parked shape flying in from off-canvas.
+    Adds a motion path from (from_left_in, current top) to (to_left_in, current top).
+    Returns the created effect.
+    """
+    seq = slide.TimeLine.MainSequence
+    fx = seq.AddEffect(slide.Shapes(shape.name), 13, AFTER_PREV)  # msoAnimEffectPath
+    # Build a simple left-to-right path
+    bld = fx.Behaviors.Add(1)  # msoAnimTypeMotion
+    mpath = bld.MotionEffect
+    mpath.Path = (
+        f"M 0 0 L {int((to_left_in - from_left_in) * 914400)} 0"
+    )  # EMU offset
+    fx.Timing.TriggerType = AFTER_PREV
+    fx.Timing.Duration = duration_ms / 1000.0
+    return fx
+
+def check_anchor_continuity(pres, anchor_names):
+    """Assert that named anchors exist on consecutive slides.
+    Returns (continuity_pairs, warnings).
+    """
+    prev = None
+    pairs = 0
+    warns = []
+    for i, slide in enumerate(pres.Slides, start=1):
+        names = {s.name for s in slide.Shapes if s.name}
+        if prev is not None:
+            common = anchor_names & names & prev
+            if common:
+                pairs += 1
+            else:
+                warns.append(f"slides {i-1}-{i}: no shared anchor names")
+        prev = names
+    return pairs, warns
 
 
 def main():
@@ -412,16 +488,40 @@ def main():
     app = EnsureDispatch("PowerPoint.Application")
     app.DisplayAlerts = 0  # ppAlertsNone
     pres = app.Presentations.Open(str(PPTX), WithWindow=False)
+
+    # ----- TRANSITIONS -----
     for i, slide in enumerate(pres.Slides, start=1):
         slide.SlideShowTransition.EntryEffect = (
             FADE if i in FADE_SLIDES else MORPH_OBJECT)
         slide.SlideShowTransition.AdvanceOnTime = False
         slide.SlideShowTransition.AdvanceOnClick = True
-    # Entrances: <=3 per slide, fade, after-previous, 100-150ms apart.
+
+    # ----- ENTRANCES (per visual-plan Entrances: lines) -----
+    # Example pattern for slide 3 (photo-collage disc rotation anchor):
+    # slide3 = pres.Slides(3)
+    # disc = slide3.Shapes("disc")
+    # add_fade_entrance(slide3, disc, 300)  # disc itself enters late
+    #
+    # Example staggered entrances on slide 2:
+    # slide2 = pres.Slides(2)
+    # kicker = slide2.Shapes("kicker")
+    # hero = slide2.Shapes("hero")
+    # sub = slide2.Shapes("sub")
+    # stagger_entrances(slide2, [("kicker", kicker), ("hero", hero), ("sub", sub)])
+
     # Add per-slide blocks here following the visual-plan Entrances: lines.
+
     OUT.mkdir(exist_ok=True)
     for i, slide in enumerate(pres.Slides, start=1):
         slide.Export(str(OUT / ("s%d.png" % i)), "PNG", 1920, 1080)
+
+    # ----- continuity sanity check (reads plan, not enforced) -----
+    # anchors = {"hero", "sub", "disc", "scrim-left", "tile-1", "tile-2", "tile-3", "tile-4"}
+    # pairs, warns = check_anchor_continuity(pres, anchors)
+    # for w in warns:
+    #     print("warn:", w)
+    # print(f"continuity pairs: {pairs}/{len(pres.Slides)-1}")
+
     pres.Save()  # transitions live in the file, not just the session
     pres.Close()
     app.Quit()
