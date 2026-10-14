@@ -1,68 +1,71 @@
 #!/usr/bin/env python3
-"""Verify every image referenced by a deck exists, has a license record, and has alt text.
+"""Verify every raster a PPTX deck build references exists, is credited,
+and fits the size budgets.
 
-Usage: python verify-images.py <deck-source-file> [--assets-dir assets]
+Usage: python verify-images.py <deck-dir> [--assets-dir assets]
+Scans build.py for ASSETS / "file" refs and string-literal image names,
+checks each file exists, checks assets/CREDITS.md names it, warns on
+budget breaches (photos <=400KB, backgrounds <=200KB, width <=1920px).
 Exits 0 when all gates pass, 1 with a failure list otherwise.
 """
 import re
 import sys
 from pathlib import Path
 
-IMG_RE = re.compile(r'!\[([^\]]*)\]\(([^)]+)\)|<img\b[^>]*>', re.IGNORECASE)
-SRC_RE = re.compile(r'src\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE)
-ALT_RE = re.compile(r'alt\s*=\s*["\']([^"\']*)["\']', re.IGNORECASE)
-LICENSE_EXTS = {".txt", ".md", ".json"}
+REF_RE = re.compile(r'ASSETS\s*/\s*["\']([^"\']+)["\']')
+LIT_RE = re.compile(r'["\']([A-Za-z0-9_][A-Za-z0-9_\-]*\.(?:jpe?g|png|webp))["\']', re.IGNORECASE)
+PHOTO_BUDGET = 400 * 1024
+BG_BUDGET = 200 * 1024
+MAX_WIDTH = 1920
 
 
 def main() -> int:
     if len(sys.argv) < 2:
-        print("usage: verify-images.py <deck-source-file> [--assets-dir assets]")
+        print("usage: verify-images.py <deck-dir> [--assets-dir assets]")
         return 1
-    deck = Path(sys.argv[1])
+    root = Path(sys.argv[1])
     assets = Path(sys.argv[3] if len(sys.argv) > 3 and sys.argv[2] == "--assets-dir" else "assets")
-    if assets.is_absolute() is False:
-        assets = deck.parent / assets
-    text = deck.read_text(encoding="utf-8")
+    if not assets.is_absolute():
+        assets = root / assets
+    build = root / "build.py"
+    if not build.exists():
+        print(f"FAIL: no build.py in {root}")
+        return 1
+    text = build.read_text(encoding="utf-8")
+    refs = set(REF_RE.findall(text)) | set(LIT_RE.findall(text))
+    refs = {r for r in refs if not r.startswith(("plate_", "sq_", "sqrot_"))}
     failures: list[str] = []
-    seen = 0
-    for m in IMG_RE.finditer(text):
-        alt_md = m.group(1)
-        src_md = m.group(2)
-        if src_md is not None:
-            raw = src_md.strip()
-            src = raw.split()[0].strip("\"'") if raw else ""
-            alt = alt_md or ""
-        else:
-            tag = m.group(0)
-            src_m = SRC_RE.search(tag)
-            alt_m = ALT_RE.search(tag)
-            src = src_m.group(1).strip() if src_m else ""
-            alt = alt_m.group(1) if alt_m else ""
-            if not src:
-                failures.append(f"missing src in tag: {tag[:80]}")
-                continue
-        if not alt.strip():
-            failures.append(f"missing alt text: {src}")
-        if src.startswith(("http://", "https://", "data:")):
-            continue  # remote/data URIs skip file + license checks, alt already checked above
-        seen += 1
-        img_path = deck.parent / src if not Path(src).is_absolute() else Path(src)
-        if not img_path.exists():
-            failures.append(f"missing file: {src}")
+    warnings: list[str] = []
+    credits = (assets / "CREDITS.md").read_text(encoding="utf-8", errors="replace") \
+        if (assets / "CREDITS.md").exists() else ""
+    if not (assets / "CREDITS.md").exists():
+        failures.append("assets/CREDITS.md missing")
+    for ref in sorted(refs):
+        p = assets / ref
+        if not p.exists():
+            failures.append(f"missing file: assets/{ref}")
             continue
-        stem = img_path.stem
-        licensed = any((assets / f"{stem}{ext}").exists() or (img_path.parent / f"{stem}.LICENSE").exists() for ext in LICENSE_EXTS)
-        if not licensed:
-            failures.append(f"no license record for: {src} (add assets/{stem}.txt)")
+        if ref not in credits and Path(ref).stem not in credits:
+            failures.append(f"no CREDITS.md line for: {ref}")
+        size = p.stat().st_size
+        budget = BG_BUDGET if ref.startswith("plate_") or "bg" in ref else PHOTO_BUDGET
+        if size > budget:
+            warnings.append(f"over budget: {ref} {size // 1024}KB > {budget // 1024}KB")
+        try:
+            from PIL import Image
+            with Image.open(p) as im:
+                if im.width > MAX_WIDTH:
+                    warnings.append(f"too wide: {ref} {im.width}px > {MAX_WIDTH}px")
+        except ImportError:
+            pass
+    for w in warnings:
+        print(f"warn: {w}")
     if failures:
-        print(f"{len(failures)} image gate failure(s) in {deck}:")
+        print(f"{len(failures)} image gate failure(s) in {root}:")
         for f in failures:
             print(f"  - {f}")
         return 1
-    if seen == 0:
-        print("no local images referenced — nothing to verify")
-        return 0
-    print(f"OK: {seen} image(s) verified in {deck}")
+    print(f"OK: {len(refs)} image(s) verified in {root}")
     return 0
 
 

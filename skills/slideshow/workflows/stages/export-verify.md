@@ -1,84 +1,23 @@
-# Export Verify — Per-Engine Export Procedure
+# Stage: export-verify — renders + handout checks before shipping
 
-> The export is the artifact that outlives the talk. "Works on my laptop" means
-> nothing until the PDF paginates, the PPTX opens elsewhere, and the HTML runs
-> with zero console errors.
+> Runs inside `generate-pptx.md` phase 11. Output is the shippable set:
+> `.pptx` + `renders/` (+ handout PDF on request). Authority: Gates 11, 12.
 
-## 1. When this stage runs
+## Procedure
 
-- Full path: `generate-deck.md` step 11, only after `stages/visual-review.md` signs off.
-- Fast path: sprint 0:12–0:15 — HTML + PDF opened once, pagination confirmed, then ship.
-- Never export to rescue a red gate; export verifies green work.
+1. Renders exist for every slide at 1920×1080, exported in the same
+   COM session as the motion pass, timestamps newer than the .pptx.
+   Zero-byte PNGs fail the gate.
+2. Handout PDF on request: `ExportAsFixedFormat` with
+   `ppFixedFormatTypePDF=2` in that same COM session. Page count equals
+   slide count.
+3. COM hygiene: no `POWERPNT.EXE` remains, `DisplayAlerts` was 0, the
+   .pptx saved after the motion pass (`pres.Save()` before `Close()`).
+4. Ship record filled (checklist top block): outline nod, research +
+   plan state, build size, motion map, verify lines, continuity
+   anchors, deliverables list.
 
-## 2. Pre-export freeze
+## Handoff
 
-Confirm the outline version, the visual-review handoff, and a clean placeholder
-scan are all in the delivery note. Export from the final commit — screenshots of
-auth-gated demos already in `assets/`, no `localhost` demo URLs left live.
-
-## 3. Per-engine export commands
-
-Run from the skill root. `scripts/export-deck.sh <reveal|slidev|marp> <deck-path> [out-dir]`
-writes into `dist/` by default. Raw-command fallbacks live in `references/engines.md` — use them only when the script fails.
-
-reveal.js — serve first, decktape needs a URL:
-
-```bash
-npx serve . -l 8000 &
-scripts/export-deck.sh reveal "http://localhost:8000/?print-pdf" dist
-```
-
-Fragments print as final state by default. PPTX has no native path — export PDF,
-then convert, or rebuild in Marp when PPTX is the deliverable.
-
-Slidev — PDF plus the static SPA in one script:
-
-```bash
-scripts/export-deck.sh slidev slides.md dist
-```
-
-`v-click` steps export as extra PDF pages — three clicks means three pages, which
-is expected. Remove `v-drag` before export. PPTX is experimental and rasterizes
-code blocks: verify monospace fallback at 14px+. REQUIRED for every Slidev deck: ship an HTTP launcher (e.g. `START-DECK.cmd` with `python -m http.server 8000 --directory dist` + open `http://localhost:8000/`) with a no-double-click-`dist/index.html` warning (`file://` renders blank), plus a PDF fallback artifact (`deck.pdf`) verified page-by-page. Build notes (required): Google Fonts offline risk — self-host via `public/fonts/` + `@font-face` or ship a system-font fallback stack for projector machines with no network; Slidev 52.x `cssMinify:false` workaround — if `slidev build` crashes in CSS minify (seen on 52.20), set `cssMinify: false` in config, rebuild, and re-verify over HTTP before shipping.
-
-Marp — HTML, PDF, and native PPTX from one source:
-
-```bash
-scripts/export-deck.sh marp slides.md dist
-```
-
-The script's Marp path omits `--allow-local-files`: if exported output drops
-local images, re-run via the raw flags in `references/engines.md`. PPTX degrades transitions
-to static cuts — expected, not a defect.
-
-## 4. Post-export checks
-
-1. Open every artifact: HTML in Chromium and Firefox, PDF at 100% zoom, PPTX in PowerPoint and Google Slides.
-2. Page count equals slide count — plus Slidev `v-click` step pages where applicable.
-3. Zero clipped lines in the PDF; fonts embedded and readable in the PPTX (system fonts if PPTX is the deliverable).
-4. Notes present: reveal.js speaker view via `?notes`, Slidev `<!-- -->` comments intact, Marp presenter notes in the HTML.
-5. Console shows zero errors and zero 404s across a full walk in both browsers (Gate 12).
-6. Ship the Markdown source alongside the built deck, plus the engine decision log from `references/engines.md`.
-
-## 5. What ships per target
-
-| Target | Artifacts | Notes |
-|---|---|---|
-| Live URL | `dist/` SPA (Slidev/reveal) or `deck.html` (Marp) + HTTP launcher (`START-DECK.cmd`) for every Slidev deck | serve to confirm, never `file://` for SPAs — launcher runs `python -m http.server` + warns no-double-click-`dist` |
-| Handout | `deck.pdf` (REQUIRED fallback for every Slidev deck) | page count checked, notes version when the venue prints them |
-| Send-ahead | `deck.pptx` (Marp native) or PDF chain (reveal/Slidev) | system fonts, cuts only |
-| Always | Markdown source + engine decision log + ship record | source is diffable; the log explains the engine |
-
-Engine decision log (paste from `references/engines.md`, filled):
-
-```markdown
-Engine: Slidev 52 (live code + v-click pedagogy)
-Why not reveal.js: no custom runner needed; Markdown authorship is faster
-Why not Marp: live code highlighting is essential, Marp renders code static
-Export path: export-deck.sh slidev → PDF 15pp + dist/ SPA verified
-Fallback: static PDF reads standalone; reduced-motion cuts verified
-```
-
-## 6. Handoff
-
-Paste one line: `Export done: HTML + PDF + source shipped, ship record signed — deck is out.` If any check fails, stop shipping and open `governance/failure-recovery.md`.
+`Export done: N renders + handout (if requested), COM clean, ship
+record filled — deck ships.`

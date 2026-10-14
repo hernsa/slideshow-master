@@ -58,7 +58,8 @@ for t in targets:
         continue
     for i, line in enumerate(text.splitlines(), 1):
         # Skip lines that only document the gate's own grep patterns
-        if line.lstrip().startswith("grep ") or "grep -r" in line:
+        # (bash grep or PowerShell Select-String)
+        if line.lstrip().startswith(("grep ", "Select-String")) or "grep -r" in line:
             continue
         if pat.search(line):
             hits.append("%s:%d:%s" % (t, i, line.strip()[:100]))

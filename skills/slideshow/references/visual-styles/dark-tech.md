@@ -5,79 +5,28 @@
 **When to use:** hackathons, infra deep-dives, security talks, perf clinics where code and terminals dominate.
 **Avoid when:** daylight keynotes, investor pitches, printed handouts. Neon dies under fluorescents and on paper.
 
-## Tokens (near-black + phosphor)
+## Palette (explicit RGB — paste into build.py)
 
-```css
-:root, .dark {
-  --bg: #05070D; --surface: #0B1220; --card: #0B1220;
-  --fg: #E2F3FF; --muted: #7D8DA6; --border: #1E2A3F;
-  --primary: #22D3EE; --accent: #A3E635;
-  --success: #4ADE80; --warning: #FBBF24;
-  --code-bg: #05070D; --code-fg: #E2F3FF;
-}
-```
+- BG `#05070D`
+- INK `#E2F3FF`
+- ACCENT `#22D3EE`
+- ACCENT2 `#A3E635`
+- MUTED `#7D8DA6`
+- CARD `#0B1220`
 
-Primary cyan `#22D3EE` for links and structure; accent lime `#A3E635` for exactly one live value per slide. Muted `#7D8DA6` holds at 5.4:1 on bg.
-
-## Typography
+## Type
 
 Display mono `JetBrains Mono` 700 for headings; body `Inter`; code `JetBrains Mono` 400.
 
-```html
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
-```
+Map Display → hero/title tiers, Body → body tier, Mono → code/mono
+lines only (`references/tokens.md`).
 
-```css
---font-display: "JetBrains Mono", ui-monospace, monospace;
---font-body: "Inter", system-ui, sans-serif;
-h1, h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
-.prompt { color: var(--accent); }
-```
+## PPTX notes
 
-Headings set in mono at 600–800 weight read as machine voice. Keep them short: five words maximum.
-
-## Code theme
-
-Shiki `vitesse-dark` only. There is no light mode in Dark Tech; handouts export as dark-on-black PDF.
-
-```js
-const html = await codeToHtml(source, {
-  lang: 'rust', theme: 'vitesse-dark'
-});
-```
-
-## Gradient rule
-
-None as fills. Glow is the gradient substitute, capped at one glowing element per slide.
-
-```css
-.glow-one {
-  border: 1px solid rgba(34,211,238,.55);
-  box-shadow: 0 0 24px rgba(34,211,238,.28), inset 0 0 12px rgba(34,211,238,.08);
-}
-```
-
-Second glow kills the first. If the terminal glows, the stat stays flat.
-
-## Signature layout — mono headline + glowing terminal
-
-```html
-<div class="slide-inner">
-  <div class="eyebrow" style="color:#7D8DA6">$ shield --enable --edge</div>
-  <h2>p95: 412ms <span style="color:#A3E635">→ 243ms</span></h2>
-  <pre class="glow-one" style="background:#05070D;color:#E2F3FF;border-radius:12px;padding:20px;font-size:15px;font-family:'JetBrains Mono',monospace"><code><span style="color:#A3E635">❯</span> shield status --live
-edge:     HIT 83% · origin rests
-p95:      243ms ▼ −41%
-rollback: armed · 2 auto this quarter</code></pre>
-  <p style="font-size:14px;color:#7D8DA6">Live edge counters · screenshot in PDF export, iframe only on stage.</p>
-</div>
-```
-
-## Per-engine notes
-
-- **reveal.js:** force dark with `<section data-background-color="#05070D">`; mono headings need `line-height: 1.1` to avoid clipping descenders.
-- **Slidev (UnoCSS):** `bg-[#05070D] text-[#E2F3FF] font-mono` shell; glow via arbitrary `shadow-[0_0_24px_rgba(34,211,238,0.28)]`.
-- **Marp (`@theme`):** single dark theme file; set `section { background: #05070D; color: #E2F3FF; }` and `code { font-family: 'JetBrains Mono', monospace; }`.
+- Station this palette's ramp: BG → 2 mid stops → saturated break.
+- Glow/decor use ACCENT at low alpha (`deco_blob`, `glow()`); never
+  OuterGlow, never gradient fills on shapes.
+- Plates darken the BG further in PIL; scrims use BG at 60–70% alpha.
 
 ## Anti-slop don'ts
 

@@ -1,61 +1,61 @@
 # Framing — open / divide / close
 
-> Tokens in [tokens.md](../tokens.md). One page per slide. This file owns framing; body patterns live in `references/layouts.md`, diagrams in `references/data-graphics/diagrams.md`. Shared boilerplate: see `_index.md` footer.
+> Tokens in [tokens.md](../tokens.md). One slide per pattern. This file owns framing; body patterns live in `references/layouts.md`, diagrams in `references/data-graphics/diagrams.md`. Helpers (`solid_bg`, `kicker`, `title`, `body`, `circle_pic`, `rect_pic`, `set_notes`) ship in the scaffold's `build.py` — same signatures in every deck.
 
 ## Open (title hero)
 
-```html
-<div class="slide-inner" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center">
-  <div class="eyebrow">Acme Corp · Q3 engineering review · Oct 2026</div>
-  <h1 style="margin:12px 0 0">Ship calmly.</h1>
-  <p class="lead" style="margin-top:16px">How preview deploys took p95 from 412ms to 243ms in six weeks — and ended Friday fear.</p>
-  <div style="display:flex;gap:12px;align-items:center;margin-top:24px">
-    <img src="assets/ada.jpg" alt="Portrait of Ada Okafor" style="width:48px;height:48px;border-radius:50%;object-fit:cover" />
-    <div><strong>Ada Okafor</strong><div style="opacity:.65;font-size:14px">Platform Lead, Acme</div></div>
-  </div>
-</div>
+```python
+slide = new_slide()
+solid_bg(slide, BG)
+kicker(slide, "ACME CORP · Q3 ENGINEERING REVIEW · OCT 2026", x=0.65, y=1.9, color=ACCENT)
+title(slide, "Ship calmly.", x=0.65, y=2.3, w=8.0, size=54, accent="calmly.", accent_color=ACCENT)
+body(slide, "How preview deploys took p95 from 412ms to 243ms in six weeks — and ended Friday fear.",
+     x=0.65, y=3.6, w=7.5)
+circle_pic(slide, "speaker", "assets/ada.jpg", cx=1.15, cy=5.5, d=0.7)
+body(slide, "Ada Okafor · Platform Lead, Acme", x=1.75, y=5.35, w=5.0, size=14)
+set_notes(slide, "Open with the Friday-fear story; land the 412→243 number before advancing.")
 ```
 
-## Divide (numbered + number-free variant)
+## Divide (numbered + number-free)
 
-```html
-<div class="slide-inner" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;gap:16px">
-  <div style="font-size:5rem;font-weight:800;opacity:.14;line-height:1">02</div>
-  <div class="eyebrow">Part two — evidence</div>
-  <h1 style="margin:0">The pipeline recovered</h1>
-  <p class="lead">Three changes, six weeks, p95 down 41%.</p>
-</div>
+```python
+slide = new_slide()
+solid_bg(slide, BG)
+title(slide, "02", x=0.65, y=1.6, w=3.0, size=96, color=MUTED)          # ghost number
+kicker(slide, "PART TWO — EVIDENCE", x=0.65, y=3.1, color=ACCENT)
+title(slide, "The pipeline recovered", x=0.65, y=3.5, w=9.0, size=44)
+body(slide, "Three changes, six weeks, p95 down 41%.", x=0.65, y=4.6, w=8.0)
 ```
 
-```html
-<div class="slide-inner" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center">
-  <div class="eyebrow">Acme Corp — Q3 review</div>
-  <h1>Ship calmly.</h1>
-  <p class="lead">Ada Okafor · Platform Lead · October 2026</p>
-</div>
+Number-free variant: drop the ghost number, keep kicker + title + one lead line.
+
+## Close (ask + QR)
+
+```python
+slide = new_slide()
+solid_bg(slide, BG)
+kicker(slide, "TRY IT TONIGHT", x=0.65, y=2.0, color=ACCENT)
+title(slide, "Ship your next deploy in one command.", x=0.65, y=2.4, w=7.0, size=44)
+body(slide, "npx acme-deploy --preview", x=0.65, y=4.2, w=7.0, size=20, mono=True)
+body(slide, "Slides plus demo: acme.dev/talks/q3 · ada@acme.dev", x=0.65, y=4.9, w=7.0, size=14, color=MUTED)
 ```
 
-## Close (ask + QR variant)
+QR variant: copy column narrows to `w=6.5`; QR goes right:
 
-```html
-<div class="slide-inner" style="min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px">
-  <div class="eyebrow">Try it tonight</div>
-  <h1 style="margin:0">Ship your next deploy<br />in one command.</h1>
-  <code style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:1.05rem">npx acme-deploy --preview</code>
-  <p style="opacity:.7;font-size:16px;margin:0">Slides plus demo: <strong>acme.dev/talks/q3</strong> · ada@acme.dev</p>
-</div>
+```python
+rect_pic(slide, "qr", "assets/qr.png", x=10.3, y=2.5, w=2.4, h=2.4)    # real QR, never drawn
 ```
 
-```html
-<div class="slide-inner" style="display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;min-height:60vh">
-  <div>
-    <div class="eyebrow">Take the demo home</div>
-    <h1>Scan for slides and repo.</h1>
-    <p class="lead">Four-minute video plus the shield config.</p>
-    <p><strong>acme.dev/talks/q3</strong></p>
-  </div>
-  <img src="assets/qr.png" alt="QR code linking to slides and demo at acme dot dev slash talks slash q3" style="width:180px;height:180px;border:1px solid var(--border);border-radius:16px" />
-</div>
+## Slide spec
+
+```
+Slide N — <Title>                      bg: <solid|photo>
+  Text runs:  kicker {11pt ACCENT} ; title {44–54pt} ; body {≤3 lines 16pt}
+  Z-order:    bg → <photos> → copy → logo
+  Entrances:  none (framing slides land whole; motion lives in body sections)
+  Anchors:    kicker slot reused from previous section
+  Images:     assets/<NN>_<name>.jpg (avatar or QR only)
+  Done when:  ask is headlined, chapters numbered, QR is a real raster.
 ```
 
 ## Don't

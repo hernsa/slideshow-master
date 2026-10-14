@@ -4,28 +4,29 @@ Where slideshow-master goes next. Items are ordered; checked items shipped.
 
 ## Shipped
 
-- [x] Hybrid Engine Router (reveal.js / Slidev / Marp) + routing workflow
-- [x] 5 narrative modes, 10 visual styles, 12 layout templates
-- [x] Data-graphics pack (charts, tables, diagrams — pure HTML/CSS/SVG)
-- [x] Workflow stages (research, image-review, visual-review, refine, export-verify)
+- [x] Pure-PPTX rewrite (v1.0.0): python-pptx + PowerPoint COM stack,
+  `generate-pptx.md` 11-phase workflow, scaffold/verify/render scripts
+- [x] 5 narrative modes, 13 visual styles, 8 python-pptx layout recipes
+- [x] Data-graphics pack (diagrams, charts, tables — native shapes)
+- [x] PPTX craft law (`pptx-motion-language.md`): anchors, Morph
+  contract, stagger, value ramp, type scale, spec grammar
 - [x] Governance: failure-recovery catalog
-- [x] Scripts: scaffold, image verify, per-engine export
-- [x] 3 full starter decks + gallery + verify checklist (15 gates)
+- [x] Verify checklist (15 PPTX-native gates) + `verify-pptx.py` OOXML
+  asserts + renders-by-eye pre-ship run
 
 ## Next
 
-- [ ] Engine version watch: re-pin reveal.js / Slidev / Marp quarterly in
-  `references/engines.md` (current pins noted per engine file)
+- [ ] PowerPoint version watch: re-verify COM enums + p159
+  serialization yearly against installed 365 (`references/engines.md`)
 - [ ] More visual styles: high-contrast print theme, academic-poster style
-- [ ] More layout templates: agenda, team-roster, pricing, appendix
-- [ ] `scripts/verify-deck.py`: link checker + contrast spot-check to
-  complement `verify-images.py`
-- [ ] Rendered screenshot gallery (CI-rendered PNGs of the three starters)
-- [ ] i18n note: RTL + CJK font-pair guidance in `references/colors.md`
+- [ ] More layout recipes: agenda, team-roster, pricing, appendix
+- [ ] `scripts/verify-pptx.py`: entrance-delay asserts (stagger timing
+  from the timing tree, not just count + filter)
+- [ ] Rendered PNG gallery (COM-exported renders of a sample deck)
+- [ ] i18n note: RTL + CJK font-pair guidance in `references/tokens.md`
 
 ## Non-goals
 
-- Native PPTX authoring (use ppt-master for that — this skill is HTML-first)
+- HTML slide engines (retired in v1.0.0 — this skill is PPTX-native)
 - A visual slide editor or hosted builder
-- Chart libraries (observable-plot, chart.js) — pure CSS/SVG keeps decks
-  dependency-free and printable
+- Chart libraries — native shapes keep decks dependency-free and editable

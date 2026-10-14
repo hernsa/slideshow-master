@@ -1,21 +1,29 @@
 # Display type — giant statement
 
-> Tokens in [tokens.md](../tokens.md). One page per slide. One line, one claim, type does the work. Pastel rotation allowed.
+> Tokens in [tokens.md](../tokens.md). One line, one claim, type does the work. Pastel rotation allowed (`BBE6F7 → FFFDE4 → E2EFFB`, saturation ≤35%, near-black `#1F2328` type).
 
-```html
-<div class="slide-inner" style="min-height:70vh;display:flex;flex-direction:column;justify-content:center">
-  <div class="eyebrow">Acme Corp · thesis</div>
-  <h1 style="font-size:clamp(4rem,10vw,9rem);line-height:.95;letter-spacing:-0.03em;margin:16px 0">Ship calmly.</h1>
-  <p class="lead">Preview deploys took p95 from 412ms to 243ms.</p>
-</div>
+```python
+slide = new_slide()
+solid_bg(slide, BG)
+kicker(slide, "ACME CORP · THESIS", x=0.65, y=1.9, color=ACCENT)
+title(slide, "Ship calmly.", x=0.65, y=2.3, w=12.0, size=96, accent="calmly.", accent_color=ACCENT)
+body(slide, "Preview deploys took p95 from 412ms to 243ms.", x=0.65, y=5.3, w=9.0, size=20)
 ```
 
-Scale: `clamp(4rem,10vw,9rem)` up to ~138pt on wide screens. One accent word max in italic or mono: `Ship <em>calmly</em>.` Pastel rotation (`BBE6F7 → FFFDE4 → E2EFFB`) keeps saturation under ~35%, text near-black `#1F2328`.
+Pastel variant: `solid_bg(slide, "#FFFDE4")`, hero in `#1F2328`, e.g. `title(slide, "41% faster.", ..., size=96)`.
 
-```html
-<div style="background:#FFFDE4;padding:48px;min-height:70vh;display:flex;align-items:center">
-  <h1 style="font-size:clamp(4rem,10vw,9rem);color:#1F2328;margin:0">41% faster.</h1>
-</div>
+Scale rule: hero 72–96pt on the 13.333in canvas (the AirPods tier). One accent word max; zero letter-spacing.
+
+## Slide spec
+
+```
+Slide N — <Claim>                      bg: <solid|pastel>
+  Text runs:  kicker {11pt} ; hero {72–96pt ≤2 lines} ; lead {20pt, one sentence}
+  Z-order:    bg → copy
+  Entrances:  none (the reveal IS the slide change; Morph carries it)
+  Anchors:    none required
+  Images:     none (this is the one sanctioned text-only pattern — record why)
+  Done when:  hero fits ≤2 lines at ≥72pt on the render; one lead sentence, then stop.
 ```
 
 ## Don't

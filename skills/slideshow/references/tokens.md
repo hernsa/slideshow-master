@@ -1,23 +1,37 @@
-# Tokens — single source
+# Tokens — palette, type, spacing for real .pptx
 
-> One page per slide. Paste this base once per deck, then paste any pattern from `references/layouts.md` or `references/layout-templates/`. Canonical: 8pt spacing, 16px radius, dark-first.
+> One palette per deck (4–6 hexes), locked at style-lock time. Explicit RGB
+> everywhere — never MSO theme-color slots (they shift between machines).
 
-```css
-:root {
-  --space-1: 8px; --space-2: 16px; --space-3: 24px;
-  --space-4: 32px; --space-5: 48px; --space-6: 64px;
-  --radius-card: 16px; --radius-pill: 999px;
-  --bg: #0B1020; --surface: #131A2E; --card: #131A2E;
-  --border: rgba(148, 163, 184, .22); --muted: #94A3B8;
-  --primary: #4F7DF3; --success: #16A34A;
-}
-.slide-inner { max-width: 1120px; margin: 0 auto; padding: 48px; }
-h1 { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.02em; line-height: 1.05; }
-h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); letter-spacing: -0.015em; line-height: 1.15; }
-.lead { font-size: 1.2rem; opacity: .8; max-width: 60ch; }
-img.fit { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 16px; border: 1px solid var(--border); }
-.eyebrow { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; opacity: .65; }
-.tnum { font-variant-numeric: tabular-nums; }
-```
+## 1. Palette shape
 
-Spacing `8 / 16 / 24 / 32 / 48 / 64`. Type `h1 clamp(2rem,5vw,3.5rem)`, `h2 clamp(1.5rem,3vw,2.25rem)`, body `17-19px`, captions `14px`. Skill path: `skills/slideshow/references/tokens.md`.
+- `BG` — stage color (near-black `06232B`-class for dark decks, white for
+  light). Always an explicit bg rect, never "no fill".
+- `INK` — primary text (`F5F5F7`-class on dark, near-black on light).
+- `ACCENT` — one hero accent (jade/gold/crimson-class). One per deck story.
+- `ACCENT2` — reserved for duo-box contrast (gold vs jade). Never a third.
+- `MUTED` — secondary text, must still pass 4.5:1 on its surface.
+- `CARD` — surface fill for boxes on dark (`0F333D`-class).
+
+Derive the 3–4 stop value ramp from ACCENT by stepping lightness + alpha.
+Longest identical-bg run ≤2 slides.
+
+## 2. Type tiers (points, Segoe UI or locked pair)
+
+| Tier | Size | Use |
+|---|---|---|
+| hero | 54–96pt bold | one statement per section |
+| title | 40–44pt bold | slide titles |
+| head | 28–32pt semibold | box heads, stat labels |
+| label | 18–20pt semibold | kickers, pills, leaders |
+| body | 14–16pt regular | max 4 lines per box |
+| gloss | 11pt regular | translations, captions |
+
+Zero letter-spacing (python-pptx `spacing` untouched). Vietnamese diacritics
+verified in Segoe UI — if the locked pair lacks them, change the pair.
+
+## 3. Spacing (inches, 13.333×7.5 canvas)
+
+Margins 0.625in all sides. Copy column x[0.65, 5.6]. Vertical rhythm in
+0.2in steps off the stations (kicker 1.9 / hero 2.3 / body 3.6–4.6 / pills
+5.4–6.2). Gaps: 0.15in tight, 0.3in standard, 0.5in section breaks.

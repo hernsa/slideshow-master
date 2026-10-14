@@ -1,25 +1,35 @@
 # Photo hero — true full-bleed
 
-> Tokens in [tokens.md](../tokens.md). One page per slide. Edge-to-edge photo, `inset:0`, scrim `≥60%`, `≤25` words. Variants: dark (default) + pastel.
+> Tokens in [tokens.md](../tokens.md). Edge-to-edge plate, scrim `≥60%` on the copy side, `≤25` words. Variants: dark (default) + pastel.
 
-```html
-<div style="position:absolute;inset:0;overflow:hidden">
-  <img src="assets/lab-night.jpg" alt="Acme lab at night with deploy dashboard glowing green" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
-  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,16,32,.82) 0%,rgba(11,16,32,.45) 55%,transparent 85%)"></div>
-  <div style="position:absolute;left:48px;bottom:48px;max-width:560px">
-    <div class="eyebrow" style="color:#fff">On site — August</div>
-    <h1 style="color:#fff;margin:8px 0">Deploy day, minus the fear</h1>
-    <p style="color:#E8EEF9;margin:0">Shield on. p95 243ms. Home by six.</p>
-  </div>
-</div>
+```python
+slide = new_slide()
+plate(slide, "assets/01_lab_night.jpg", 0.70)          # full-bleed, darkened + blurred in PIL
+scrim_left(slide, 0.62)                                # a:alpha 38000 ≈ 62%, named "scrim-left"
+kicker(slide, "ON SITE — AUGUST", x=0.65, y=4.3, color="#FFFFFF")
+title(slide, "Deploy day, minus the fear", x=0.65, y=4.7, w=7.3, size=44, color="#FFFFFF")
+body(slide, "Shield on. p95 243ms. Home by six.", x=0.65, y=5.8, w=7.0, size=16, color="#E8EEF9")
+set_notes(slide, "Pause on the photo; read the three短句 slowly.")
 ```
 
-Pastel variant: swap scrim for `BBE6F7` ground, near-black `#1F2328` type, single accent. Dark variant: `#0B1020` scrim, white type.
+Pastel variant: swap plate+scrim for a pastel ground and near-black type:
 
-```html
-<div style="position:absolute;inset:0;background:#BBE6F7;padding:48px;display:flex;align-items:flex-end">
-  <h1 style="color:#1F2328;margin:0;max-width:12ch">Calm is a feature.</h1>
-</div>
+```python
+slide = new_slide()
+solid_bg(slide, "#BBE6F7")
+title(slide, "Calm is a feature.", x=0.65, y=4.6, w=8.0, size=54, color="#1F2328")
+```
+
+## Slide spec
+
+```
+Slide N — <Title>                      bg: photo
+  Text runs:  kicker {11pt} ; title {44pt ≤2 lines} ; body {≤25 words total}
+  Z-order:    plate → scrim-left → copy
+  Entrances:  none
+  Anchors:    scrim-left shared with neighbors for the morph glide
+  Images:     assets/<NN>_<name>.jpg (the plate)
+  Done when:  copy sits fully inside the scrim on the render; ≤25 words.
 ```
 
 ## Don't

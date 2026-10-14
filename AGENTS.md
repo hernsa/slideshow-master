@@ -26,15 +26,16 @@ skills here — that would dilute the repo's single purpose.
   concrete demo-universe examples. The only allowed `todo`/`lorem` strings
   are inside the Gate 6 verification grep commands themselves.
 - Use relative paths from the skill directory when referencing skill files.
-- Slideshow tokens are canonical: 8pt spacing (`8/16/24/32/48/64`),
-  radius `16px`, dark-first `#0B1020` + accent `#4F7DF3`. New styles and
+- Slideshow tokens are canonical: inches grid (13.333×7.5in stage,
+  0.625in margins, copy x[0.65,5.6]), explicit RGB palette (no theme
+  slots), type tiers in pt (hero 54–96 … gloss 11). New styles and
   templates reuse them unless the style explicitly overrides.
 
 ## Quality bar
 
 - No hypophora, no filler. Instructions must be actionable and specific.
-- No purple-blue AI gradients, no three-equal-card rows, no Inter-everywhere
-  (see `references/colors.md` gradient discipline).
+- No purple-blue AI gradients, no three-equal-card rows
+  (see `references/decorations.md` and the style files' anti-slop rules).
 - Code samples in demos: max 12 lines, line numbers on, Shiki dual theme.
 - User instructions (this file, README, direct requests) take precedence over
   the skill's own guidance.
@@ -44,7 +45,7 @@ skills here — that would dilute the repo's single purpose.
 ```bash
 python scripts/check-repo.py  # frontmatter + index JSONs + Gate 6 (exit 1 on failure)
 python -m py_compile skills/slideshow/scripts/verify-images.py  # scripts compile
-python -m py_compile skills/slideshow/scripts/verify-deck.py
-bash -n skills/slideshow/scripts/export-deck.sh                  # shell syntax
-bash -n skills/slideshow/scripts/new-deck-scaffold.sh
+python -m py_compile skills/slideshow/scripts/verify-pptx.py
+python -m py_compile skills/slideshow/scripts/scaffold.py
+python -m py_compile skills/slideshow/scripts/render.py
 ```

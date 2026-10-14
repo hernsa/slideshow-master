@@ -2,119 +2,104 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skill](https://img.shields.io/badge/skill-universal-blue.svg)](skills/slideshow/SKILL.md)
-[![Engines](https://img.shields.io/badge/engines-reveal.js_%7C_Slidev_%7C_Marp-green.svg)](skills/slideshow/references/engines.md)
+[![Stack](https://img.shields.io/badge/python--pptx_%2B_PowerPoint_COM-green.svg)](skills/slideshow/references/engines.md)
 
-Universal agent skill for building modern HTML slideshows — conference-grade
-decks with **bold themes, rotation, decorations, research-backed content**, and
-full verification, not AI-slop defaults.
+Universal agent skill for building **real, animated .pptx decks** —
+editable text, embedded photos, PowerPoint Morph transitions, fade
+entrances, speaker notes — not HTML exports, not rasterized slides.
 
-**How it works:** a Hybrid Engine Router. The agent runs a 7-phase workflow
-(Intake → Design Read → **Research (artifact)** → Images → **Outline + Visual Plan** → Build → Verify+Export)
-and picks the right engine per deck: **reveal.js** for interactive/morph
-decks, **Slidev** for Markdown-first/code-heavy decks, **Marp** for fast
-text decks with clean export.
+**How it works:** the agent runs an 11-phase workflow (Intake → Design
+Read → Style lock → **Research (artifact)** → **Outline + Visual Plan
+(artifacts)** → Scaffold → Images+PIL prep → Build → Motion → Verify →
+Ship). Geometry and content are authored with python-pptx; motion and
+renders go through real PowerPoint COM; `scripts/verify-pptx.py`
+asserts the OOXML and the builder's own eyes assert the renders.
 
 ## Contents
 
 ```
 skills/slideshow/
-├── SKILL.md                    # lean router: route table, vocabulary, discipline
+├── SKILL.md                    # lean router: stack, route table, discipline
 ├── workflows/
-│   ├── routing.md              # deterministic router: mode + engine + style
-│   ├── generate-deck.md        # full Default procedure (Plan → Do·Check·Act)
-│   └── quick-generate.md       # 15-minute fast path (fixed style, Marp-first)
+│   └── generate-pptx.md        # full 11-phase procedure + quick-build path
 ├── references/
 │   ├── modes/                  # 5 narrative arcs: tech-talk, pitch, tutorial, showcase, narrative
-│   ├── visual-styles/          # 13 styles (STRONG default + SOFT explicit) + picker + styles_index.json
-│   ├── layout-templates/       # 12 slide types (comparison … two-column) + picker + templates_index.json
-│   ├── data-graphics/          # charts, tables, diagrams (pure HTML/CSS/SVG) + picker + graphics_index.json
+│   ├── visual-styles/          # 13 palettes (STRONG default + SOFT explicit) + picker + styles_index.json
+│   ├── layout-templates/       # 8 python-pptx recipes (photo-collage … annotation-stage) + picker + templates_index.json
+│   ├── data-graphics/          # diagrams, charts, tables (native shapes) + picker + graphics_index.json
 │   ├── media/                  # images + icons guides + picker + media_index.json
-│   ├── decorations.md          # asymmetry primitives: kicker, rule-bar, left-rail, oversized number, bg shape, chip row
-│   ├── color-usage.md          # deploy color per slide: rotation scripts, dividers, bands
-│   ├── engines.md              # reveal.js vs Slidev vs Marp matrix + version pins
-│   ├── animations.md           # Auto-Animate, morph, FLIP, View Transitions, fragments
-│   ├── colors.md               # 6 palettes, dark/light tokens, fonts, code themes
-│   ├── layouts.md              # bento, split, callout, stat, quote, code+preview, images
- │   └── verify-checklist.md     # 15 gates: images/media, contrast, placeholders, style tokens, code, motion/input, notes, export, theme/rotation, composition
+│   ├── pptx-motion-language.md # 12-section craft law: anchors, Morph contract, stagger, ramp, type scale
+│   ├── engines.md              # the one engine: python-pptx + PowerPoint 365 COM, enums, hygiene
+│   ├── animations.md           # transition/entrance snippets, rebuild-clean rule, stagger table
+│   ├── layouts.md              # inches grid, stations, ceilings, section patterns, z-order
+│   ├── decorations.md          # one organic device per deck, rings, pills, glow
+│   ├── tokens.md               # palette shape, type tiers, spacing in inches
+│   └── verify-checklist.md     # 15 gates: notes, raster floor, contrast on renders, motion budget, continuity
 ├── scripts/
-│   ├── new-deck-scaffold.sh    # scaffold a new deck from a starter
-│   ├── verify-images.py        # check assets are local, sized, credited
-│   ├── verify-deck.py          # check slide structure: V/T density, no TTT, fragment budget, content density, theme rotation
-│   └── export-deck.sh          # build HTML / PDF / PPTX per engine
-└── examples/
-    ├── reveal-demo/            # full reveal.js starter deck (11 slides) — rotation demo
-    ├── slidev-demo/            # full Slidev starter deck (11 slides) — rotation demo
-    └── marp-demo/              # full Marp starter deck (11 slides) — rotation demo
+│   ├── scaffold.py             # scaffold a deck project: build.py + motion.py + verify_extra.py
+│   ├── verify-images.py        # check build.py refs resolve + CREDITS.md covers them + budgets
+│   ├── verify-pptx.py          # OOXML asserts: canvas, notes, rasters, transitions, fx budget, continuity
+│   └── render.py               # generic COM pass: Morph/fade + manual advance + PNG renders
 ```
 
-Repo-level: `docs/` (getting-started, gallery, faq, why-html-slides,
-roadmap), `CONTRIBUTING.md` (add a style / palette / template / mode).
-
-## Gallery — the three starter decks
-
-All three tell the same 11-slide story ("Why HTML beats PPTX for tech
-talks") so engines compare directly: **dark `#0B1020` + accent `#4F7DF3`**,
-**morph pair + rotation** (tinted quote slide), fragments, notes, reduced-motion fallback.
-Starters ship passing all 15 verify gates.
-
-| Starter | Best for | Preview |
-|---|---|---|
-| `examples/reveal-demo/` | Interactive / morph / live demos | `python3 -m http.server` + open `index.html` (`S` speaker view) |
-| `examples/slidev-demo/` | Markdown-first / live code | `npx @slidev/cli --open` on `slides.md` |
-| `examples/marp-demo/` | Fast text / clean export | `marp-cli deck.md --preview` |
-
-Render commands + per-deck details: [`docs/gallery.md`](docs/gallery.md).
+Repo-level: `docs/` (getting-started, gallery, faq, roadmap),
+`CONTRIBUTING.md` (add a style / palette / template / mode).
 
 ## Install (one skill, every harness)
 
-- **Claude Code:** copy `skills/slideshow/` → `.claude/skills/slideshow/`
-  (project) or `~/.claude/skills/slideshow/` (global)
-- **opencode:** copy `skills/slideshow/` → `.opencode/skills/slideshow/`
-  (or `.agents/skills/slideshow/` — both are discovered)
-- **Codex:** copy `skills/slideshow/` → `.codex/skills/slideshow/`
+- **opencode:** copy `skills/slideshow/` → `.config/opencode/skills/slideshow/`
+- **Antigravity IDE:** copy `skills/slideshow/` → `.gemini/config/skills/slideshow/`
+  (the only IDE-scanned global path)
+- **Claude Code / Codex:** copy `skills/slideshow/` → the harness's
+  global skills dir
 
-No dependencies to install for the skill itself. Each *engine* needs its
-own toolchain only when you build with it (Node for reveal.js/Slidev/Marp;
-`marp-cli` for Marp export; `decktape` for reveal.js PDF).
-
-## Router (which engine when)
-
-| Need | Engine | Starter |
-|---|---|---|
-| Interactive / morph / iframes / live demos | reveal.js | `examples/reveal-demo/` |
-| Markdown-first / live code / Vue team | Slidev | `examples/slidev-demo/` |
-| Fast text / clean export / non-dev author | Marp | `examples/marp-demo/` |
-
-Unsure or mixed? Default to reveal.js — widest capability envelope.
-Full trade-off matrix in `skills/slideshow/references/engines.md`.
+No dependencies for the skill itself. Each *deck build* needs
+`python-pptx`, `Pillow`, `pywin32` (`python -m pip install …`) and
+desktop PowerPoint 2019+/365 for the motion pass — without PowerPoint,
+motion is blocked and the skill says so.
 
 ## Workflow (what the agent does)
 
-1. **Route** — request → ONE workflow (`generate-deck` or `quick-generate`)
-   + ONE mode + engine + visual style (`workflows/routing.md`)
+1. **Route** — request → `workflows/generate-pptx.md` + ONE mode
 2. **Intake & Design Read** — questions, one-line Design Read, dials
-3. **Research (artifact)** — run `topic-research.md`, produce `research-notes.md`
-   (4-8 bullets/slide, 2-source log, ship-blocking)
-4. **Outline + Visual Plan** — one line/slide with `bg:` tag, `visual-plan.md`
-   (SVGs to draw + images to source), depth rule (≥1.5x topics), nod
-5. **Images + Decorations** — execute `visual-plan.md`, `assets/CREDITS.md`,
-   decorations.md primitives, asymmetry enforced
-6. **Build** — Markdown source → theme → layouts → morph → code → notes
-7. **Verify + Export** — 15 gates (`verify-checklist.md`), repair at owning
-   layer, export HTML / PDF / PPTX, ship source + decision log
+3. **Style lock** — ONE palette, shape contract (3–8 vocabulary + moving
+   object), one organic device, value ramp, type tiers, template, ONE
+   transition
+4. **Research (artifact)** — `research-notes.md` (4–8 bullets/slide,
+   2-source log, ship-blocking)
+5. **Outline + Visual Plan (artifacts)** — `bg:` tags, depth rule
+   (≥1.5x topics), per-slide spec blocks with `Done when:`, hard image
+   counts, nod
+6. **Scaffold + Images** — `python scripts/scaffold.py`, source photos to
+   `assets/` + `CREDITS.md`, PIL prep (plates, crops, baked rotation)
+7. **Build** — `build.py`: blank 13.333×7.5in slides, template recipes
+   verbatim, `name=` morph identities, notes; NO transitions in build.py
+8. **Motion** — `motion.py` via COM: Morph-byObject default, fade
+   exceptions, ≤3 fade entrances/slide, manual advance, PNG renders
+9. **Verify + Ship** — 15 gates, repair at owning layer, read every
+   render by eye, ship .pptx + renders/ (+ handout PDF)
 
 Details: `skills/slideshow/SKILL.md` + `skills/slideshow/workflows/`.
 
 ## Anti-slop contract
 
-Every deck the skill produces must pass: **explicit STRONG palette (no cream defaults)**, body contrast ≥4.5:1 / 7:1 projector, **color rotation** (max 2 consecutive same-bg), **content density** (≥2x via research-notes.md), **decorations & asymmetry** (1-2 primitives/slide, no three-equal-cards), max 1 gradient (accent bar or ≤8% glow — never purple-blue), 2 font families max + mono, code ≤12 lines with Shiki dual theme, `prefers-reduced-motion` fallback, speaker notes on every substantive slide, zero placeholders. Enforced by `references/verify-checklist.md` (15 gates).
+Every deck must pass: **explicit palette (no theme-slot defaults)**,
+contrast read on renders, **value ramp** (max 2 consecutive same-bg),
+**content density** (research-notes.md), **photo floor** (≥1 raster/slide,
+total ≥ half the slides, on ≥60% of slides), **one organic device**,
+morph-name discipline (exact `name=` matches, parked shapes never
+"fixed"), one transition for the deck, entrance budget (≤3 fade/slide),
+speaker notes on every slide, zero placeholders. Enforced by
+`references/verify-checklist.md` (15 gates) + `scripts/verify-pptx.py`.
 
 ## New deck in 30 seconds
 
-```bash
-bash skills/slideshow/scripts/new-deck-scaffold.sh reveal my-talk
+```powershell
+python skills/slideshow/scripts/scaffold.py my-talk
 cd my-talk
-python3 ../skills/slideshow/scripts/verify-images.py
-python3 ../skills/slideshow/scripts/verify-deck.py slides.md
-bash ../skills/slideshow/scripts/export-deck.sh reveal
+# fill build.py from visual-plan.md, source assets/, then:
+python build.py
+python motion.py
+python ..\skills\slideshow\scripts\verify-pptx.py deck.pptx
+python ..\skills\slideshow\scripts\verify-images.py .
 ```

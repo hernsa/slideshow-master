@@ -1,7 +1,8 @@
 # CLAUDE.md
 
-This repo ships the `slideshow` agent skill: Markdown/HTML decks for
-reveal.js, Slidev, and Marp with a hybrid engine router.
+This repo ships the `slideshow` agent skill: real, animated .pptx decks
+authored with python-pptx + PowerPoint COM (Morph transitions, fade
+entrances, speaker notes).
 
 - Behavioral contract for agents: see `AGENTS.md`.
 - Skill entry point: `skills/slideshow/SKILL.md` (lean router — read it

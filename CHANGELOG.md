@@ -3,6 +3,33 @@
 All notable changes to this project are documented here. Format follows
 Keep a Changelog; versions follow SemVer.
 
+## [1.0.0] - 2026-10-14
+
+### Changed (rewrite: pure PPTX, HTML engines retired)
+
+- Skill now authors **real .pptx decks**: python-pptx geometry/content +
+  PowerPoint COM transitions/entrances/renders. reveal.js / Slidev / Marp
+  engines, `generate-deck.md`, `routing.md`, `quick-generate.md`, and the
+  three HTML demo decks are deleted.
+- `workflows/generate-pptx.md`: 11 phases + quick-build path, both
+  `research-notes.md` and `visual-plan.md` ship-blocking.
+- `references/engines.md`, `animations.md`, `layouts.md`: rewritten
+  PPTX-native (COM enums, rebuild-clean rule, inches grid, stagger table).
+- `references/layout-templates/`: all 8 files converted to python-pptx
+  recipes against the scaffold Helper API contract (`templates_index.json`
+  v4); `references/modes/`: all 5 arcs rewritten PPTX-native.
+- `references/media/images.md`, `media/icons.md`, `decorations.md`,
+  `data-graphics/`, `tokens.md`: rewritten PPTX-native (raster floor, PIL
+  prep, native-shape icons/diagrams/charts, inches tokens).
+- `scripts/`: new `scaffold.py`, `verify-pptx.py` (OOXML asserts: canvas,
+  notes, rasters, transitions, fx budget, continuity), `render.py`;
+  `verify-images.py` rewritten for `build.py` refs + CREDITS.md.
+  Retired `verify-deck.py`, `export-deck.sh`, `new-deck-scaffold.sh`.
+- `references/verify-checklist.md`: 15 gates rewritten (raster floor,
+  contrast on renders, back-row legibility, COM hygiene, morph-name
+  discipline); new 5-step pre-ship run ending in eye review of renders.
+- `README.md` rewritten; `AGENTS.md` commands updated.
+
 ## [0.2.0] - 2026-10-08
 
 ### Added
