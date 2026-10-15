@@ -7,11 +7,11 @@ narrative break, not the default — one showcase section per deck.
 
 1. Title — annotation-stage: product raster, 72pt hero, one accent.
    Notes: the single sentence this object deserves.
-2. Detail — leader callout on the hero raster: line + dot + 18pt label.
+2. Detail — leader callout (leader() in annotation-stage.md) on the hero raster: line + dot + 18pt label.
 3. Craft — second leader, other side; parked artboard flies in.
-4. Scale — size row: 4 outlined pills, ~17% apart.
+4. Scale — size row: 4 outlined pills (pill(outline=...), annotation-stage.md), ~17% apart.
 5. Context — photo-collage: the object in its world, 2–3 tiles.
-6. Close — black stage, Live·Learn·Lead-style triad or equivalent.
+6. Close — black stage (layouts.md §Section patterns #4, annotation-stage.md), Live·Learn·Lead-style triad or equivalent.
    Notes: hold the beat, then stop talking.
 
 ## PPTX notes

@@ -10,7 +10,8 @@
   equal, gap 0.3in, vertically centered in the live zone.
 - **Fork**: one kicker/headline top-center, two arrows (straight connectors
   with triangle heads) splitting to two boxes. Used for pillar splits,
-  before/after, cause/effect.
+  before/after, cause/effect. Draw with
+  `connect(slide, name, x1, y1, x2, y2, arrow=True)`.
 - **Flow pills**: 3–4 stadium pills in a row with `→` separators (text runs,
   not shapes), e.g. SCHOOLS → AI+SEA LABS → GUARDIANS. 14–16pt semibold,
   solid fills, alternating accent tints. One flow per slide max.
@@ -22,7 +23,8 @@
   first: white 16pt on solid jade passes; muted-on-tint often doesn't —
   check renders.
 - Arrows: `STRAIGHT` connectors + `end_arrowhead`; never draw arrowheads
-  as separate triangles (they detach on nudge).
+  as separate triangles (they detach on nudge). `connect()` bakes the
+  `a:tailEnd` triangle for you.
 - Every diagram box gets a name (`pillar-a`, `flow-1`) — diagrams persist
   across slides as morph anchors.
 

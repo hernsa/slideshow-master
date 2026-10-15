@@ -32,4 +32,4 @@ lines only (`references/tokens.md`).
 
 1. No purple-to-blue full-bleed linear cover. The radial wash above is the only glow permitted.
 2. No green decorative badges. `#22C55E` marks pass states and up-good deltas only.
-3. No body text below 17px to fit more bullets. Split the slide instead of shrinking type.
+3. No body text below 13pt to fit more bullets. Split the slide instead of shrinking type.

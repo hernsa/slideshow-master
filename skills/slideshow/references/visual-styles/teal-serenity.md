@@ -31,5 +31,5 @@ lines only (`references/tokens.md`).
 ## Anti-slop don'ts
 
 1. No second amber highlight. One amber number per deck; everything else stays teal, slate, or muted.
-2. No teal paragraph text. `#0D9488` fails body contrast; paragraphs stay `#0F172A`.
+2. No teal paragraph text. `#0D9488` fails body contrast; paragraphs stay INK `#ECFDF5`.
 3. No dashboard grid of eight charts. One chart plus three proof points is the pitch maximum.

@@ -1,7 +1,7 @@
 {
   "name": "slideshow",
-  "description": "Universal agent skill for modern HTML slideshows (reveal.js, Slidev, Marp)",
-  "version": "0.2.0",
+  "description": "Agent skill for building animated PowerPoint (PPTX) decks with python-pptx and PowerPoint COM \u2014 morph transitions, entrances, and 1920x1080 renders.",
+  "version": "1.0.0",
   "author": {
     "name": "hernsa"
   },

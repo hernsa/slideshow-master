@@ -41,8 +41,9 @@ All prep happens in phase 7 with Pillow. Proven patterns from the iSpeak build:
 
 ## 4. Placement grammar (python-pptx)
 
-- **Plate**: `add_picture` full canvas `0,0 → 13.333,7.5in`, no border.
-  Name it `plate`.
+- **Plate**: `add_picture` deliberately OVERSIZED for full bleed — placed at
+  `-0.8,-0.45in` and sized `13.333×7.5in × 1.12` so no edge gap appears,
+  no border. Name it `plate`.
 - **Circle tile**: square pre-crop → `add_picture`, then swap geometry
   rect→ellipse via the `a:prstGeom prst="ellipse"` edit. Right half only,
   stacked with 19%-style offsets. Name `tile-N`.
@@ -51,17 +52,18 @@ All prep happens in phase 7 with Pillow. Proven patterns from the iSpeak build:
 - **Feature rect**: plain rect photo, rotate the CONTENT in PIL ±3–6°,
   shape stays axis-aligned. Blob/ring decor goes behind it.
 - **Scrim**: when text sits on a plate, a black rect from the text edge at
-  60–65% alpha (`a:alpha val="38000"` ≈ 62%). Left scrim named
-  `scrim-left`, right scrim `scrim-right` — keep the name across mirrored
-  slides for morph continuity.
+  60–65% alpha (`a:alpha val="62000"` = 62%). Both sides reuse the SAME
+  name `scrim-left` (the scaffold's `scrim_right` keeps it) so a mirrored
+  slide morphs the identical rect — morph continuity over side-specific
+  naming.
 - **Black-stage subjects**: RGBA PNGs with baked glow/alpha, placed on a
   pure `#000` bg rect. Never `drop-shadow` — bake it.
 
 ## 5. Budgets
 
-- Raster floor: ≥1 raster per slide, deck total ≥ `ceil(slides/2)`,
+- Raster floor: ≥1 raster per slide AND deck total (unique images) ≥ slides,
   rasters on ≥60% of slides.
 - Narrative/photo sections: 3–6 rasters per slide (plate + tiles + disc).
 - File weight: photos ≤400KB, backgrounds ≤200KB, ≤1920px on the long edge.
   The iSpeak final was 2.5MB for 8 slides / 15 rasters — that is the shape.
-- Alt text: `picture.alt_text`, conclusion-first, ≤140 chars.
+- Alt text: `set_alt(picture, "…")`, conclusion-first, ≤140 chars.

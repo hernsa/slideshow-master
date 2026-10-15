@@ -1,5 +1,7 @@
 # slideshow-master Implementation Plan
 
+> **SUPERSEDED by v1.0.0 (pure-PPTX rewrite, 2026-10-14) — kept as history only.**
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build the `slideshow-master` universal skill repo (SKILL.md + references + scripts + examples + README) so any harness can ship verified modern HTML decks.

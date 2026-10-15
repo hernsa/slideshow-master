@@ -20,6 +20,7 @@ jobs:
         run: python scripts/check-repo.py
       - name: Scripts compile / syntax check
         run: |
+          python -m py_compile skills/slideshow/scripts/scaffold.py
+          python -m py_compile skills/slideshow/scripts/render.py
+          python -m py_compile skills/slideshow/scripts/verify-pptx.py
           python -m py_compile skills/slideshow/scripts/verify-images.py
-          bash -n skills/slideshow/scripts/export-deck.sh
-          bash -n skills/slideshow/scripts/new-deck-scaffold.sh

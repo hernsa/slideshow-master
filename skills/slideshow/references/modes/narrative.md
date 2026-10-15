@@ -8,12 +8,12 @@ out of. Bilingual EN + short VI gloss only on request.
 
 1. Title — photo-hero: place + promise + speaker line.
 2. Vision — photo-collage: the world as it could be, stats as proof.
-3. Pillars — duo boxes + fork: the talk's two (max three) ideas.
-4. Pillar 1 — mirrored section: copy flips side, scrim follows.
+3. Pillars — duo boxes (layouts.md §Section patterns #3) + fork (data-graphics/diagrams.md): the talk's two (max three) ideas.
+4. Pillar 1 — mirrored section (layouts.md §Section patterns #2): copy flips side, scrim follows.
 5. Pillar 2 — copy returns; city/detail raster on the right.
 6. Human break — fade exception: faces, voices, one low tile.
-7. Remix — tile + rotated disc: old material made new.
-8. Close — black stage or display-type: triad + logo. Notes: the final
+7. Remix — tile + rotated disc (photo-collage.md circle_pic + diamond_pic(rot)): old material made new.
+8. Close — black stage (annotation-stage.md) or display-type: triad + logo. Notes: the final
    sentence, word for word — then stop.
 
 ## PPTX notes

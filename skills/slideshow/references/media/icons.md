@@ -13,13 +13,15 @@ leaf, wave, book, chip, mic, star, quote-mark, calendar. One weight
 
 ## 2. Construction rules
 
-- **Connectors** (`MSO_CONNECTOR.STRAIGHT`) for leader lines: 1px-equivalent
-  weight, accent color → transparent gradient end. Leader = line + 12px dot
-  (small ellipse) + 18pt label. The dot is the anchor, name it.
+- **Connectors** (`MSO_CONNECTOR.STRAIGHT`) for leader lines: hairline
+  (1pt) weight, accent color → transparent end. Leader = line + 0.16in dot
+  (small ellipse) + 18pt label. The dot is the anchor, name it. Use
+  `connect(...)` for the line and `dot(slide, name, cx, cy)` for the dot —
+  or the composed `leader(...)` helper.
 - **Pills swallow icons**: icon + label inside a rounded rect (`roundRect`,
   `adj` for full stadium). One font size (14–16pt semibold) for all pills
   in a deck.
-- **Pairing**: icon first, label second, 8–12px gap. Never icon-only except
+- **Pairing**: icon first, label second, 0.11–0.17in gap. Never icon-only except
   the leader dot.
 - **Reuse**: same icon shapes, same names (`icon-pin`), same positions
   across slides. Icons are morph anchors too.

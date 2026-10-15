@@ -10,11 +10,11 @@ transition at the back.
    version.
 2. Problem — display-type: cost of the status quo, one number.
 3. Solution — showcase: product raster on near-black, one accent.
-4. How it wins — duo boxes: two differentiators, named, morph anchors.
-5. Traction — giant stat + tiles. Real numbers or omit the slide.
-6. Business model — 3 flow pills: who pays, for what, how often.
+4. How it wins — duo boxes (layouts.md §Section patterns #3): two differentiators, named, morph anchors.
+5. Traction — giant stat (data-graphics/charts.md) + tiles. Real numbers or omit the slide.
+6. Business model — 3 flow pills (data-graphics/diagrams.md): who pays, for what, how often.
 7. Team — 2–3 avatar circle_pic tiles + one line each. No resumes.
-8. Ask — framing close: amount, use, contact. Notes: the exact ask,
+8. Ask — framing close (framing.md §Close): amount, use, contact. Notes: the exact ask,
    word for word.
 
 ## PPTX notes

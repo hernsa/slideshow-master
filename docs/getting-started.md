@@ -24,13 +24,16 @@ when:`). Get the nod on all three artifacts before building.
 ## 4. Scaffold + build
 
 ```powershell
-python skills/slideshow/scripts/scaffold.py my-talk
+# Point at the installed skill dir once, then work in a FRESH deck folder
+# (never inside the skill repo — the skill ships read-only templates).
+$skill = "C:\path\to\skills\slideshow"
+python "$skill\scripts\scaffold.py" my-talk
 cd my-talk
 # fill build.py from visual-plan.md, source photos to assets/ + CREDITS.md
 python build.py
 python motion.py
-python ..\skills\slideshow\scripts\verify-pptx.py deck.pptx
-python ..\skills\slideshow\scripts\verify-images.py .
+python "$skill\scripts\verify-pptx.py" deck.pptx
+python "$skill\scripts\verify-images.py" .
 ```
 
 ## 5. Verify + ship

@@ -1,11 +1,11 @@
 # Annotation stage — black stage, baked glow, leader callouts
 
-> From the AirPods deck. The showcase section: pure `#000` stage, spotlight BAKED into the product raster (left 40% pure black, alpha falling off — never a live gradient or shadow), 72–96pt hero, leader line + 12px dot callouts, size/comparison row. Max one section per deck.
+> From the AirPods deck. The showcase section: pure `#000` stage, spotlight BAKED into the product raster (left 40% pure black, alpha falling off — never a live gradient or shadow), 72–96pt hero, leader line + 0.16in dot callouts, size/comparison row. Max one section per deck.
 
 ```python
 slide = new_slide()
 solid_bg(slide, "#000000")
-rect_pic(slide, "product", "assets/10_product_glow.png", x=4.4, y=0.6, w=4.5, h=6.3, name="product")
+rect_pic(slide, "product", "assets/10_product_glow.png", x=4.4, y=0.6, w=4.5, h=6.3)
 title(slide, "Sound without edges.", x=1.6, y=1.3, w=10.1, size=72, color="#F5F5F7",
       accent="edges.", accent_color="#02FF40", align="center", name="hero")
 leader(slide, "leader-anc", x1=1.6, y1=4.2, x2=4.3, y2=4.2, label="Adaptive ANC · 2× quieter")

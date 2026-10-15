@@ -16,10 +16,13 @@ python-pptx `add_chart` with `XL_CHART_TYPE.COLUMN_CLUSTERED` or `.LINE`
 only. Then strip: no gridlines, no legend (label series directly in 14pt),
 axis labels 12pt muted, data labels on the points, accent fills flat. Max 5
 categories, max 2 series. Chart frame inside the live zone, never full-bleed.
+Use the `chart(slide, name, x, y, w, h, categories, series, kind="column")`
+helper — it enforces the 5-cat / 2-series cap and strips gridlines + legend.
 
 ## 3. Tables (last resort)
 
-python-pptx `add_table`, ≤4 rows × ≤3 cols. Header row solid accent + white
+python-pptx `add_table` via the `table(slide, name, x, y, w, h, rows)`
+helper (rows[0] = header; rejects >4 rows × >3 cols), ≤4 rows × ≤3 cols. Header row solid accent + white
 14pt semibold; body 13–14pt; row banding with 8% tint, no vertical rules.
 Cell margins 0.05–0.08in. A table that needs scrolling or 10pt type is a
 handout, not a slide — cut it.

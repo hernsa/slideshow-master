@@ -7,14 +7,14 @@ you advance. Handout carries the commands; slides carry the landmarks.
 
 1. Title — photo-hero: what they'll have built by the end. Notes: setup
    state to verify before starting (versions, files present).
-2. Setup check — mono textbox with the 3–4 version commands. Notes:
+2. Setup check — mono textbox via body(mono=True) with the 3–4 version commands. Notes:
    3-minute fix window while this slide stays up.
-3. Step 1 — copy-left + feature raster: first visible result.
-4. Step 2 — mirrored: second result, scrim follows the copy.
-5. Step 3 — copy-left again: third result, disc rotates again.
-6. Pitfalls — 3 pills: the errors everyone hits, one line each.
+3. Step 1 — copy-left (layouts.md §Section patterns #1) + feature raster: first visible result.
+4. Step 2 — mirrored (layouts.md §Section patterns #2): second result, scrim follows the copy.
+5. Step 3 — copy-left again (§Section patterns #1): third result, disc rotates again (photo-collage.md diamond_pic + motion.py parked_flight).
+6. Pitfalls — 3 pills (pill()): the errors everyone hits, one line each.
 7. Exercise — display-type: the task in one sentence + time box.
-8. Recap — framing close: three takeaway lines + handout note. Notes:
+8. Recap — framing close (framing.md §Close): three takeaway lines + handout note. Notes:
    where the handout lives.
 
 ## PPTX notes

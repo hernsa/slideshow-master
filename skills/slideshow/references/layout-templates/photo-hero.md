@@ -5,11 +5,11 @@
 ```python
 slide = new_slide()
 plate(slide, "assets/01_lab_night.jpg", 0.70)          # full-bleed, darkened + blurred in PIL
-scrim_left(slide, 0.62)                                # a:alpha 38000 ≈ 62%, named "scrim-left"
+scrim_left(slide, 0.62)                                # a:alpha 62000 = 62%, named "scrim-left"
 kicker(slide, "ON SITE — AUGUST", x=0.65, y=4.3, color="#FFFFFF")
 title(slide, "Deploy day, minus the fear", x=0.65, y=4.7, w=7.3, size=44, color="#FFFFFF")
 body(slide, "Shield on. p95 243ms. Home by six.", x=0.65, y=5.8, w=7.0, size=16, color="#E8EEF9")
-set_notes(slide, "Pause on the photo; read the three短句 slowly.")
+set_notes(slide, "Pause on the photo; read the three lines slowly.")
 ```
 
 Pastel variant: swap plate+scrim for a pastel ground and near-black type:

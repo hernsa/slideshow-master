@@ -10,7 +10,7 @@ circle_pic(slide, "tile-2", "assets/05_tile_street.jpg", cx=11.5, cy=3.4, d=1.9)
 circle_pic(slide, "tile-3", "assets/06_tile_river.jpg",  cx=10.9, cy=4.9, d=1.9)
 circle_pic(slide, "tile-4", "assets/07_tile_market.jpg", cx=11.5, cy=6.2, d=1.6)
 diamond_pic(slide, "disc", "assets/08_disc.jpg", cx=8.6, cy=4.0, d=3.2, rot=-89)  # rotation BAKED in PIL
-kicker(slide, "HANOI · 1890", x=0.65, y=2.2, color=JADE, name="kicker")
+kicker(slide, "HANOI · 1890", x=0.65, y=2.2, color=ACCENT, name="kicker")
 title(slide, "The old gate at dawn.", x=0.65, y=2.6, w=4.9, size=40, name="sec-title")
 body(slide, "Three mornings of archive scans; the fog always lifts by seven.",
      x=0.65, y=3.9, w=4.7)

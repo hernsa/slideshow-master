@@ -13,14 +13,14 @@ carries the proof. Slides never duplicate what the demo shows.
 4. Live demo anchor — showcase: near-black stage, one screenshot raster
    of the thing about to run live. Notes: exact demo script + fallback
    if the network dies.
-5. How it works — duo boxes (layouts §patterns): two mechanisms max.
-6. Code moment — mono textbox, ≤12 lines, ≥14pt. Notes: narrate lines
+5. How it works — duo boxes (layouts.md §Section patterns #3): two mechanisms max.
+6. Code moment — mono textbox via body(mono=True), ≤12 lines, ≥14pt. Notes: narrate lines
    1–3, skip the rest.
-7. Proof — giant stat + one tile. Digits morph-tween from slide 5's
+7. Proof — giant stat (data-graphics/charts.md) + one circle_pic tile. Digits morph-tween from slide 5's
    numbers where possible.
-8. Trade-offs — two pills: what it doesn't do. Honesty slide.
-9. Roadmap — flow pills, 3 steps max.
-10. Close — framing close: ask + mono contact line. Notes: the sentence
+8. Trade-offs — two pills (pill()): what it doesn't do. Honesty slide.
+9. Roadmap — flow pills (data-graphics/diagrams.md), 3 steps max.
+10. Close — framing close (framing.md §Close): ask + mono contact line. Notes: the sentence
     you want quoted.
 
 ## PPTX notes

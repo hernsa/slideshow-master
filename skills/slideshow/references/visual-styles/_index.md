@@ -13,7 +13,7 @@ who ask for it by name — never as the default.
 
 | Tier | Rule |
 |---|---|
-| **STRONG** | Bold, dark, or deeply saturated. Default for every deck. If unsure, pick by content: history/narrative/classroom → Crimson Bold, engineering/ops → Navy Signal, product/strategy → Forest Ink, live-coding → Dark Tech. |
+| **STRONG** | Bold, dark, deeply saturated, or brutally flat (Brutalist's cream field with ink borders reads loud, never milky). Default for every deck. If unsure, pick by content: history/narrative/classroom → Crimson Bold, engineering/ops → Navy Signal, product/strategy → Forest Ink, live-coding → Dark Tech. |
 | **SOFT** | Cream, paper, white, or gentle-neutral. Only when the user explicitly requests warm/light/paper/minimal/editorial. Never the tie-break. |
 
 ## All 13 styles

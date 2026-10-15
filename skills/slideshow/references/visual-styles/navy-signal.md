@@ -32,4 +32,4 @@ lines only (`references/tokens.md`).
 
 1. No purple-blue AI gradient cover. This navy is a flat field of signal, not a mesh gradient.
 2. No cyan on everything — `#22D3EE` marks active signal lines, focus states, and data deltas only. One cyan element per slide.
-3. No body text below 17px to fit more bullets. Split the slide instead of shrinking type.
+3. No body text below 13pt to fit more bullets. Split the slide instead of shrinking type.

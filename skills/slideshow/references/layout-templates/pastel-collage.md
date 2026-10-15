@@ -8,7 +8,7 @@ solid_bg(slide, "#BBE6F7")                                        # pastel ramp 
 deco_blob(slide, "cloud-a", cx=3.0, cy=3.4, w=6.2, h=4.4, color="#FFEFC8")
 deco_ring(slide, "arch", cx=11.0, cy=2.2, d=3.6, color="#E2EFFB")  # outline arch, behind plate
 rect_pic(slide, "plate", "assets/09_kids_reading.jpg", x=2.7, y=1.2, w=5.8, h=4.4, rot=-4)
-round_rect(slide, "card", x=8.6, y=2.3, w=4.0, h=2.9, fill="#FFFFFF", name="card")
+round_rect(slide, "card", x=8.6, y=2.3, w=4.0, h=2.9, fill="#FFFFFF")
 pill(slide, "STEP 3", x=8.9, y=2.55, w=1.1, fill="#BBFFC8", color="#1F2328")
 title(slide, "Every child gets a shelf.", x=8.9, y=2.95, w=3.4, size=28, color="#1F2328")
 body(slide, "Self-built wooden shelves, donated books, 12,000đ each.",

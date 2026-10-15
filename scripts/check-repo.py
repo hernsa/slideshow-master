@@ -39,9 +39,8 @@ pat = re.compile(r"lorem ipsum|todo:|tbd|fixme", re.I)
 roots = ["skills"]
 root_files = ["README.md", "AGENTS.md", "CLAUDE.md", "CONTRIBUTING.md",
               "SECURITY.md", "CODE_OF_CONDUCT.md", "CHANGELOG.md",
-              "docs/getting-started.md", "docs/faq.md",
-              "docs/why-html-slides.md", "docs/gallery.md",
-              "docs/roadmap.md"]
+               "docs/getting-started.md", "docs/faq.md",
+               "docs/roadmap.md"]
 targets = [f for f in root_files if os.path.exists(f)]
 for base in roots:
     for dp, _, fns in os.walk(base):

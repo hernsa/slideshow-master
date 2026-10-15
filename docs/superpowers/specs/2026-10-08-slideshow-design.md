@@ -1,5 +1,5 @@
 # slideshow-master — Design Doc
-Date: 2026-10-08 | Status: approved (Approach A — Hybrid Engine Router) | Author: ENI + LO
+Date: 2026-10-08 | Status: SUPERSEDED by v1.0.0 (pure-PPTX rewrite, 2026-10-14) — kept as history only | Author: ENI + LO
 
 ## 1. Goal
 A universal agent skill repo (`slideshow-master`) that lets any coding harness

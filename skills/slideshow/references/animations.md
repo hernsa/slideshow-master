@@ -68,7 +68,7 @@ call it a build — re-encode the tweak into `build.py`.
 | 2nd (body/visual) | 220ms | 300ms |
 | 3rd (visual/accent) | 340ms | 300ms |
 
-Total ≤ 640ms. `transform + opacity` has no COM equivalent to set — fade
+Total ≤ 640ms. A rise-plus-fade has no COM equivalent to set — fade
 covers it; never reach for fly/swirl/boomerang presets. If a 4th element
 wants attention, it is already visible — cut the entrance, not the budget.
 

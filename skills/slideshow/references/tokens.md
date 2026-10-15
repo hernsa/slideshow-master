@@ -30,6 +30,21 @@ Longest identical-bg run ≤2 slides.
 Zero letter-spacing (python-pptx `spacing` untouched). Vietnamese diacritics
 verified in Segoe UI — if the locked pair lacks them, change the pair.
 
+### Font sourcing + fallback
+
+The styles name Google Fonts that ship with neither Windows nor the
+scaffold (which hardcodes `Segoe UI` + `Consolas`). At style lock, either
+install the style's TTFs on the Windows build machine, or accept the stock
+fallback — record which in the ship record:
+
+| Named family | Stock fallback |
+|---|---|
+| `Inter` | `Segoe UI` |
+| `Syne` / `Sora` / `Space Grotesk` / `Archivo` (display) | `Segoe UI Semibold` / Bold |
+| `Fraunces` (serif) | `Georgia` Bold |
+| `Space Mono` / `IBM Plex Mono` / `JetBrains Mono` (mono) | `Consolas` |
+| `Caveat` (hand annotation) | `Segoe Print` |
+
 ## 3. Spacing (inches, 13.333×7.5 canvas)
 
 Margins 0.625in all sides. Copy column x[0.65, 5.6]. Vertical rhythm in

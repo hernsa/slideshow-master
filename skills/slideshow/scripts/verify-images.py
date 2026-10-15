@@ -4,7 +4,7 @@ and fits the size budgets.
 
 Usage: python verify-images.py <deck-dir> [--assets-dir assets]
 Scans build.py for ASSETS / "file" refs and string-literal image names,
-checks each file exists, checks assets/CREDITS.md names it, warns on
+checks each file exists, checks assets/CREDITS.md names it, fails on
 budget breaches (photos <=400KB, backgrounds <=200KB, width <=1920px).
 Exits 0 when all gates pass, 1 with a failure list otherwise.
 """
@@ -35,7 +35,6 @@ def main() -> int:
     refs = set(REF_RE.findall(text)) | set(LIT_RE.findall(text))
     refs = {r for r in refs if not r.startswith(("plate_", "sq_", "sqrot_"))}
     failures: list[str] = []
-    warnings: list[str] = []
     credits = (assets / "CREDITS.md").read_text(encoding="utf-8", errors="replace") \
         if (assets / "CREDITS.md").exists() else ""
     if not (assets / "CREDITS.md").exists():
@@ -50,16 +49,14 @@ def main() -> int:
         size = p.stat().st_size
         budget = BG_BUDGET if ref.startswith("plate_") or "bg" in ref else PHOTO_BUDGET
         if size > budget:
-            warnings.append(f"over budget: {ref} {size // 1024}KB > {budget // 1024}KB")
+            failures.append(f"over budget: {ref} {size // 1024}KB > {budget // 1024}KB")
         try:
             from PIL import Image
             with Image.open(p) as im:
                 if im.width > MAX_WIDTH:
-                    warnings.append(f"too wide: {ref} {im.width}px > {MAX_WIDTH}px")
+                    failures.append(f"too wide: {ref} {im.width}px > {MAX_WIDTH}px")
         except ImportError:
             pass
-    for w in warnings:
-        print(f"warn: {w}")
     if failures:
         print(f"{len(failures)} image gate failure(s) in {root}:")
         for f in failures:

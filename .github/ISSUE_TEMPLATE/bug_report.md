@@ -8,9 +8,9 @@ labels: bug
 
 <!-- What were you building, and what went wrong? -->
 
-## Engine / environment
+## Build environment
 
-<!-- reveal.js / Slidev / Marp version, node version, OS -->
+<!-- python-pptx version, Python version, PowerPoint version, Windows version -->
 
 ## Repro
 

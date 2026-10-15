@@ -32,4 +32,4 @@ lines only (`references/tokens.md`).
 
 1. No full-bleed red-to-black linear gradient cover — that is a generic movie-poster cliché. Use the radial bonfire wash only.
 2. No more than one gold accent per slide. `#F4C95D` marks numbers and data signals, never headers and never buttons in bulk.
-3. No thin `font-weight:300` serif body on the dark maroon. Keep body at Inter 400/500 minimum or it crushes on a projector.
+3. No thin-weight serif body on the dark maroon. Keep body at Inter 400/500 minimum (≥14pt) or it crushes on a projector.

@@ -187,7 +187,7 @@ WHY: emoji renders as color blobs on some projectors and as tofu on
 others. Icon fonts don't travel with the file.
 
 HOW: icons are native shapes only (2–4 shapes each,
-`references/media/icons.md`); leaders are line + 12px dot + 18pt label.
+`references/media/icons.md`); leaders are line + 0.16in dot + 18pt label.
 Grep the sources for emoji:
 
 ```powershell

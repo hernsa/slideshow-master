@@ -24,12 +24,12 @@ lines only (`references/tokens.md`).
 ## PPTX notes
 
 - Station this palette's ramp: BG → 2 mid stops → saturated break.
-- Glow/decor use ACCENT at low alpha (`deco_blob`, `glow()`); never
-  OuterGlow, never gradient fills on shapes.
+- No glow/decor shapes — hairlines, rules, and whitespace carry the style;
+  never OuterGlow, never gradient fills on shapes.
 - Plates darken the BG further in PIL; scrims use BG at 60–70% alpha.
 
 ## Anti-slop don'ts
 
-1. No rounded neon cards or pill badges. A 1px `#DDD8CC` hairline and a left rule are the decoration.
+1. No rounded neon cards or pill badges. A `#DDD8CC` hairline (0.75pt line) and a left rule are the decoration.
 2. No tabular data in serif. Numbers, tables, and axes switch to `Inter` with tabular figures.
-3. No three-column feature grids. One idea per slide; margins stay at 64px minimum.
+3. No three-column feature grids. One idea per slide; margins stay at 0.625in minimum.

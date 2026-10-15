@@ -4,7 +4,8 @@ Usage:  python scaffold.py <deck-dir>
 
 Creates <deck-dir>/ with build.py (helper library + slide stubs),
 motion.py (COM transitions/entrances/renders), verify_extra.py
-(deck-specific asserts), plus assets/ and renders/ dirs.
+(deck-specific asserts), research-notes.md + visual-plan.md stubs,
+plus assets/ and renders/ dirs.
 """
 import sys
 from pathlib import Path
@@ -23,8 +24,10 @@ from PIL import Image, ImageEnhance, ImageFilter
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.chart.data import ChartData
+from pptx.enum.chart import XL_CHART_TYPE
 from pptx.oxml.ns import qn
 from pptx.oxml.xmlchemy import OxmlElement
 
@@ -45,11 +48,16 @@ SW, SH = 13.333, 7.5  # 16:9 stage in inches (= 1280x720 @96dpi)
 SQ = {}  # square-crop cache shared by circle_pic / diamond_pic
 
 
+def _rgb(c):
+    """RGBColor from a hex string, tolerating a leading '#'."""
+    return RGBColor.from_string(c[1:] if c.startswith("#") else c)
+
+
 # ---------- internals ----------
 def solid_alpha(shape, hex_color, alpha_pct):
     """Solid fill + transparency (python-pptx has no API; inject a:alpha)."""
     shape.fill.solid()
-    shape.fill.fore_color.rgb = RGBColor.from_string(hex_color)
+    shape.fill.fore_color.rgb = _rgb(hex_color)
     solid = shape.fill._xPr.find(qn("a:solidFill"))
     clr = solid.find(qn("a:srgbClr"))
     if clr is None:
@@ -83,7 +91,7 @@ def _run(p, text, size, color, bold=False, italic=False, font=None):
     r.font.size = Pt(size)
     r.font.bold = bold
     r.font.italic = italic
-    r.font.color.rgb = RGBColor.from_string(color)
+    r.font.color.rgb = _rgb(color)
     return r
 
 
@@ -100,21 +108,54 @@ def para(box, text, size, color=INK, bold=False, italic=False,
 
 
 # ---------- Helper API contract (matches layout-templates/_index.md) ----------
-def new_slide(prs):
-    return prs.slides.add_slide(prs.slide_layouts[6])  # blank
+PRS = None  # module-level presentation; new_slide() with no arg uses it
+
+
+def _pres():
+    global PRS
+    if PRS is None:
+        PRS = Presentation()
+        PRS.slide_width = Inches(SW)
+        PRS.slide_height = Inches(SH)
+    return PRS
+
+
+def _align(value):
+    """Accept 'left'/'center'/'right' or a PP_ALIGN enum."""
+    if isinstance(value, str):
+        return {"left": PP_ALIGN.LEFT, "center": PP_ALIGN.CENTER,
+                "right": PP_ALIGN.RIGHT, "justify": PP_ALIGN.JUSTIFY}.get(
+                    value.lower(), PP_ALIGN.LEFT)
+    return value
+
+
+def _height(size):
+    """Approximate a textbox height (inches) for a font size. Overflow still
+    renders — this only keeps the first line from clipping."""
+    return max(0.5, size * 1.5 / 72.0)
+
+
+def _asset(src):
+    p = Path(src)
+    return p if p.is_absolute() else HERE / p
+
+
+def new_slide(prs=None):
+    p = prs if prs is not None else _pres()
+    return p.slides.add_slide(p.slide_layouts[6])  # blank
 
 
 def solid_bg(slide, hex_color):
     bg = slide.background.fill
     bg.solid()
-    bg.fore_color.rgb = RGBColor.from_string(hex_color)
+    bg.fore_color.rgb = _rgb(hex_color)
 
 
 def plate(slide, src, brightness, name="bg-plate"):
     """Full-bleed darkened plate (PIL-preprocessed, cached in assets/)."""
     out = ASSETS / ("plate_%s_%d.jpg" % (Path(src).stem, int(brightness * 100)))
     if not out.exists():
-        im = Image.open(ASSETS / src).convert("RGB")
+        im = Image.open(_asset(src)).convert("RGB")
         im = ImageEnhance.Brightness(im).enhance(brightness)
         im = ImageEnhance.Color(im).enhance(0.92)
         im = im.filter(ImageFilter.GaussianBlur(2))
@@ -126,30 +167,30 @@ def plate(slide, src, brightness, name="bg-plate"):
     return pic
 
 
-def scrim_left(slide, width_frac=0.62, alpha_pct=62, name="scrim-left"):
-    sc = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0),
-                                Inches(SW * width_frac), Inches(SH))
-    solid_alpha(sc, BG, alpha_pct)
+def _scrim(slide, left_in, width_frac, alpha, name):
+    sc = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left_in),
+                                Inches(0), Inches(SW * width_frac),
+                                Inches(SH))
+    pct = alpha * 100 if alpha <= 1 else alpha
+    solid_alpha(sc, BG, pct)
     no_line(sc)
     sc.name = name
     return sc
 
 
-def scrim_right(slide, width_frac=0.62, alpha_pct=62, name="scrim-left"):
+def scrim_left(slide, alpha=0.62, name="scrim-left"):
+    return _scrim(slide, 0, 0.62, alpha, name)
+
+
+def scrim_right(slide, alpha=0.62, name="scrim-left"):
     """Mirrored scrim. Keeps 'scrim-left' name so Morph carries it."""
-    sc = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                Inches(SW * (1 - width_frac)), Inches(0),
-                                Inches(SW * width_frac), Inches(SH))
-    solid_alpha(sc, BG, alpha_pct)
-    no_line(sc)
-    sc.name = name
-    return sc
+    return _scrim(slide, SW * (1 - 0.62), 0.62, alpha, name)
 
 
 def _square(src):
     key = "sq_%s.jpg" % Path(src).stem
     if key not in SQ:
-        im = Image.open(ASSETS / src).convert("RGB")
+        im = Image.open(_asset(src)).convert("RGB")
         s = min(im.size)
         x = (im.width - s) // 2
         y = (im.height - s) // 2
@@ -158,120 +199,143 @@ def _square(src):
     return ASSETS / key
 
 
-def circle_pic(slide, src, left, top, size, name):
-    pic = slide.shapes.add_picture(str(_square(src)), Inches(left),
-                                   Inches(top), Inches(size), Inches(size))
+def _rotated(src, rot, tag):
+    """Bake rotation into pixels (cache by rot); re-crop to source aspect."""
+    if not rot:
+        return _asset(src)
+    key = "%s_%s_%d.jpg" % (tag, Path(src).stem, int(rot))
+    if key not in SQ:
+        im = Image.open(_asset(src)).convert("RGB")
+        ar = im.width / im.height
+        r = im.rotate(rot, expand=True, resample=Image.BICUBIC)
+        if r.width / r.height > ar:
+            nw = int(r.height * ar)
+            x = (r.width - nw) // 2
+            r = r.crop((x, 0, x + nw, r.height))
+        else:
+            nh = int(r.width / ar)
+            y = (r.height - nh) // 2
+            r = r.crop((0, y, r.width, y + nh))
+        r.save(ASSETS / key, quality=90)
+        SQ[key] = True
+    return ASSETS / key
+
+
+def circle_pic(slide, name, src, cx, cy, d):
+    pic = slide.shapes.add_picture(str(_square(src)), Inches(cx - d / 2),
+                                   Inches(cy - d / 2), Inches(d), Inches(d))
     pic._element.spPr.find(qn("a:prstGeom")).set("prst", "ellipse")
-    pic.line.color.rgb = RGBColor.from_string("FFFFFF")
+    pic.line.color.rgb = _rgb("FFFFFF")
     pic.line.width = Pt(1.5)
     pic.name = name
     return pic
 
 
-def diamond_pic(slide, src, left, top, size, name, content_rot=0):
+def diamond_pic(slide, name, src, cx, cy, d, rot=0):
     """Diamond-geometry photo. Shape rotation stays 0 (PowerPoint renders
     rotated custom-geometry pictures with a white wedge); tilt is baked
-    into pixels — content_rot in PIL degrees (CCW+)."""
-    key = "sqrot_%s_%d.jpg" % (Path(src).stem, int(content_rot))
+    into pixels — rot in PIL degrees (CCW+)."""
+    key = "sqrot_%s_%d.jpg" % (Path(src).stem, int(rot))
     if key not in SQ:
-        im = Image.open(ASSETS / src).convert("RGB")
+        im = Image.open(_asset(src)).convert("RGB")
         s = min(im.size)
         x = (im.width - s) // 2
         y = (im.height - s) // 2
         im = im.crop((x, y, x + s, y + s))
-        if content_rot:
-            im = im.rotate(content_rot, expand=True,
-                           resample=Image.BICUBIC)
+        if rot:
+            im = im.rotate(rot, expand=True, resample=Image.BICUBIC)
             s2 = min(im.size)
             x = (im.width - s2) // 2
             y = (im.height - s2) // 2
             im = im.crop((x, y, x + s2, y + s2))
         im.save(ASSETS / key, quality=90)
         SQ[key] = True
-    pic = slide.shapes.add_picture(str(ASSETS / key), Inches(left),
-                                   Inches(top), Inches(size), Inches(size))
+    pic = slide.shapes.add_picture(str(ASSETS / key), Inches(cx - d / 2),
+                                   Inches(cy - d / 2), Inches(d), Inches(d))
     pic._element.spPr.find(qn("a:prstGeom")).set("prst", "diamond")
-    pic.line.color.rgb = RGBColor.from_string("FFFFFF")
+    pic.line.color.rgb = _rgb("FFFFFF")
     pic.line.width = Pt(1.5)
     pic.rotation = 0.0
     pic.name = name
     return pic
 
 
-def rect_pic(slide, src, left, top, width, height, name):
-    pic = slide.shapes.add_picture(str(ASSETS / src), Inches(left),
-                                   Inches(top), Inches(width), Inches(height))
-    pic.line.color.rgb = RGBColor.from_string("FFFFFF")
+def rect_pic(slide, name, src, x, y, w, h, rot=0):
+    """Rectangular photo (name may be None). rot baked in PIL (CCW+)."""
+    pic = slide.shapes.add_picture(str(_rotated(src, rot, "sqrot2")),
+                                   Inches(x), Inches(y), Inches(w), Inches(h))
+    pic.line.color.rgb = _rgb("FFFFFF")
     pic.line.width = Pt(1.0)
-    pic.name = name
+    if name:
+        pic.name = name
     return pic
 
 
-def kicker(slide, top, text, color, name="kicker", left=0.633):
-    box = add_text(slide, left, top, 11.0, 0.45, name=name)
+def kicker(slide, text, x, y, color, name=None):
+    nm = name or "kicker"
+    box = add_text(slide, x, y, 11.0, 0.45, name=nm)
     para(box, text, 11, color, bold=True, space_after=Pt(2), first=True)
-    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left),
-                                 Inches(top + 0.38), Inches(1.15), Pt(3))
+    bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x),
+                                 Inches(y + 0.38), Inches(1.15), Pt(3))
     bar.fill.solid()
-    bar.fill.fore_color.rgb = RGBColor.from_string(color)
+    bar.fill.fore_color.rgb = _rgb(color)
     no_line(bar)
-    bar.name = name + "-bar"
+    bar.name = nm + "-bar"
 
 
 def _accent_box(slide, left, top, width, height, text, size, color,
                 accent, accent_color, bold, align, name, mono,
                 line_spacing, space_after):
-    box = add_text(slide, left, top, width, height, name=name, align=align)
+    box = add_text(slide, left, top, width, height, name=name,
+                   align=_align(align))
     tf = box.text_frame
     p = tf.paragraphs[0]
     p.space_after = space_after
     p.line_spacing = line_spacing
+    font = "Consolas" if mono else None
     if accent and accent in text:
         pre, _, post = text.partition(accent)
         if pre:
-            _run(p, pre, size, color, bold, font="Consolas" if mono else None)
-        _run(p, accent, size, accent_color, bold,
-             font="Consolas" if mono else None)
+            _run(p, pre, size, color, bold, font=font)
+        _run(p, accent, size, accent_color, bold, font=font)
         if post:
-            _run(p, post, size, color, bold, font="Consolas" if mono else None)
+            _run(p, post, size, color, bold, font=font)
     else:
-        _run(p, text, size, color, bold, font="Consolas" if mono else None)
+        _run(p, text, size, color, bold, font=font)
     return box
 
 
-def title(slide, left, top, width, height, text, size=44, color=INK,
-          accent=None, accent_color=ACCENT, bold=True, align=PP_ALIGN.LEFT,
-          name=None, mono=False):
-    return _accent_box(slide, left, top, width, height, text, size, color,
-                       accent, accent_color, bold, align, name, mono, 1.0,
-                       Pt(8))
+def title(slide, text, x, y, w, size=44, color=INK, accent=None,
+          accent_color=None, align="left", name=None, mono=False):
+    return _accent_box(slide, x, y, w, _height(size), text, size, color,
+                       accent, accent_color or ACCENT, True, align, name,
+                       mono, 1.0, Pt(8))
 
 
-def body(slide, left, top, width, height, text, size=16, color=INK,
-         accent=None, accent_color=ACCENT, align=PP_ALIGN.LEFT, name=None):
-    return _accent_box(slide, left, top, width, height, text, size, color,
-                       accent, accent_color, False, align, name, False, 1.35,
-                       Pt(4))
+def body(slide, text, x, y, w, size=16, color=INK, accent=None,
+         accent_color=None, align="left", name=None, mono=False):
+    return _accent_box(slide, x, y, w, _height(size) * 2.2, text, size, color,
+                       accent, accent_color or ACCENT, False, align, name,
+                       mono, 1.35, Pt(4))
 
 
-def gloss(slide, left, top, width, text, color=MUTED, name=None):
-    box = add_text(slide, left, top, width, 0.4, name=name)
-    para(box, text, 11, color, space_after=Pt(0), first=True)
+def gloss(slide, text, x, y, w, color=MUTED, size=11, name=None):
+    box = add_text(slide, x, y, w, _height(size), name=name)
+    para(box, text, size, color, space_after=Pt(0), first=True)
     return box
 
 
-def pill(slide, left, top, text, color, name, width=2.3, outline=False):
-    p = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                               Inches(left), Inches(top),
-                               Inches(width), Inches(0.52))
+def pill(slide, text, x, y, w, fill, color, outline=None):
+    p = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x),
+                               Inches(y), Inches(w), Inches(0.52))
+    p.fill.solid()
+    p.fill.fore_color.rgb = _rgb(fill)
     if outline:
-        p.fill.background()
-        p.line.color.rgb = RGBColor.from_string(color)
-        p.line.width = Pt(2)
+        p.line.color.rgb = _rgb(outline)
+        p.line.width = Pt(1.25)
     else:
-        solid_alpha(p, color, 16)
-        p.line.fill.background()
-    p.name = name
+        no_line(p)
+    p.name = "pill-%s" % text
     tf = p.text_frame
     tf.word_wrap = True
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
@@ -283,15 +347,13 @@ def pill(slide, left, top, text, color, name, width=2.3, outline=False):
     return p
 
 
-def round_rect(slide, left, top, width, height, fill_hex, name,
-               line_hex=None):
-    r = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                               Inches(left), Inches(top),
-                               Inches(width), Inches(height))
+def round_rect(slide, name, x, y, w, h, fill, line=None):
+    r = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x),
+                               Inches(y), Inches(w), Inches(h))
     r.fill.solid()
-    r.fill.fore_color.rgb = RGBColor.from_string(fill_hex)
-    if line_hex:
-        r.line.color.rgb = RGBColor.from_string(line_hex)
+    r.fill.fore_color.rgb = _rgb(fill)
+    if line:
+        r.line.color.rgb = _rgb(line)
         r.line.width = Pt(2)
     else:
         no_line(r)
@@ -299,78 +361,217 @@ def round_rect(slide, left, top, width, height, fill_hex, name,
     return r
 
 
-def deco_blob(slide, left, top, size, color, alpha_pct, name):
-    o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(left), Inches(top),
-                               Inches(size), Inches(size))
-    solid_alpha(o, color, alpha_pct)
+def deco_blob(slide, name, cx, cy, w, h, color):
+    o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - w / 2),
+                               Inches(cy - h / 2), Inches(w), Inches(h))
+    o.fill.solid()
+    o.fill.fore_color.rgb = _rgb(color)
     no_line(o)
     o.name = name
     return o
 
 
-def deco_ring(slide, left, top, size, color, name, w_pt=2.25):
-    o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(left), Inches(top),
-                               Inches(size), Inches(size))
+def deco_ring(slide, name, cx, cy, d, color):
+    o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - d / 2),
+                               Inches(cy - d / 2), Inches(d), Inches(d))
     o.fill.background()
-    o.line.color.rgb = RGBColor.from_string(color)
-    o.line.width = Pt(w_pt)
+    o.line.color.rgb = _rgb(color)
+    o.line.width = Pt(2.25)
     o.name = name
     return o
 
 
-def glow(slide, cx, cy, size, color, name, steps=3, alpha_pct=28):
+def glow(slide, cx, cy, d, color, name="glow", steps=3, alpha_pct=28):
     """Spotlight substitute: concentric translucent ellipses (never OuterGlow)."""
     for i in range(steps, 0, -1):
-        d = size * i / steps
-        o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - d / 2),
-                                   Inches(cy - d / 2), Inches(d), Inches(d))
+        dd = d * i / steps
+        o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - dd / 2),
+                                   Inches(cy - dd / 2), Inches(dd), Inches(dd))
         solid_alpha(o, color, alpha_pct / i)
         no_line(o)
         o.name = "%s-%d" % (name, i)
     return name
 
 
-def leader(slide, left, top, length, label, color, name):
-    """Annotation callout: 1px line + 12px dot + 18pt label."""
-    ln = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left),
-                                Inches(top), Inches(length), Pt(1))
-    ln.fill.solid()
-    ln.fill.fore_color.rgb = RGBColor.from_string(color)
-    no_line(ln)
+def leader(slide, name, x1, y1, x2, y2, label):
+    """Annotation callout: straight line + 12px dot + 18pt label."""
+    ln = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1),
+                                    Inches(y1), Inches(x2), Inches(y2))
+    ln.line.color.rgb = _rgb(ACCENT)
+    ln.line.width = Pt(1)
     ln.name = name + "-line"
-    dot = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(left - 0.08),
-                                 Inches(top - 0.08), Inches(0.16),
-                                 Inches(0.16))
+    dot = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(x1 - 0.08),
+                                 Inches(y1 - 0.08), Inches(0.16), Inches(0.16))
     dot.fill.solid()
-    dot.fill.fore_color.rgb = RGBColor.from_string(color)
+    dot.fill.fore_color.rgb = _rgb(ACCENT)
     no_line(dot)
     dot.name = name + "-dot"
-    box = add_text(slide, left + length + 0.15, top - 0.22, 4.0, 0.5,
-                   name=name)
+    box = add_text(slide, x2 + 0.15, y1 - 0.22, 4.0, 0.5, name=name)
     para(box, label, 18, INK, first=True, space_after=Pt(0))
+
+
+def connect(slide, name, x1, y1, x2, y2, color=ACCENT, width_pt=2.25,
+            arrow=True):
+    """Straight connector (diagram fork arrows). The arrowhead is a baked
+    a:tailEnd triangle — never a separate triangle shape (it detaches)."""
+    ln = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1),
+                                    Inches(y1), Inches(x2), Inches(y2))
+    ln.line.color.rgb = _rgb(color)
+    ln.line.width = Pt(width_pt)
+    if arrow:
+        tail = ln.line._ln.find(qn("a:tailEnd"))
+        if tail is None:
+            tail = OxmlElement("a:tailEnd")
+            ln.line._ln.append(tail)
+        tail.set("type", "triangle")
+        tail.set("w", "med")
+        tail.set("len", "med")
+    ln.name = name
+    return ln
+
+
+def dot(slide, name, cx, cy, d=0.16, color=ACCENT):
+    """Standalone anchor dot (icon dots, leader dots). d in inches."""
+    o = slide.shapes.add_shape(MSO_SHAPE.OVAL, Inches(cx - d / 2),
+                               Inches(cy - d / 2), Inches(d), Inches(d))
+    o.fill.solid()
+    o.fill.fore_color.rgb = _rgb(color)
+    no_line(o)
+    o.name = name
+    return o
+
+
+def _cell_borders(cell, bottom_only=False, rule_color=MUTED, rule_pt=0.75):
+    """Kill vertical rules; optional 0.75pt bottom rule (tables.md)."""
+    tcPr = cell._tc.get_or_add_tcPr()
+    for tag in ("a:lnL", "a:lnR", "a:lnU", "a:lnD"):
+        ln = tcPr.find(qn(tag))
+        if ln is None:
+            ln = OxmlElement(tag)
+            tcPr.append(ln)
+        ln.clear()
+        ln.set("w", str(int(rule_pt * 12700)))
+        if bottom_only and tag == "a:lnD":
+            fill = OxmlElement("a:solidFill")
+            clr = OxmlElement("a:srgbClr")
+            clr.set("val", rule_color[1:]
+                    if rule_color.startswith("#") else rule_color)
+            fill.append(clr)
+            ln.append(fill)
+        else:
+            ln.append(OxmlElement("a:noFill"))
+
+
+def table(slide, name, x, y, w, h, rows, header_fill=ACCENT,
+          header_size=14, body_size=13):
+    """Slide table (last resort per charts.md). rows[0] is the header.
+    Enforces tables.md: <=4 rows x <=3 cols, 13pt minimum body."""
+    if len(rows) > 4 or any(len(r) > 3 for r in rows):
+        raise ValueError("table: max 4 rows x 3 cols (tables.md handout rule)")
+    if body_size < 13:
+        raise ValueError("table: body 13pt minimum (tables.md)")
+    nrows, ncols = len(rows), max(len(r) for r in rows)
+    gf = slide.shapes.add_table(nrows, ncols, Inches(x), Inches(y),
+                                Inches(w), Inches(h))
+    tbl = gf.table
+    for i in range(ncols):
+        tbl.columns[i].width = Inches(w / ncols)
+    for r in range(nrows):
+        tbl.rows[r].height = Inches(0.42 if r == 0 else 0.38)
+        for c in range(ncols):
+            cell = tbl.cell(r, c)
+            val = str(rows[r][c]) if c < len(rows[r]) else ""
+            if r == 0:
+                cell.fill.solid()
+                cell.fill.fore_color.rgb = _rgb(header_fill)
+                _cell_borders(cell, bottom_only=True)
+            else:
+                cell.fill.background()
+                _cell_borders(cell)
+            cell.margin_left = Inches(0.06)
+            cell.margin_right = Inches(0.06)
+            cell.margin_top = Inches(0.02)
+            cell.margin_bottom = Inches(0.02)
+            cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+            tf = cell.text_frame
+            tf.word_wrap = True
+            p = tf.paragraphs[0]
+            p.text = ""
+            if r == 0:
+                _run(p, val, header_size, "FFFFFF", bold=True)
+            else:
+                _run(p, val, body_size, INK)
+    gf.name = name
+    return gf
+
+
+def chart(slide, name, x, y, w, h, categories, series, kind="column",
+          colors=(ACCENT, ACCENT2)):
+    """Native chart (trends only — giant stat first per charts.md).
+    categories: <=5 labels. series: [(label, [values])], <=2 series.
+    kind: 'column' or 'line'. Strips gridlines + legend, flat fills."""
+    if len(categories) > 5:
+        raise ValueError("chart: max 5 categories (charts.md)")
+    if len(series) > 2:
+        raise ValueError("chart: max 2 series (charts.md)")
+    ctype = (XL_CHART_TYPE.COLUMN_CLUSTERED if kind == "column"
+             else XL_CHART_TYPE.LINE)
+    cd = ChartData()
+    cd.categories = list(categories)
+    for label, values in series:
+        cd.add_series(label, tuple(values))
+    gf = slide.shapes.add_chart(ctype, Inches(x), Inches(y), Inches(w),
+                                Inches(h), cd)
+    ch = gf.chart
+    ch.has_legend = False
+    ch.value_axis.has_major_gridlines = False
+    for ax in (ch.category_axis, ch.value_axis):
+        ax.tick_labels.font.size = Pt(12)
+        ax.tick_labels.font.color.rgb = _rgb(MUTED)
+    plot = ch.plots[0]
+    plot.has_data_labels = True
+    plot.data_labels.font.size = Pt(12)
+    plot.data_labels.font.color.rgb = _rgb(INK)
+    for i, ser in enumerate(plot.series):
+        col = colors[i % len(colors)]
+        if kind == "column":
+            ser.format.fill.solid()
+            ser.format.fill.fore_color.rgb = _rgb(col)
+            ser.format.line.fill.background()
+        else:
+            ser.format.line.color.rgb = _rgb(col)
+            ser.format.line.width = Pt(2.25)
+    gf.name = name
+    return gf
 
 
 def set_notes(slide, text):
     slide.notes_slide.placeholders[1].text_frame.text = text
 
 
+def set_alt(shape, text):
+    """Accessibility alt text (conclusion-first, <=140 chars) on any shape."""
+    for el in shape._element.iter():
+        if el.tag.endswith("}cNvPr"):
+            el.set("descr", text)
+            return shape
+    return shape
+
+
 # ---------- slides (FILL FROM visual-plan.md — one function per slide) ----------
-def s1_title(prs):
-    s = new_slide(prs)
+def s1_title():
+    s = new_slide()
     solid_bg(s, BG)
-    kicker(s, 1.55, "KICKER LINE", ACCENT)
-    title(s, 0.633, 2.15, 7.6, 2.6, "Slide one headline", size=54,
+    kicker(s, "KICKER LINE", x=0.633, y=1.55, color=ACCENT)
+    title(s, "Slide one headline", x=0.633, y=2.15, w=7.6, size=54,
           name="hero")
-    body(s, 0.633, 4.55, 7.6, 1.6, "One supporting sentence.", name="sub")
+    body(s, "One supporting sentence.", x=0.633, y=4.55, w=7.6, name="sub")
     set_notes(s, "S1 Title\\nFirst spoken beat.")
 
 
 def main():
-    prs = Presentation()
-    prs.slide_width = Inches(SW)
-    prs.slide_height = Inches(SH)
-    s1_title(prs)
-    prs.save(OUT)
+    s1_title()
+    _pres().save(OUT)
     print("saved", OUT)
 
 
@@ -450,7 +651,7 @@ def parked_flight(slide, shape, from_left_in, to_left_in, duration_ms=1500):
     Returns the created effect.
     """
     seq = slide.TimeLine.MainSequence
-    fx = seq.AddEffect(slide.Shapes(shape.name), 13, AFTER_PREV)  # msoAnimEffectPath
+    fx = seq.AddEffect(slide.Shapes(shape.name), 13, ANIMATE_LEVEL_NONE, AFTER_PREV)  # msoAnimEffectPath (Level, Trigger)
     # Build a simple left-to-right path
     bld = fx.Behaviors.Add(1)  # msoAnimTypeMotion
     mpath = bld.MotionEffect
@@ -571,6 +772,33 @@ if __name__ == "__main__":
     main()
 '''
 
+RESEARCH_STUB = '''# Research notes (ship-blocking)
+
+One section per planned slide: 4-8 content bullets + a 2-source log per slide.
+Fewer than ~60 words of distinct facts per slide = redo. Verify APIs/specs live;
+mark anything unverified as `[unverified]`.
+
+## Slide 1 - <title>
+- <fact>
+- <fact>
+- Sources: <source 1>; <source 2>
+'''
+
+VISUAL_PLAN_STUB = '''# Visual plan (ship-blocking)
+
+One block per slide, in z-order, using the generate-pptx section-9 grammar.
+Copy the matching layout-template recipe's spec block and fill in real values.
+
+Slide 1 - <title>                      bg: surface
+  Template: <framing|photo-hero|photo-collage|pastel-collage|display-type|annotation-stage|showcase|motion>
+  Text runs:   hero "<line>" {--t-hero} ; body <n> lines {--t-body}
+  Z-order:     bg -> <decor> -> <photo> -> copy
+  Images:      assets/<NN>_<name>.jpg (<role>)
+  Entrances:   <none | fade x N>
+  Anchors:     <name> (static) ; <name> parked 14.5in -> <x>in
+  Done when:   <objective check>
+'''
+
 
 def main():
     if len(sys.argv) != 2:
@@ -584,6 +812,8 @@ def main():
     (root / "motion.py").write_text(MOTION_TMPL, encoding="utf-8")
     (root / "verify_extra.py").write_text(VERIFY_EXTRA_TMPL,
                                           encoding="utf-8")
+    (root / "research-notes.md").write_text(RESEARCH_STUB, encoding="utf-8")
+    (root / "visual-plan.md").write_text(VISUAL_PLAN_STUB, encoding="utf-8")
     print("scaffolded", root)
 
 

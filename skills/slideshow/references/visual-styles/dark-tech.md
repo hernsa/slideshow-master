@@ -32,4 +32,4 @@ lines only (`references/tokens.md`).
 
 1. Max one glow per slide. Terminal glows or stat glows, never both, never borders plus text-glow plus shadow.
 2. No rainbow syntax or multicolor headings. Cyan structure, lime live-value, slate everything else.
-3. No stock circuit-board backgrounds. Near-black flat `#05070D` plus one mono grid overlay at 6% opacity is the texture ceiling.
+3. No stock circuit-board backgrounds. Near-black flat `#05070D` plus one deco grid of thin MUTED lines is the texture ceiling.

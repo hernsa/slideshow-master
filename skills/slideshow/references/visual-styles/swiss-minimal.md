@@ -24,12 +24,12 @@ lines only (`references/tokens.md`).
 ## PPTX notes
 
 - Station this palette's ramp: BG → 2 mid stops → saturated break.
-- Glow/decor use ACCENT at low alpha (`deco_blob`, `glow()`); never
-  OuterGlow, never gradient fills on shapes.
+- No glow/decor shapes — spacing and scale do all the work;
+  never OuterGlow, never gradient fills on shapes.
 - Plates darken the BG further in PIL; scrims use BG at 60–70% alpha.
 
 ## Anti-slop don'ts
 
 1. No icons, illustrations, or rounded cards. If the slide feels empty, enlarge the type instead of adding decoration.
 2. No centered paragraphs or gradient headlines. Left edge alignment is the entire layout system.
-3. No muted-gray body at 15px. Body stays 18–19px `#0A0A0A`; muted `#525252` is captions only.
+3. No muted-gray body at small sizes. Body stays 14–15pt `#0A0A0A`; muted `#525252` is captions only.

@@ -3,8 +3,10 @@
 > A table on a slide is a concession. Earn it: ≤4 rows, ≤3 columns,
 > 13pt minimum, or it becomes a handout page.
 
-## 1. Construction (python-pptx `add_table`)
+## 1. Construction (`table()` helper over python-pptx `add_table`)
 
+- Use `table(slide, name, x, y, w, h, rows)` — rows[0] is the header. It
+  rejects >4 rows / >3 cols and <13pt body outright.
 - Header: solid accent fill + white 14pt semibold, one line per cell.
 - Body: 13–14pt regular, ink on white or 8%-tint banding. No vertical
   rules; horizontal rules 0.75pt divider color only.

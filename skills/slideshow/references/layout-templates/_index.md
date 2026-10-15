@@ -29,7 +29,8 @@ Every recipe calls helpers with these exact signatures. The scaffold's `build.py
 - `kicker(slide, text, x, y, color, name=None)` · `title(slide, text, x, y, w, size, color=INK, accent=None, accent_color=None, align="left", name=None, mono=False)` · `body(...)` same shape, default 16pt · `gloss(...)` same shape, default 11pt
 - `pill(slide, text, x, y, w, fill, color, outline=None)` · `round_rect(slide, name, x, y, w, h, fill, line=None)`
 - `deco_blob(slide, name, cx, cy, w, h, color)` · `deco_ring(slide, name, cx, cy, d, color)` · `glow(slide, cx, cy, d, color)`
-- `leader(slide, name, x1, y1, x2, y2, label)` · `set_notes(slide, text)`
+- `leader(slide, name, x1, y1, x2, y2, label)` · `set_notes(slide, text)` · `set_alt(shape, text)`
+- `connect(slide, name, x1, y1, x2, y2, color=ACCENT, width_pt=2.25, arrow=True)` · `dot(slide, name, cx, cy, d=0.16, color=ACCENT)` · `table(slide, name, x, y, w, h, rows, header_fill=ACCENT)` · `chart(slide, name, x, y, w, h, categories, series, kind="column")`
 
 Rotation is always BAKED in PIL inside `diamond_pic`/`rect_pic` — never `shape.rotation` on a custom-geometry picture (white-wedge artifact). All coordinates in inches. `name=` sets `shape.name` = the morph identity.
 

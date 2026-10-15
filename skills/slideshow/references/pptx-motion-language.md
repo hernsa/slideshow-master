@@ -50,15 +50,15 @@ tween).
   uses those to disambiguate duplicates and they are part of the identity.
 - **Negative and off-canvas coordinates are intentional.** Reference decks park
   shapes at `L = 115%` or `T = 90%+`, outside the canvas, waiting on a later
-  slide. Do not "fix" them. In HTML this is `position:absolute; left:115%`.
+  slide. Do not "fix" them. In the spec grammar (§9) this is `xfrm=1.15,...` —
+  parked past the 13.333in canvas edge until its slide arrives.
 - Content is **duplicated deliberately** across slides so morph can fly one
   copy out and swap another in.
 
-```html
-<!-- parked artboard: visible from slide 4 onward, waited off-canvas until slide 3 -->
-<div data-id="parked-artboard" style="position:absolute;left:115%;top:12%;width:40%"></div>
-<!-- slide 4 — same name, now on-canvas: morph flies it in -->
-<div data-id="parked-artboard" style="position:absolute;left:58%;top:12%;width:40%"></div>
+```text
+parked artboard: visible from slide 4 onward, waited off-canvas until slide 3
+SHAPE "parked-artboard" xfrm=1.15,0.12,0.40,0.76   (slide 3 — parked past canvas)
+SHAPE "parked-artboard" xfrm=0.58,0.12,0.40,0.76   (slide 4 — same name, on-canvas: morph flies it in)
 ```
 
 **Rule — 2+ named continuities per section.** Name them at outline time in the
@@ -73,10 +73,10 @@ slide: `spd="slow" p14:dur="1500" advClick="0"` plus `morph option="byObject"`,
 with a plain `<p:fade/>` fallback. `Chikiwaa` ships morph byObject on 12 of 20
 slides; `AirPods` ships it on the whole sequence.
 
-**Rule:** lock ONE transition for the whole deck — `fade 0.4s`,
-`slide-left`, or a view-transition. Apply it everywhere. Per-slide transition
-overrides are banned except a single `zoom` showcase or a `none` appendix. The
-motion budget goes to anchors and entrances, never to transition roulette.
+**Rule:** lock ONE transition for the whole deck — a slow `fade`, a
+`morph byObject`, or plain `none`. Apply it everywhere via `motion.py`.
+Per-slide transition overrides are banned except a single `zoom` showcase.
+The motion budget goes to anchors and entrances, never to transition roulette.
 
 ## 4. Stagger grammar (cadence yes, count no)
 
@@ -86,29 +86,25 @@ body → visual), each 100–150ms apart, fast fade plus a slight rise, total
 entrance budget ≤600ms per slide.
 
 **Rule:** max 3 staggered entrances per slide (the 4th element is already
-visible). Delay 100–150ms, duration 200–400ms, `transform` + `opacity` only.
-Fragments and stagger share one budget (Gate 8) — a `v-click` chain *is* the
-stagger, never run both.
+visible). Delay 100–150ms, duration 200–400ms, `add_fade_entrance` only.
+Fragments and stagger share one budget (Gate 8) — never run both.
 
-```css
-.enter-1 { animation: rise .3s var(--ease-out) .10s both; }
-.enter-2 { animation: rise .3s var(--ease-out) .22s both; }
-.enter-3 { animation: rise .3s var(--ease-out) .34s both; }
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+```python
+stagger_entrances(slide, [("kicker", k), ("hero", t), ("sub", b)])  # motion.py
 ```
 
 ## 5. Photo as the load-bearing layer
 
-The `23.4`/`28.3` slides are 5 photos each: one full-bleed background at `-30%`
-brightness with artistic blur, plus 4 circular tiles. There is no scrim and no
-custom geometry — legibility comes from a bright/dark photo mix and the fact
-that the tiles never sit under the text.
+The `23.4`/`28.3` slides are 5 photos each: one full-bleed background at
+0.70 brightness with artistic blur, plus 4 circular tiles. There is no scrim
+and no custom geometry — legibility comes from a bright/dark photo mix and
+the fact that the tiles never sit under the text.
 
-```html
-<!-- background: darkened + slightly blurred, never a hard scrim -->
-<div style="position:absolute;inset:0;background:url(assets/hanoi-1890.jpg) center/cover;filter:brightness(.7) blur(2px)"></div>
-<!-- circular tiles, right half only so the text column stays clean -->
-<div style="position:absolute;right:6%;top:18%;width:14vw;aspect-ratio:1;border-radius:50%;background:url(assets/tile-1.jpg) center/cover"></div>
+```python
+# background: darkened + slightly blurred, never a hard scrim
+plate(slide, "assets/hanoi-1890.jpg", 0.70)          # full-bleed, PIL blur baked
+# circular tiles, right half only so the text column stays clean
+circle_pic(slide, "tile-1", "assets/tile-1.jpg", cx=11.4, cy=2.6, d=1.9)
 ```
 
 **Rules:**
@@ -125,10 +121,10 @@ that the tiles never sit under the text.
 organic quality comes entirely from **decorative freeforms layered behind and
 around** the rectangles: cloud blobs, arch outlines, confetti scatter.
 
-```html
-<!-- blob behind the photo, photo stays a clean rotated rect -->
-<svg class="deco" viewBox="0 0 200 160" aria-hidden="true"><path d="M12 96c-8-30 14-58 46-58 6-24 34-36 56-22 26-12 58 4 62 30 22 8 26 44 6 58-14 22-52 24-74 12-26 14-56 8-70-12-16 4-24-2-26-8Z" fill="var(--tint)"/></svg>
-<figure style="transform:rotate(-4deg)"><img src="assets/kids.jpg" alt="…"><figcaption>…</figcaption></figure>
+```python
+# blob behind the photo, photo stays a clean rotated rect
+deco_blob(slide, "cloud-a", cx=3.0, cy=3.4, w=6.2, h=4.4, color="#FFEFC8")
+rect_pic(slide, "plate", "assets/kids.jpg", x=2.7, y=1.2, w=5.8, h=4.4, rot=-4)
 ```
 
 **Rule — pick ONE organic device per deck:** blob-behind-photo (Chikiwaa),
@@ -153,12 +149,11 @@ reusable text style. Body copy never invents a size — it picks an `Rn`. The
 scaled tiers the liked decks use: 138pt / 96pt hero, 88pt / 80pt section title,
 48pt / 44pt heading, 36pt / 32pt subhead, 24pt / 20pt label, 16pt body.
 
-**Rule:** define the scale as named tiers at style-lock time (e.g. `--t-hero`,
-`--t-title`, `--t-head`, `--t-label`, `--t-body`). One hero per section, one
-display headline per slide at `clamp(2.5rem,6vw,4.5rem)` minimum — the AirPods
-deck runs `138pt` for its hero, which is `clamp(4rem,10vw,9rem)`. **Zero
-letter-spacing.** One accent word in a contrasting face per slide, never a
-paragraph.
+**Rule:** define the scale as named tiers at style-lock time (hero /
+section-title / heading / subhead / label / body — `title()`/`body()` sizes).
+One hero per section, one display headline per slide at 54pt minimum — the
+AirPods deck runs `138pt` for its hero. **Zero letter-spacing.** One accent
+word in a contrasting face per slide, never a paragraph.
 
 ## 9. Per-slide spec grammar (line order = z-order)
 
@@ -185,18 +180,18 @@ makes the spec testable instead of aspirational.
 is **baked into a 740×1130 RGBA PNG**: the left 40% is pure `#000000`, the
 product peaks at full luminance with a soft grey halo, alpha falls 1.00 → 0.17.
 
-```html
-<!-- pure black stage; the product PNG carries its own glow -->
-<section style="background:#000;color:#F5F5F7">
-  <img src="assets/product-glow.png" alt="Product lit against a soft halo" style="position:absolute;left:0;bottom:0;height:92%">
-  <h2 style="font-size:clamp(4rem,10vw,9rem);text-align:center">AirPods Pro 2</h2>
-</section>
+```python
+# pure black stage; the product PNG carries its own glow
+solid_bg(slide, "#000000")
+rect_pic(slide, "product", "assets/product-glow.png", x=4.4, y=0.6, w=4.5, h=6.3)
+title(slide, "AirPods Pro 2", x=1.6, y=1.3, w=10.1, size=72,
+      color="#F5F5F7", align="center", name="hero")
 ```
 
 **Rules:** showcase mode = pure `#000` bg, `#F5F5F7` type, one accent
 (`#02FF40`), no cards, no borders, ≤1 section per deck. If you cannot bake a
-raster, a radial-gradient glow behind a `mix-blend-mode: screen` photo is the
-acceptable substitute — but never a card.
+raster, `glow()` concentric ovals behind the photo are the acceptable
+substitute — but never a card.
 
 ## 11. Anti-slop don'ts
 
