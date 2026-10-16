@@ -1,11 +1,16 @@
 """Generic structural verifier for skill-built .pptx decks.
 
 Usage: python verify-pptx.py <deck.pptx> [--min-rasters N] [--allow-text-only]
+       [--cinematic N[,M]]
 
 Fails on: wrong canvas, missing notes, raster floor breach, missing
 transitions, auto-advance, click-animation trees beyond the entrance
 budget (>3/slide or non-fade effects), zero morph continuity across
 the whole deck, placeholder text.
+
+--cinematic takes 1-based slide number(s) for the Gate 8 cinematic
+exception (ONE slide per deck): wipe/zoom filters allowed there, same
+<=3 budget. A second cinematic slide is a FAIL.
 """
 import math
 import sys
@@ -60,9 +65,18 @@ def main():
     positional = [a for a in args if not a.startswith("--")]
     if not positional:
         print("usage: python verify-pptx.py <deck.pptx> "
-              "[--min-rasters N] [--allow-text-only]")
+              "[--min-rasters N] [--allow-text-only] [--cinematic N[,M]]")
         sys.exit(1)
     allow_text_only = "--allow-text-only" in flags
+    cinematic = set()
+    if "--cinematic" in args:
+        try:
+            cinematic = {int(x) for x in
+                         args[args.index("--cinematic") + 1].split(",")
+                         if x.strip()}
+        except (ValueError, IndexError):
+            print("FAIL: --cinematic needs slide number(s)")
+            sys.exit(1)
     min_rasters = None
     if "--min-rasters" in args:
         try:
@@ -121,9 +135,15 @@ def main():
             failures.append("slide %d: %d entrance effects "
                             "(budget is 3)" % (i, len(fx)))
         for f in fx:
-            if (f.get("filter") or "").lower() != "fade":
-                failures.append("slide %d: non-fade entrance "
-                                "filter=%r" % (i, f.get("filter")))
+            filt = (f.get("filter") or "").lower()
+            if filt == "fade":
+                continue
+            # Gate 8 cinematic exception: wipe/zoom allowed on the ONE
+            # named slide (zoom serializes as a wipe+scale pair).
+            if i in cinematic and filt.startswith("wipe("):
+                continue
+            failures.append("slide %d: non-fade entrance "
+                            "filter=%r" % (i, f.get("filter")))
         # continuity
         names = {s.name for s in slide.shapes if s.name}
         if prev_names is not None:
@@ -168,6 +188,9 @@ def main():
     if continuity_pairs == 0 and total > 1:
         failures.append("no shared shape names across any consecutive pair "
                         "— the deck is a slide sorter, Morph carries nothing")
+    if len(cinematic) > 1:
+        failures.append("cinematic exception is ONE slide per deck "
+                        "(got %s) — cut it to one" % sorted(cinematic))
     for w in warnings:
         print("warn:", w)
     if failures:

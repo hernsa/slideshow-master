@@ -12,13 +12,13 @@ body(slide, "Preview deploys took p95 from 412ms to 243ms.", x=0.65, y=5.3, w=9.
 
 Pastel variant: `solid_bg(slide, "#FFFDE4")`, hero in `#1F2328`, e.g. `title(slide, "41% faster.", ..., size=96)`.
 
-Scale rule: hero 72–96pt on the 13.333in canvas (the AirPods tier). One accent word max; zero letter-spacing.
+Scale rule: hero 72–96pt on the 13.333in canvas, up to ~138pt on covers and showcase titles (the AirPods tier). One accent word max; zero letter-spacing.
 
 ## Slide spec
 
 ```
 Slide N — <Claim>                      bg: <solid|pastel>
-  Text runs:  kicker {11pt} ; hero {72–96pt ≤2 lines} ; lead {20pt, one sentence}
+  Text runs:  kicker {11pt} ; hero {72–96pt ≤2 lines, ~138pt on covers} ; lead {20pt, one sentence}
   Z-order:    bg → copy
   Entrances:  none (the reveal IS the slide change; Morph carries it)
   Anchors:    none required

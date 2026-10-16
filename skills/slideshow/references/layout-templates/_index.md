@@ -47,6 +47,9 @@ Rotation is always BAKED in PIL inside `diamond_pic`/`rect_pic` — never `shape
 6. Continuity across slides without entrances → `motion.md` (anchors, one moving element).
 7. Pick **one organic device per deck** — circular tile cluster OR blob-behind-plate OR arch crop. Never mix.
 8. If two slides in a row use the same template, merge them or change the visual on the second one.
+9. Count the items before picking the arrangement: 2 → contrast/duo,
+   3 → trio or flow, 4+ → list, pills, or table — never force five
+   items into a three-card grid. The count picks the form, not habit.
 
 ## How to use a template file
 

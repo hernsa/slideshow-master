@@ -20,14 +20,16 @@ Longest identical-bg run ≤2 slides.
 
 | Tier | Size | Use |
 |---|---|---|
-| hero | 54–96pt bold | one statement per section |
+| hero | 54–96pt bold (covers/showcase may run to ~138pt) | one statement per section |
 | title | 40–44pt bold | slide titles |
 | head | 28–32pt semibold | box heads, stat labels |
 | label | 18–20pt semibold | kickers, pills, leaders |
 | body | 14–16pt regular | max 4 lines per box |
 | gloss | 11pt regular | translations, captions |
 
-Zero letter-spacing (python-pptx `spacing` untouched). Vietnamese diacritics
+Zero letter-spacing (python-pptx `spacing` untouched). Emphasis is weight,
+color, or one accent word — never italic headlines. Italic survives only
+inside body copy. Vietnamese diacritics
 verified in Segoe UI — if the locked pair lacks them, change the pair.
 
 ### Font sourcing + fallback

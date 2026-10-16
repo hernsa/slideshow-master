@@ -53,6 +53,9 @@ COM with `Call was rejected by callee` — taskkill first, always.
 | `ppEffectMorphByWord` | 3955 | spare — word-level morph |
 | `ppEffectMorphByChar` | 3956 | spare — char-level morph |
 | `msoAnimEffectFade` | 10 | entrance effect |
+| `msoAnimEffectWipe` | 22 | cinematic entrance (direction via `EffectParameters.Direction`: 1=up, 2=right, 3=down, 4=left) |
+| `msoAnimEffectZoom` | 26 | cinematic entrance (serializes as wipe+scale pair) |
+| motion-path preset | 86 | base for custom paths (`Behaviors(1).MotionEffect.Path`, pure `animMotion`) |
 | `triggerOnPageClick` | 1 | default trigger (avoid) |
 | `triggerAfterPrevious` | 3 | entrance chains |
 | `animateLevelNone` | 0 | keep paragraphs whole |

@@ -72,6 +72,30 @@ Total ≤ 640ms. A rise-plus-fade has no COM equivalent to set — fade
 covers it; never reach for fly/swirl/boomerang presets. If a 4th element
 wants attention, it is already visible — cut the entrance, not the budget.
 
+## Cinematic exception (ONE slide per deck, Gate 8)
+
+One slide per deck, named at style lock in `CINEMATIC_SLIDES`, may use
+wipe/zoom/motion-path instead of fades. Same ≤3 budget, same stagger,
+same manual advance. A second cinematic slide is a verifier FAIL.
+
+Measured IDs (probed live on this box — AddEffect → save → read back
+the serialized filter, never guessed):
+
+```python
+add_wipe_entrance(slide, shp, direction=WIPE_LEFT, delay_ms=100)  # FX_WIPE = 22
+add_zoom_entrance(slide, shp, delay_ms=100)                      # FX_ZOOM = 26
+parked_flight(slide, shp, from_left_in=-3.0, to_left_in=0.65)    # FX_PATH = 86
+```
+
+- Wipe direction via `EffectParameters.Direction`: 1=up, 2=right,
+  3=down, 4=left. Left is the deck default (matches the wipe(left)
+  entrances in the reference spec decks).
+- Zoom serializes as a wipe+scale pair — the verifier counts it as ONE
+  cinematic entrance.
+- Motion paths serialize as pure `animMotion` (no entrance filter), so
+  they sit outside the fade budget entirely.
+- Verify with `python verify-pptx.py deck.pptx --cinematic 4`.
+
 ## What COM cannot do (don't try)
 
 - Transition `Speed`: no enum in the typelib — accept the default.

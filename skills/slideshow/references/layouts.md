@@ -14,6 +14,17 @@
 - Text ceilings: hero ≤ 2 lines @54–60pt, title ≤ 2 lines @40–44pt, body ≤
   4 lines @16pt, gloss 1 line @11pt. Overflow = cut words, never shrink type.
 
+## Copy rules (anti-slop)
+
+- Kicker discipline: kickers mark section openers and dividers only —
+  never every slide. A kicker on all 8 slides is an eyebrow template,
+  not hierarchy. Plain headlines carry body slides.
+- Titles are noun phrases, number-first, ~40 characters. The sentence is
+  the spoken line — it goes in notes, never in the title box.
+- One idea per slide. Two messages sharing a slide means two slides.
+  Split, don't cram; slide count never makes a deck feel long, unread
+  slides do.
+
 ## Section patterns (pick one per section, reuse every slide in it)
 
 1. **Copy-left + tile cluster.** Copy x ∈ [0.65, 5.2]; 2 circle tiles

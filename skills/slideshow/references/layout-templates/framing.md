@@ -35,9 +35,10 @@ Number-free variant: drop the ghost number, keep kicker + title + one lead line.
 slide = new_slide()
 solid_bg(slide, BG)
 kicker(slide, "TRY IT TONIGHT", x=0.65, y=2.0, color=ACCENT)
-title(slide, "Ship your next deploy in one command.", x=0.65, y=2.4, w=7.0, size=44)
+title(slide, "One-command deploys.", x=0.65, y=2.4, w=7.0, size=44)
 body(slide, "npx acme-deploy --preview", x=0.65, y=4.2, w=7.0, size=20, mono=True)
 body(slide, "Slides plus demo: acme.dev/talks/q3 · ada@acme.dev", x=0.65, y=4.9, w=7.0, size=14, color=MUTED)
+set_notes(slide, "Close on the ask: ship your next deploy in one command, tonight.")
 ```
 
 QR variant: copy column narrows to `w=6.5`; QR goes right:

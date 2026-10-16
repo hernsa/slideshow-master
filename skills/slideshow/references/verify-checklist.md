@@ -41,7 +41,9 @@ WHY: one invented stat in front of a room kills credibility.
 
 HOW: 100% of headline stats, dates, and proper nouns in
 `research-notes.md` carry two independent sources. Mark anything single-
-sourced `[unverified]` and keep it off headline slides.
+sourced `[unverified]` and keep it off headline slides. Every stat that
+reaches a slide carries its year + source in a gloss line — a number with
+no provenance on the slide is a credibility failure, not a space saving.
 
 ## Gate 3 — Raster floor (photos are load-bearing)
 
@@ -97,6 +99,9 @@ Select-String -Path build.py,motion.py -Pattern "lorem|todo:|tbd|fixme|KICKER LI
 
 - PASS: zero hits outside the scaffold's own comments.
 - FAIL: any hit in a slide function. Fix the copy, rebuild.
+- Titles are noun phrases, number-first, ~40 characters — read every
+  title aloud at this gate. A verb-led sentence ("We improved ... through
+  ...") gets rewritten with the sentence moved to notes.
 
 ## Gate 6 — Style tokens
 
@@ -129,6 +134,10 @@ slide, fade filter only. `AdvanceOnTime` is False on every slide
   failure; non-fade filters.
 - Fix: cut entrances to the 3 that carry the point (kicker → headline →
   visual), move the rest to static. Rebuild clean, re-run motion once.
+- Cinematic exception: ONE slide per deck, named at style lock, may use
+  wipe/zoom/motion-path entrances via the `motion.py` cinematic helpers
+  instead of fades. Same ≤3 budget, same stagger, same manual advance.
+  A second cinematic slide is a FAIL — cut it.
 
 ## Gate 9 — Speaker notes 1:1
 
@@ -142,12 +151,16 @@ their entire note text.
 
 ## Gate 10 — Back-row legibility (the projector test)
 
-WHY: PPTX has no 390px viewport — it has a person 20 meters away.
+WHY: the primary audience is a person 20 meters away — but decks also
+get read on phones in email and shared links, so type must survive
+both ends.
 
 HOW: open each render scaled to 960px wide. If the body copy isn't
 readable there, it won't read in the room. Minimums: body 14–16pt, gloss
-11pt only for asides, hero 54–96pt. When a render fails, cut words or
-darken the plate — never shrink type.
+11pt only for asides, hero 54–96pt. Then glance at a ~480px-wide copy
+(phone width): headlines and body must still scan. Anything set at 12pt
+or below fails outright — bump it to body tier or cut the line. When a
+render fails, cut words or darken the plate — never shrink type.
 
 ## Gate 11 — Export smoke (renders for every slide)
 

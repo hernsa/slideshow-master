@@ -13,7 +13,10 @@
    otherwise cut words or darken the plate, never shrink type.
 3. Check the `Done when:` line of every spec block literally against
    the render. A line that isn't true is a fix item.
-4. Fix in `build.py`, rebuild clean, re-run motion once, re-read the
+4. Read every visible string aloud (titles, kickers, pills, labels,
+   captions): flag broken grammar, unclear referents, and fake-precise
+   numbers with no source. Rewrite or cut on the spot.
+5. Fix in `build.py`, rebuild clean, re-run motion once, re-read the
    affected renders. Never diagnose from XML dumps.
 
 ## Handoff

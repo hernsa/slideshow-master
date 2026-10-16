@@ -600,6 +600,12 @@ MORPH_WORD = 3955            # ppEffectMorphByWord
 MORPH_CHAR = 3956            # ppEffectMorphByChar
 FADE = 1793                  # ppEffectFade
 FX_FADE = 10                 # msoAnimEffectFade
+FX_WIPE = 22                 # msoAnimEffectWipe (direction via EffectParameters)
+FX_ZOOM = 26                 # msoAnimEffectZoom (serializes as wipe+scale pair)
+FX_PATH = 86                 # motion-path preset (Path retargeted per call)
+WIPE_UP, WIPE_RIGHT, WIPE_DOWN, WIPE_LEFT = 1, 2, 3, 4  # EffectParameters.Direction
+# All four IDs + all four directions measured live on this box via COM
+# probes (AddEffect -> save -> read back serialized filter/path).
 ON_CLICK = 1                 # triggerOnPageClick
 AFTER_PREV = 3               # triggerAfterPrevious
 ANIMATE_LEVEL_NONE = 0       # animateLevelNone
@@ -607,6 +613,9 @@ ANIMATE_LEVEL_NONE = 0       # animateLevelNone
 # ----- style-locked exceptions (max ~2 per deck) -----
 FADE_SLIDES = {1}            # 1-based: slides that take Fade instead of Morph
 # Example: FADE_SLIDES = {1, 6}
+
+# ----- cinematic exception (Gate 8: ONE slide per deck, named at style lock) -----
+CINEMATIC_SLIDES = set()    # 1-based: e.g. {4} — wipe/zoom/motion-path allowed here
 
 # ----- entrance cadence (shared Gate 8 budget: <=3/slide, 100-150ms apart) -----
 STAGGER = [
@@ -625,6 +634,32 @@ def add_fade_entrance(slide, shape, delay_ms, duration_ms=300):
     fx.Timing.Duration = duration_ms / 1000.0
     fx.Timing.Accelerate = 0
     fx.Timing.Decelerate = 0
+    return fx
+
+def add_wipe_entrance(slide, shape, direction=WIPE_LEFT, delay_ms=100,
+                      duration_ms=300):
+    """Add a wipe entrance (the sanctioned cinematic entrance).
+    direction: WIPE_UP / WIPE_RIGHT / WIPE_DOWN / WIPE_LEFT (left is the deck
+    default). Only call for slides named in CINEMATIC_SLIDES (max one/deck).
+    """
+    seq = slide.TimeLine.MainSequence
+    fx = seq.AddEffect(shape, FX_WIPE)
+    fx.EffectParameters.Direction = direction
+    fx.Timing.TriggerType = AFTER_PREV
+    fx.Timing.TriggerDelayTime = delay_ms / 1000.0
+    fx.Timing.Duration = duration_ms / 1000.0
+    return fx
+
+def add_zoom_entrance(slide, shape, delay_ms=100, duration_ms=300):
+    """Add a zoom entrance (serializes as a wipe+scale pair — Gate 8 counts
+    it as ONE cinematic entrance on CINEMATIC_SLIDES).
+    Only call for slides named in CINEMATIC_SLIDES (max one/deck).
+    """
+    seq = slide.TimeLine.MainSequence
+    fx = seq.AddEffect(shape, FX_ZOOM)
+    fx.Timing.TriggerType = AFTER_PREV
+    fx.Timing.TriggerDelayTime = delay_ms / 1000.0
+    fx.Timing.Duration = duration_ms / 1000.0
     return fx
 
 def stagger_entrances(slide, shapes, base_delays=None):
@@ -648,17 +683,15 @@ def stagger_entrances(slide, shapes, base_delays=None):
 def parked_flight(slide, shape, from_left_in, to_left_in, duration_ms=1500):
     """Animate a parked shape flying in from off-canvas.
     Adds a motion path from (from_left_in, current top) to (to_left_in, current top).
+    Pure animMotion: no entrance filter, so it sits outside the Gate 8 fade budget.
     Returns the created effect.
     """
     seq = slide.TimeLine.MainSequence
-    fx = seq.AddEffect(slide.Shapes(shape.name), 13, ANIMATE_LEVEL_NONE, AFTER_PREV)  # msoAnimEffectPath (Level, Trigger)
-    # Build a simple left-to-right path
-    bld = fx.Behaviors.Add(1)  # msoAnimTypeMotion
-    mpath = bld.MotionEffect
-    mpath.Path = (
+    fx = seq.AddEffect(slide.Shapes(shape.Name), FX_PATH, ANIMATE_LEVEL_NONE, AFTER_PREV)  # path preset, retargeted below
+    # Retarget the preset's motion behavior to a custom left-to-right path
+    fx.Behaviors(1).MotionEffect.Path = (
         f"M 0 0 L {int((to_left_in - from_left_in) * 914400)} 0"
     )  # EMU offset
-    fx.Timing.TriggerType = AFTER_PREV
     fx.Timing.Duration = duration_ms / 1000.0
     return fx
 
